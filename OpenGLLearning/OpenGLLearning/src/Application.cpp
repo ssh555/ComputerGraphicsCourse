@@ -7,16 +7,14 @@
 // 字符串流
 #include <sstream>
 
-#include "Renderer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "Renderer.h"
-#include "Texture.h"
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "Render/Renderer.h"
+#include "Render/VertexBuffer.h"
+#include "Render/IndexBuffer.h"
+#include "Render/VertexArray.h"
+#include "Render/Shader.h"
+#include "Render/Renderer.h"
+#include "Render/Texture.h"
+using namespace Render;
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -26,6 +24,14 @@
 #include "Application.h"
 #include "tests/TestTexture2D.h"
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	// 设置OpenGL视口的尺寸以匹配新的窗口尺寸
+	glViewport(0, 0, width, height);
+	// TODO : 更新数据 & Camera & Shader
+}
+
+
+// TODO : Camera 管理 -> 用于视图以及相关数据
 int main(void)
 {
 	GLFWwindow* window;
@@ -52,6 +58,9 @@ int main(void)
 		glfwTerminate();
 		return -1;
 	}
+
+	// 注册窗口大小改变事件处理程序
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
@@ -81,13 +90,13 @@ int main(void)
 		// 混合 => 如何将输出的Color与当前处于缓冲区的Color结合起来
 		// (source = GL_ONE, destination = GL_ZERO) => src 和 dest 计算因子
 		// src * src factor, dest * dest factor
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
+		Render::GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
 		// (mode = GL_FUNC_ADD) => 如何将两种颜色混合在一起
 		// (src * factor [+](mode) dest * factor)
 		//GLCall(glBlendEquation())
 
 
-		Renderer renderer;
+		Render::Renderer renderer;
 
 		// glDebugMessageCallback
 		// glGetError

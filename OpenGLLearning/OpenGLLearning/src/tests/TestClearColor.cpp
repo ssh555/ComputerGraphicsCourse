@@ -1,10 +1,11 @@
 #include "TestClearColor.h"
 
-#include "Renderer.h"
+#include "Render/Renderer.h"
+using namespace Render;
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
-
 
 namespace test
 {

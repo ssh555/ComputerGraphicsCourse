@@ -1,24 +1,28 @@
 #include "TestTexture2D.h"
 
-#include "Renderer.h"
+#include "Render/Renderer.h"
+using namespace Render;
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
+// TODO : 替换glm库
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "Texture.h"
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
-
+#include "Render/VertexBuffer.h"
+#include "Render/VertexBufferLayout.h"
+#include "Render/Texture.h"
+#include "Render/VertexArray.h"
+#include "Render/IndexBuffer.h"
+#include "Render/Shader.h"
 
 
 namespace test
 {
 	TestTexture2D::TestTexture2D()
+		// TODO : 替换glm库
+		// TODO : 增加Camera脚本 -> 从当前激活(有绘制区域)的Camera获取相关数据
 		: m_Proj(glm::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		m_TranslationA(-0.5f, 0.0f, 0.0f),
@@ -74,6 +78,7 @@ namespace test
 		m_Texture->Bind();
 
 		{
+			// TODO : 替换glm库
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
 			glm::mat4 mvp = m_Proj * m_View * model;
 			m_Shader->Bind();
@@ -81,6 +86,7 @@ namespace test
 			renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 		{
+			// TODO : 替换glm库
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
 			glm::mat4 mvp = m_Proj * m_View * model;
 			m_Shader->Bind();
