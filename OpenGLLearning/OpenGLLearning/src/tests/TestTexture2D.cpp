@@ -6,9 +6,14 @@ using namespace Render;
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
-// TODO : 替换glm库
+
+#if USING_GLM
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#else
+#include "Math/CMatrix.h"
+#include "Math/CVector.h"
+#endif
 
 #include "Render/VertexBuffer.h"
 #include "Render/VertexBufferLayout.h"
@@ -17,14 +22,19 @@ using namespace Render;
 #include "Render/IndexBuffer.h"
 #include "Render/Shader.h"
 
+#include <iostream>
 
 namespace test
 {
 	TestTexture2D::TestTexture2D()
-		// TODO : 替换glm库
 		// TODO : 增加Camera脚本 -> 从当前激活(有绘制区域)的Camera获取相关数据
+#if USING_GLM
 		: m_Proj(glm::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
+#else
+		: m_Proj(Math::CMatrix::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
+		m_View(Math::CMatrix::translate(Math::CMatrix(1.0f), 0, 0, 0)),
+#endif
 		m_TranslationA(-0.5f, 0.0f, 0.0f),
 		m_TranslationB(0.5f, 0.0f, 0.0f)
 	{
@@ -78,17 +88,26 @@ namespace test
 		m_Texture->Bind();
 
 		{
-			// TODO : 替换glm库
+#if USING_GLM
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
 			glm::mat4 mvp = m_Proj * m_View * model;
+#else
+			Math::CMatrix model = Math::CMatrix::translate(Math::CMatrix(1.0f), m_TranslationA);
+			Math::CMatrix mvp = m_Proj * m_View * model;
+#endif
+
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 			renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 		{
-			// TODO : 替换glm库
+#if USING_GLM
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
 			glm::mat4 mvp = m_Proj * m_View * model;
+#else
+			Math::CMatrix model = Math::CMatrix::translate(Math::CMatrix(1.0f), m_TranslationB);
+			Math::CMatrix mvp = m_Proj * m_View * model;
+#endif
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 			renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader);

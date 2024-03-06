@@ -2,9 +2,14 @@
 
 #include "Test.h"
 #include <memory>
-// TODO : Ìæ»»glm¿â
+
+#if USING_GLM
 #include "glm/ext/vector_float3.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
+#else
+#include "Math/CMatrix.h"
+#include "Math/CVector.h"
+#endif
 
 namespace Render
 {
@@ -13,6 +18,11 @@ namespace Render
 	class Shader;
 	class Texture;
 	class VertexBuffer;
+}
+namespace Math
+{
+	class CMatrix;
+	class CVector;
 }
 
 
@@ -35,9 +45,14 @@ namespace test
 
 
 	private:
-		// TODO : Ìæ»»glm¿â
+#if USING_GLM
 		glm::mat4 m_Proj, m_View;
 		glm::vec3 m_TranslationA, m_TranslationB;
+#else
+		Math::CMatrix m_Proj, m_View;
+		Math::CVector m_TranslationA, m_TranslationB;
+#endif
+
 
 		std::unique_ptr<Render::VertexArray> m_VAO;
 

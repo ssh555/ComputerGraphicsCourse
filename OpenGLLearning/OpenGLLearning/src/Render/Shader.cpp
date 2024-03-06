@@ -1,12 +1,14 @@
 #include "Shader.h"
 
-
 #include <GL/glew.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
 #include "Renderer.h"
+
+#include "Math/CMatrix.h"
+
 
 namespace Render
 {
@@ -58,8 +60,11 @@ namespace Render
 		GLCall(glUniform4f(this->GetUniformLocation(name), v0, v1, v2, v3));
 	}
 
-
+#if USING_GLM
 	void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
+#else
+	void Shader::SetUniformMat4f(const std::string& name, const Math::CMatrix& matrix)
+#endif
 	{
 		GLCall(glUniformMatrix4fv(this->GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 	}

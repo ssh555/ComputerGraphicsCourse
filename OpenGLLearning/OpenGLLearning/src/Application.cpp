@@ -59,6 +59,7 @@ int main(void)
 		return -1;
 	}
 
+#pragma region 设置
 	// 注册窗口大小改变事件处理程序
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -68,6 +69,9 @@ int main(void)
 	// 垂直同步
 	glfwSwapInterval(1);
 	// 限制帧率
+#pragma endregion
+
+
 
 
 	// glew 初始化 : 在 glfwMakeContextCurrent 之后
@@ -79,13 +83,14 @@ int main(void)
 	// 限制作用域 => glfwTerminate 调用会导致 IndexBuffer 回收栈上的对象内存,然后程序执行结束后调用~IndexBuffer,死循环glCheckError
 	// 或者 new 堆分配,然后在 glfwTerminate 调用之前 delete
 	{
+#pragma region 设置
 		// 混合透明
-		/*
-			1. 启用混合
-			2. Set Factor (source, destination) => 乘数因子
-			3. Set Equation => 计算公式(source * factor, destination * factor)
-		*/
-		// 默认不启用
+/*
+	1. 启用混合
+	2. Set Factor (source, destination) => 乘数因子
+	3. Set Equation => 计算公式(source * factor, destination * factor)
+*/
+// 默认不启用
 		GLCall(glEnable(GL_BLEND));
 		// 混合 => 如何将输出的Color与当前处于缓冲区的Color结合起来
 		// (source = GL_ONE, destination = GL_ZERO) => src 和 dest 计算因子
@@ -108,12 +113,17 @@ int main(void)
 		// 初始化
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 130");
+#pragma endregion
 
+#pragma region TEST设置
 		test::Test* currentTest = nullptr;
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+#pragma endregion
+
+#pragma region 主循环
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -128,13 +138,20 @@ int main(void)
 			// 有索引缓冲区
 			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // 前面 ibo 已绑定索引
 			//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-			
 
-			// 开始一个ImGui新帧
+			// TODO : 主逻辑循环
+#pragma region 主逻辑
+
+#pragma endregion
+
+
+#pragma region IMGUI
+						// 开始一个ImGui新帧
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+#pragma region 测试更新
 			if (currentTest)
 			{
 				currentTest->OnUpdate(0);
@@ -148,10 +165,16 @@ int main(void)
 				currentTest->OnImGuiRender();
 				ImGui::End();
 			}
+#pragma endregion
+
+
 
 			// 绘制(渲染) ImGui
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+#pragma endregion
+
 
 
 			/* Swap front and back buffers */
@@ -160,6 +183,9 @@ int main(void)
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
+
+#pragma endregion
+
 		delete currentTest;
 		if (currentTest != testMenu)
 			delete testMenu;

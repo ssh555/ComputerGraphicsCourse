@@ -75,6 +75,18 @@
     <ClCompile Include="src\tests\TestTexture2D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Math\CEuler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\CMatrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\CQuaternion.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\CVector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -1396,6 +1408,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\TestTexture2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\CEuler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\CMatrix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\CQuaternion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\CVector.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

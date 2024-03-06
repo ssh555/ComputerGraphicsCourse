@@ -2,8 +2,15 @@
 #include <string>
 #include <unordered_map>
 
-// TODO : Ìæ»»glm¿â
+#if USING_GLM
 #include "glm/glm.hpp"
+#endif
+
+
+namespace Math
+{
+	class CMatrix;
+}
 
 namespace Render
 {
@@ -34,8 +41,11 @@ namespace Render
 		void SetUniform2f(const std::string& name, float v0, float v1);
 		void SetUniform3f(const std::string& name, float v0, float v1, float v2);
 		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-		// TODO : Ìæ»»glm¿â
+#if USING_GLM
 		void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
+#else
+		void SetUniformMat4f(const std::string& name, const Math::CMatrix& matrix);
+#endif
 
 	private:
 		ShaderProgramSource ParseShader(const std::string& filepath);
