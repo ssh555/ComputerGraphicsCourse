@@ -10,7 +10,7 @@
 #include "Math/CMatrix.h"
 
 
-namespace Render
+namespace Engine
 {
 	Shader::Shader(const std::string& filepath)
 		: m_FilePath(filepath), m_RendererID(0)
@@ -63,11 +63,12 @@ namespace Render
 #if USING_GLM
 	void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 #else
-	void Shader::SetUniformMat4f(const std::string& name, const Math::CMatrix& matrix)
+	void Shader::SetUniformMat4f(const std::string& name, const Engine::CMatrix& matrix)
 #endif
 	{
 		GLCall(glUniformMatrix4fv(this->GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 	}
+
 
 	unsigned int Shader::GetUniformLocation(const std::string& name)
 	{

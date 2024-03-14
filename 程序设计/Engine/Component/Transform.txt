@@ -1,0 +1,146 @@
+class final Transform : Component
+{
+    friend class GameObject;
+
+private:
+    Transform(GameObject& obj) : Component(obj, false) { }
+
+public:
+    CVector GetLocalPosition() const
+    {
+        return m_localposition;
+    }
+    void SetLocalPosition(const CVector& position)
+    {
+        m_localposition = position;
+    }
+    CVector GetWorldPosition() const
+    {
+        if (gameobject.parent)
+        {
+            // 如果有父物体，则计算世界坐标
+            return gameobject.parent->GetWorldPosition() + (gameobject.parent->GetWorldRotation() * (gameobject.parent->GetLocalScale() * localPosition));
+        }
+        else
+        {
+            // 如果没有父物体，则局部坐标就是世界坐标
+            return localPosition;
+        }
+    }
+    void SetWorldPosition(const CVector& position)
+    {
+        if (gameobject.parent)
+        {
+            // 如果有父物体，则计算局部坐标并设置
+            m_localposition = gameobject.parent->GetWorldRotation().GetInverse() * (position - gameobject.parent->GetWorldPosition()) / gameobject.parent->GetWorldScale();
+        }
+        else
+        {
+            // 如果没有父物体，则直接设置局部坐标
+            m_localposition = position;
+        }
+    }
+
+    CQuatenion GetLocalRotation() const
+    {
+        return m_localrotation;
+    }
+    CQuatenion GetWorldRotation() const
+    {
+        if (gameobject.parent)
+        {
+            // 如果有父物体，则计算世界旋转
+            return gameobject.parent->GetWorldRotation() * m_localrotation;
+        }
+        else
+        {
+            // 如果没有父物体，则局部旋转就是世界旋转
+            return m_localrotation;
+        }
+    }
+    void SetLocalRotation(const CQuatenion& rotation)
+    {
+        m_localrotation = rotation;
+    }
+    void SetWorldRotation(const CQuatenion& rotation)
+    {
+        if (gameobject.parent)
+        {
+            // 如果有父物体，则计算局部旋转并设置
+            m_localrotation = glm::inverse(gameobject.parent->GetWorldRotation()) * rotation;
+        }
+        else
+        {
+            // 如果没有父物体，则直接设置局部旋转
+            m_localrotation = rotation;
+        }
+    }
+
+    CVector GetLocalScale() const
+    {
+        return m_localscale;
+    }
+    CVector GetWorldScale() const
+    {
+        if (gameobject.parent)
+        {
+            // 如果有父物体，则计算世界缩放
+            return gameobject.parent->GetWorldScale() * m_localscale;
+        } else {
+            // 如果没有父物体，则局部缩放就是世界缩放
+            return m_localscale;
+        }
+    }
+    void SetLocalScale(const CVector& scale)
+    {
+        m_localscale = scale;
+    }
+
+    CMatrix GetWorldTransform() const
+    {
+        CMatrix worldTransform = CMatrix::Identity();
+        worldTransform = CMatrix::translate(worldTransform, GetWorldPosition());
+        worldTransform *= GetWorldRotation().ToCMatrix();
+        worldTransform = CMatrix::scale(worldTransform, GetWorldScale());
+        return worldTransform;
+    }
+
+    void LookAt(const CVector& target)
+    {
+        CVector direction = (target - GetWorldPosition()).Normalized();
+        CQuatenion rotation = CQuatenion::quatLookAt(direction, CVector::Up());
+        SetWorldRotation(rotation);
+    }
+
+    void Translate(const CVector& translation)
+    {
+        m_localposition += m_localrotation * translation;
+    }
+
+    // 获取局部坐标系中的前方向
+    CVector GetForward() const {
+        return m_localrotation * CVector::Forward();
+    }
+
+    // 获取局部坐标系中的上方向
+    CVector GetUp() const {
+        return m_localrotation * CVector::Up();
+    }
+
+    // 获取局部坐标系中的左方向
+    CVector GetLeft() const {
+        return -m_localrotation * CVector::Left();
+    }
+
+
+private:
+    // 位置
+    CVector m_localposition;
+
+    // 旋转
+    CQuatenion m_localrotation;
+
+    // 缩放
+    CVector m_localscale;
+
+}

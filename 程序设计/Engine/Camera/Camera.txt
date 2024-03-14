@@ -1,0 +1,124 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+class Camera : Component
+{
+    friend class CameraManager;
+    friend class GameObject;
+
+private:
+    Camera(GameObject& obj) : Component(obj, false) { }
+
+public:
+    // 投影方式
+    enum class ProjectionType { Perspective, Orthographic };
+
+    // FOV(垂直轴), 纵横比, 近裁切面, 远裁切面, 投影方式
+    //Camera(float fov, float aspectRatio, float nearClip, float farClip, ProjectionType projectionType)
+    //    : m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip), m_ProjectionType(projectionType)
+    //{
+    //    updateProjectionMatrix();
+    //}
+
+    void SetProjectionType(ProjectionType projectionType)
+    {
+        m_ProjectionType = projectionType;
+        updateProjectionMatrix();
+    }
+
+    void SetFOV(float fov)
+    {
+        m_FOV = fov;
+        updateProjectionMatrix();
+    }
+
+    void SetAspectRatio(float aspectRatio)
+    {
+        m_AspectRatio = aspectRatio;
+        updateProjectionMatrix();
+    }
+
+    void SetOrthoSize(float size)
+    {
+        m_OrthoSize = size
+    }
+
+    void SetClippingPlanes(float nearClip, float farClip)
+    {
+        m_NearClip = nearClip;
+        m_FarClip = farClip;
+        updateProjectionMatrix();
+    }
+
+    // void SetViewport(int x, int y, int offx, int offy)
+    // {
+    //    m_ViewportX = x;
+    //    m_ViewportY = y;
+    //    m_ViewportOffX = offx;
+    //    m_ViewportOffY = offy;
+    // }
+
+    void SetRenderOrder(int order)
+    {
+        if(m_RenderOrder != order)
+        {
+            m_RenderOrder = order;
+            GlobalManager.GetInstance().CameraManager.IsSorted = false;
+        }
+    }
+
+    const CMatrix& GetProjectionMatrix() const
+    {
+        return m_ProjectionMatrix;
+    }
+
+    // int GetViewportX() const { return m_ViewportX; }
+    // int GetViewportY() const { return m_ViewportY; }
+    int GetViewportWidth() const { return m_ViewportWidth; }
+    int GetViewportHeight() const { return m_ViewportHeight; }
+    int GetRenderOrder() const { return m_RenderOrder; }
+    float GetOrthoSize() const { return m_OrthoSize; }
+    
+    const CMatrix& GetProjectionMatrix() const
+    {
+        return m_ProjectionMatrix;
+    }
+
+    // 获取摄像机的视图矩阵
+    CMatrix GetViewMatrix() const {
+        // 获取摄像机的位置和朝向
+        CVector position = transform.GetWorldPosition();
+        CVector target = position + transform.GetForward();
+        CVector up = transform.GetUp();
+
+        // 计算视图矩阵
+        return CMatrix::lookAt(position, target, up);
+    }
+
+private:
+    float m_FOV = 60.0f;
+    float m_AspectRatio = 16.0f / 9.0f;
+    float m_NearClip = 0.1f;
+    float m_FarClip = 1000.0f;
+    ProjectionType m_ProjectionType = ProjectionType::Perspective;
+    CMatrix m_ProjectionMatrix;
+    // int m_ViewportX = 0;
+    // int m_ViewportY = 0;
+    // int m_ViewportOffX = 1;
+    // int m_ViewportOffY = 1;
+    float m_OrthoSize = 3; // Orthographic size
+    int m_RenderOrder = 0; // Default render order
+
+    void updateProjectionMatrix()
+    {
+        if (m_ProjectionType == ProjectionType::Perspective)
+        {
+            m_ProjectionMatrix = CMatrix::perspective(CMath::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
+        }
+        else if (m_ProjectionType == ProjectionType::Orthographic)
+        {
+            float halfWidth = m_AspectRatio * m_OrthoSize;
+            m_ProjectionMatrix = CMatrix::ortho(-halfWidth, halfWidth, -m_OrthoSize, m_OrthoSize, m_NearClip, m_FarClip);
+        }
+    }
+};

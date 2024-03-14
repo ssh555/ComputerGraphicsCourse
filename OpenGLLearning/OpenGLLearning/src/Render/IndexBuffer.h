@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Render
+namespace Engine
 {
 	// Ë÷Òý»º´æ
 	class IndexBuffer

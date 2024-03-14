@@ -3,8 +3,36 @@
 #include "CVector.h"
 #include "CEuler.h"
 
-namespace Math
+namespace Engine
 {
+
+	CQuaternion CQuaternion::quatLookAt(const CVector& direction, const CVector& up)
+	{
+		CVector right = direction.crossMul(up).Normalized();
+
+		CVector correctedUp = right.crossMul(direction).Normalized();
+
+		// 构造一个旋转矩阵
+		CMatrix rotationMatrix;
+		rotationMatrix[0][0] = right.x;
+		rotationMatrix[0][1] = right.y;
+		rotationMatrix[0][2] = right.z;
+		rotationMatrix[1][0] = correctedUp.x;
+		rotationMatrix[1][1] = correctedUp.y;
+		rotationMatrix[1][2] = correctedUp.z;
+		rotationMatrix[2][0] = -direction.x;
+		rotationMatrix[2][1] = -direction.y;
+		rotationMatrix[2][2] = -direction.z;
+
+		// 将旋转矩阵转换为四元数
+		return rotationMatrix.ToCQuaternion();
+	}
+
+
+
+
+
+
 	CQuaternion::CQuaternion()
 	{
 		this->x = 0;

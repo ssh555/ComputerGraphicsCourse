@@ -1,0 +1,18 @@
+class EntryPoint
+{
+public:
+    EntryPoint()
+    {
+        // 初始化 - 一阶段
+    }
+
+    void Awake()
+    {
+        // 初始化 - 二阶段
+    }
+
+    void Start()
+    {
+        // 初始化 - 三阶段
+    }
+}

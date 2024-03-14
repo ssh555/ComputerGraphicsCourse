@@ -14,7 +14,7 @@
 #include "Render/Shader.h"
 #include "Render/Renderer.h"
 #include "Render/Texture.h"
-using namespace Render;
+using namespace Engine;
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -24,7 +24,7 @@ using namespace Render;
 #include "Application.h"
 #include "tests/TestTexture2D.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void windowResizeCallback(GLFWwindow* window, int width, int height) {
 	// 设置OpenGL视口的尺寸以匹配新的窗口尺寸
 	glViewport(0, 0, width, height);
 	// TODO : 更新数据 & Camera & Shader
@@ -61,7 +61,8 @@ int main(void)
 
 #pragma region 设置
 	// 注册窗口大小改变事件处理程序
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	// TODO
+	glfwSetFramebufferSizeCallback(window, windowResizeCallback);
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
@@ -95,13 +96,13 @@ int main(void)
 		// 混合 => 如何将输出的Color与当前处于缓冲区的Color结合起来
 		// (source = GL_ONE, destination = GL_ZERO) => src 和 dest 计算因子
 		// src * src factor, dest * dest factor
-		Render::GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
+		Engine::GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
 		// (mode = GL_FUNC_ADD) => 如何将两种颜色混合在一起
 		// (src * factor [+](mode) dest * factor)
 		//GLCall(glBlendEquation())
 
 
-		Render::Renderer renderer;
+		Engine::Renderer renderer;
 
 		// glDebugMessageCallback
 		// glGetError
@@ -124,7 +125,7 @@ int main(void)
 #pragma endregion
 
 #pragma region 主循环
-
+		// TODO : Add InputManager.InputAction
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{

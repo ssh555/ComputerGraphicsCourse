@@ -1,0 +1,52 @@
+class final CameraManager : Object
+{
+    friend class GlobalManager;
+
+public:
+    void AddCamera(Camera&& camera)
+    {
+        m_Cameras.push_back(std::move(camera));
+        IsSorted = false;
+    }
+
+    void RemoveCamera(Camera& camera)
+    {
+        auto it = std::find(m_Cameras.begin(), m_Cameras.end(), camera);
+        if (it != m_Cameras.end())
+        {
+            m_Cameras.erase(it);
+            IsSorted = false;
+        }
+    }
+
+    void UpdateAspectRatio(int width, int height)
+    {
+        for (auto& camera : m_Cameras)
+        {
+            camera.SetAspectRatio(static_cast<float>(width) / height);
+        }
+    }
+
+    const std::vector<Camera*>& GetSortedCameras() const
+    {
+        if(IsSorted == false)
+        {
+            // 对摄像机按照渲染顺序进行排序
+            std::sort(m_Cameras.begin(), m_Cameras.end(), [](const Camera& a, const Camera& b) {
+                return a.getRenderOrder() < b.getRenderOrder();
+            });
+            IsSorted = true;
+        }
+        return m_Cameras;
+    }
+
+public:
+    int ViewportWidth = 800; // Default viewport width
+    int ViewportHeight = 600; // Default viewport height
+
+private:
+    std::vector<Camera> m_Cameras;
+    bool IsSorted = false;
+
+    CameraManager()
+}

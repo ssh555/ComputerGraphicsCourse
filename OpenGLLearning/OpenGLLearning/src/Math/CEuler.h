@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Math
+namespace Engine
 {
 	class CVector;
 	class CMatrix;

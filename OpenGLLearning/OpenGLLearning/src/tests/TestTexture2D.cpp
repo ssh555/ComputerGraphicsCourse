@@ -1,7 +1,7 @@
 #include "TestTexture2D.h"
 
 #include "Render/Renderer.h"
-using namespace Render;
+using namespace Engine;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -32,8 +32,8 @@ namespace test
 		: m_Proj(glm::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 #else
-		: m_Proj(Math::CMatrix::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
-		m_View(Math::CMatrix::translate(Math::CMatrix(1.0f), 0, 0, 0)),
+		: m_Proj(Engine::CMatrix::ortho(-4.8f, 4.8f, -2.7f, 2.7f, -1.0f, 1.0f)),
+		m_View(Engine::CMatrix::translate(Engine::CMatrix(1.0f), 0, 0, 0)),
 #endif
 		m_TranslationA(-0.5f, 0.0f, 0.0f),
 		m_TranslationB(0.5f, 0.0f, 0.0f)
@@ -92,8 +92,8 @@ namespace test
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
 			glm::mat4 mvp = m_Proj * m_View * model;
 #else
-			Math::CMatrix model = Math::CMatrix::translate(Math::CMatrix(1.0f), m_TranslationA);
-			Math::CMatrix mvp = m_Proj * m_View * model;
+			Engine::CMatrix model = Engine::CMatrix::translate(Engine::CMatrix(1.0f), m_TranslationA);
+			Engine::CMatrix mvp = m_Proj * m_View * model;
 #endif
 
 			m_Shader->Bind();
@@ -105,8 +105,8 @@ namespace test
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
 			glm::mat4 mvp = m_Proj * m_View * model;
 #else
-			Math::CMatrix model = Math::CMatrix::translate(Math::CMatrix(1.0f), m_TranslationB);
-			Math::CMatrix mvp = m_Proj * m_View * model;
+			Engine::CMatrix model = Engine::CMatrix::translate(Engine::CMatrix(1.0f), m_TranslationB);
+			Engine::CMatrix mvp = m_Proj * m_View * model;
 #endif
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);

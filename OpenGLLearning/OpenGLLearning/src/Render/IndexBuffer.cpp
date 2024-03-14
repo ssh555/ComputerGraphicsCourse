@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-namespace Render
+namespace Engine
 {
 	IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
 		: m_Count(count)
@@ -26,12 +26,12 @@ namespace Render
 
 	void IndexBuffer::Bind() const
 	{
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_RendererID));
 	}
 
 	void IndexBuffer::UnBind() const
 	{
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
 
 

@@ -343,6 +343,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Math\CEuler.h" />
+    <ClInclude Include="src\Math\CMath.h" />
     <ClInclude Include="src\Math\CMatrix.h" />
     <ClInclude Include="src\Math\CQuaternion.h" />
     <ClInclude Include="src\Math\CVector.h" />

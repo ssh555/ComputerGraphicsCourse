@@ -1,5 +1,5 @@
 #pragma once
-namespace Math
+namespace Engine
 {
 	class CEuler;
 	class CQuaternion;
@@ -13,7 +13,10 @@ namespace Math
 		// 静态函数，用于创建平移矩阵
 		static CMatrix translate(const CMatrix& matrix, float x, float y, float z);
 		static CMatrix translate(const CMatrix& matrix, const CVector& vec);
-
+		static CMatrix scale(const CMatrix& matrix, float scaleX, float scaleY, float scaleZ);
+		static CMatrix scale(const CMatrix& matrix, const CVector& vec);
+		static CMatrix perspective(float fov, float aspectRatio, float nearVal, float farVal);
+		static CMatrix lookAt(const CVector& eye, const CVector& center, const CVector& up);
 
 
 	public:

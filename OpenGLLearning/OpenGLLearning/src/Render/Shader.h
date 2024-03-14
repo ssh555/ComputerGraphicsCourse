@@ -7,12 +7,12 @@
 #endif
 
 
-namespace Math
+namespace Engine
 {
 	class CMatrix;
 }
 
-namespace Render
+namespace Engine
 {
 	struct ShaderProgramSource
 	{
@@ -44,7 +44,8 @@ namespace Render
 #if USING_GLM
 		void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 #else
-		void SetUniformMat4f(const std::string& name, const Math::CMatrix& matrix);
+		void SetUniformMat4f(const std::string& name, const Engine::CMatrix& matrix);
+		void SetUniformMat4f(const std::string& name, const Engine::CMatrix& matrix) const;
 #endif
 
 	private:

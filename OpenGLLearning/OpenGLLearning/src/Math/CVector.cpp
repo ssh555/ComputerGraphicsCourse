@@ -1,7 +1,7 @@
 #include "CVector.h"
 #include "CEuler.h"
 
-namespace Math
+namespace Engine
 {
 	//构造函数
 //无参构造
@@ -38,6 +38,10 @@ namespace Math
 		return CVector(this->x - vec.x, this->y - vec.y, this->z - vec.z);
 	}
 
+	CVector CVector::operator-(const CVector& vec) const {
+		return CVector(this->x - vec.x, this->y - vec.y, this->z - vec.z);
+	}
+
 	CVector CVector::operator=(const CVector& vec) {
 		this->SetVec(vec.x, vec.y, vec.z);
 		return CVector(*this);
@@ -66,10 +70,12 @@ namespace Math
 	}
 
 	//向量叉乘
+	CVector CVector::crossMul(const CVector& vec) const {
+		return CVector(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x);
+	}
 	CVector CVector::crossMul(const CVector& vec) {
 		return CVector(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x);
 	}
-
 	//向量单位化
 	void CVector::Normalize() {
 		float len = this->len();

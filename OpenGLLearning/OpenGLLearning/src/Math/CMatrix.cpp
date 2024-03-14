@@ -3,7 +3,7 @@
 #include "CEuler.h"
 #include "CQuaternion.h"
 
-namespace Math
+namespace Engine
 {
 
 	CMatrix CMatrix::ortho(float left, float right, float bottom, float top, float nearVal, float farVal)
@@ -43,6 +43,78 @@ namespace Math
 		return result;
 	}
 
+	CMatrix CMatrix::scale(const CMatrix& matrix, float scaleX, float scaleY, float scaleZ)
+	{
+		CMatrix result(matrix);
+		result[0][0] *= scaleX;
+		result[1][1] *= scaleY;
+		result[2][2] *= scaleZ;
+		return result;
+	}
+
+	CMatrix CMatrix::scale(const CMatrix& matrix, const CVector& vec)
+	{
+		CMatrix result(matrix);
+		result[0][0] *= vec.x;
+		result[1][1] *= vec.y;
+		result[2][2] *= vec.z;
+		return result;
+	}
+
+	CMatrix CMatrix::perspective(float fov, float aspectRatio, float nearVal, float farVal)
+	{
+		float tanHalfFov = std::tan(fov / 2.0f);
+		float range = nearVal - farVal;
+
+		CMatrix result;
+		result[0][0] = 1.0f / (aspectRatio * tanHalfFov);
+		result[0][1] = 0.0f;
+		result[0][2] = 0.0f;
+		result[0][3] = 0.0f;
+
+		result[1][0] = 0.0f;
+		result[1][1] = 1.0f / tanHalfFov;
+		result[1][2] = 0.0f;
+		result[1][3] = 0.0f;
+
+		result[2][0] = 0.0f;
+		result[2][1] = 0.0f;
+		result[2][2] = (farVal + nearVal) / range;
+		result[2][3] = -1.0f;
+
+		result[3][0] = 0.0f;
+		result[3][1] = 0.0f;
+		result[3][2] = 2.0f * farVal * nearVal / range;
+		result[3][3] = 0.0f;
+
+		return result;
+	}
+
+	Engine::CMatrix CMatrix::lookAt(const CVector& eye, const CVector& center, const CVector& up)
+	{
+		// 计算摄像机的坐标系
+		CVector forward = (center - eye).Normalized();
+		CVector right = forward.crossMul(up).Normalized();
+		CVector newUp = right.crossMul(forward).Normalized();
+
+		// 构造视图矩阵
+		CMatrix viewMatrix;
+		viewMatrix[0][0] = right.x;
+		viewMatrix[1][0] = right.y;
+		viewMatrix[2][0] = right.z;
+		viewMatrix[0][1] = newUp.x;
+		viewMatrix[1][1] = newUp.y;
+		viewMatrix[2][1] = newUp.z;
+		viewMatrix[0][2] = -forward.x;
+		viewMatrix[1][2] = -forward.y;
+		viewMatrix[2][2] = -forward.z;
+		viewMatrix[3][0] = -right.dotMul(eye);
+		viewMatrix[3][1] = -newUp.dotMul(eye);
+		viewMatrix[3][2] = forward.dotMul(eye);
+		viewMatrix[3][3] = 1.0f;
+
+		return viewMatrix;
+	}
 
 
 

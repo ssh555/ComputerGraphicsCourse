@@ -1,7 +1,7 @@
 #include "TestClearColor.h"
 
 #include "Render/Renderer.h"
-using namespace Render;
+using namespace Engine;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

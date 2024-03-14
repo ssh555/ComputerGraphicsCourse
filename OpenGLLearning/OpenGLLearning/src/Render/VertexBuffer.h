@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Render
+namespace Engine
 {
 	// ¶¥µã»º´æ
 	class VertexBuffer

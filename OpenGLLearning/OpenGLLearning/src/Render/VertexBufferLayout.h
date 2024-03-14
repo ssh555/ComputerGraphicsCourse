@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include "Renderer.h"
 
-namespace Render
+namespace Engine
 {
 	// 顶点缓存元素 => 一个顶点
 	struct VertexBufferElement

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Math
+namespace Engine
 {
 	class CVector;
 	class CEuler;
@@ -8,6 +8,10 @@ namespace Math
 
 	class CQuaternion
 	{
+	public:
+		CQuaternion quatLookAt(const CVector& direction, const CVector& up);
+
+
 	public:
 		CQuaternion();
 		CQuaternion(const float X, const float Y, const float Z, const float W);

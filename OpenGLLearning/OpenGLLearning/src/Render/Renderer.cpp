@@ -4,8 +4,9 @@
 #include "Shader.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "Texture.h"
 
-namespace Render
+namespace Engine
 {
 	void GLClearError()
 	{
@@ -33,6 +34,20 @@ namespace Render
 		ib.Bind();
 
 		GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+	}
+
+	void Renderer::Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, const Texture& texture) const
+	{
+		shader.Bind();
+		texture.Bind(); // Bind texture
+		va.Bind();
+		ib.Bind();
+
+		GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+
+		// Unbind texture
+		texture.Unbind();
+
 	}
 
 }

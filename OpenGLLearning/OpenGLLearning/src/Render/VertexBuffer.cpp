@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-namespace Render
+namespace Engine
 {
 	VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 	{

@@ -1,0 +1,15 @@
+#include <chrono>
+
+auto lastFrameTime = steady_clock::now();
+while(true)
+{
+    Time::CurrentFrameTime = steady_clock::now();
+    Time::DeltaTime = duration_cast<duration<float>>(currentFrameTime - lastFrameTime).Count();
+    lastFrameTime = currentFrameTime;
+    
+    ...
+
+    GlobalManager.GetInstance().Run();
+
+    ...
+}

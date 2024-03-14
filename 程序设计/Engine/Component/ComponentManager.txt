@@ -1,0 +1,43 @@
+class final ComponentManager : Object
+{
+    friend class Component;
+    friend class GlobalManager;
+
+private:
+    ~ComponentManager()
+    {
+
+    }
+
+private:
+    // 更改Component的队列
+    void SetComponentEnable(Component* component, bool enable)
+    {
+        if(component.m_enabled != enable)
+        {
+            component.m_enabled = enable;
+            if(enable == true)
+            {
+                m_disabledComponents.Remove(component);
+                m_enabledComponents.Add(component);
+                component.OnEnable();
+            }
+            else
+            {
+                m_enabledComponents.Remove(component);
+                m_disabledComponents.Add(component);
+                component.OnDisable();
+            }
+        }
+    }
+
+    void TickAll(float deltatime)
+    {
+        m_enabledComponents.foreach -> component.Tick(deltatime);
+        m_enabledComponents.foreach -> component.LateTick(deltatime);
+    }
+
+private:
+    vector<Component*> m_enabledComponents;
+    vector<Component*> m_disabledComponents;
+}

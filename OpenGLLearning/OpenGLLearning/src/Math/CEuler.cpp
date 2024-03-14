@@ -3,7 +3,7 @@
 #include "CQuaternion.h"
 #include "CMatrix.h"
 
-namespace Math
+namespace Engine
 {
 	CEuler::CEuler()
 	{

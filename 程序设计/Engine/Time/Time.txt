@@ -1,0 +1,7 @@
+class Time
+{
+    // 当前帧时间点
+    static float CurrentFrameTime;
+
+    static float DeltaTime;
+}

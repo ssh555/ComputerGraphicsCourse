@@ -2,13 +2,47 @@
 #include <math.h>
 #include <iostream>
 
-namespace Math
+namespace Engine
 {
 	using namespace std;
 	class CEuler;
 
 	class CVector
 	{
+	public:
+		// 静态成员函数，返回向上的单位向量
+		static CVector Up() {
+			return CVector(0.0f, 1.0f, 0.0f);
+		}
+
+		// 静态成员函数，返回向下的单位向量
+		static CVector Down() {
+			return CVector(0.0f, -1.0f, 0.0f);
+		}
+
+		// 静态成员函数，返回向左的单位向量
+		static CVector Left() {
+			return CVector(-1.0f, 0.0f, 0.0f);
+		}
+
+		// 静态成员函数，返回向右的单位向量
+		static CVector Right() {
+			return CVector(1.0f, 0.0f, 0.0f);
+		}
+
+		// 静态成员函数，返回向前的单位向量
+		static CVector Forward() {
+			return CVector(0.0f, 0.0f, 1.0f);
+		}
+
+		// 静态成员函数，返回向后的单位向量
+		static CVector Backward() {
+			return CVector(0.0f, 0.0f, -1.0f);
+		}
+
+
+
+
 	public:
 		//构造与析构
 		CVector();
@@ -19,6 +53,7 @@ namespace Math
 		//重载操作符
 		CVector operator+(const CVector& vec);//重载 + 操作符
 		CVector operator-(const CVector& vec);
+		CVector operator-(const CVector& vec) const;
 		CVector operator-();
 		CVector operator=(const CVector& vec);//重载 = 操作符
 		bool operator==(const CVector& vec);//重载 == 操作符
@@ -30,6 +65,7 @@ namespace Math
 		//向量点乘
 		float dotMul(const CVector& vec);
 		//向量叉乘
+		CVector crossMul(const CVector& vec) const;
 		CVector crossMul(const CVector& vec);
 
 		//向量单位化

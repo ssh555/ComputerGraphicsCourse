@@ -5,7 +5,7 @@
 //class VertextBuffer;
 //class VertexBufferLayout;
 
-namespace Render
+namespace Engine
 {
 	// 每一个都生成一个顶点数组对象 => 不一致，可以考虑共用同一个 VAO
 	class VertexArray

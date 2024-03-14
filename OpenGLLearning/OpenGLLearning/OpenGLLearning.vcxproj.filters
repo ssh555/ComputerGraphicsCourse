@@ -1422,6 +1422,9 @@
     <ClInclude Include="src\Math\CVector.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math\CMath.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Earth.bmp">

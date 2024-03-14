@@ -1,0 +1,76 @@
+class Component
+{
+    friend class ComponentManager;
+
+public:
+    void SetEnable(bool enable) final
+    {
+        GlobalManager.GetInstance().ComponentManager.SetComponentEnable(this, enable);
+    }
+
+    bool GetEnable() final
+    {
+        return m_enabled;
+    }
+
+    // 获取组件
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    T* GetComponent() final;
+
+    // 获取组件
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    vector<T*> GetComponents() final;
+
+    // 获取子物体中的组件, 先从当前物体开始找
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    T* GetComponentInChildren() final;
+
+    // 获取子物体中的组件, 先从当前物体开始找
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    vector<T*> GetComponentsInChildren() final;
+
+    // 获取父物体中的组件, 先从当前物体开始找
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    T& GetComponentInParent() final;
+
+    // 获取父物体中的组件, 先从当前物体开始找
+    template <typename T>
+    typename std::enable_if<std::is_base_of<Component, T>::value>::type
+    vector<T*> GetComponentsInParent() final;
+
+private:
+    // 挂载的GameObject
+    Component(GameObject& obj, bool enable = true)
+    {
+        this.gameobject = obj;
+        this.transform = obj.transform;
+        this.m_enabled = !enable;
+        this.SetEnable(enable);
+    }
+    virtual ~Component() { }
+
+protected:
+    virtual void Tick(float deltatime) { }
+
+    virtual void LateTick(float deltatime) { }
+
+    virtual void OnEnable() { }
+
+    virtual void OnDisable() { }
+
+
+public:
+    // 所在物体
+    const GameObject& gameobject;
+    // 所在物体的Transform
+    const Transform& transform;
+
+private:
+    bool m_enabled = false;
+
+}

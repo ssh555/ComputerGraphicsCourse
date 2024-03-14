@@ -11,7 +11,7 @@
 #include "Math/CVector.h"
 #endif
 
-namespace Render
+namespace Engine
 {
 	class VertexArray;
 	class IndexBuffer;
@@ -19,7 +19,7 @@ namespace Render
 	class Texture;
 	class VertexBuffer;
 }
-namespace Math
+namespace Engine
 {
 	class CMatrix;
 	class CVector;
@@ -49,20 +49,20 @@ namespace test
 		glm::mat4 m_Proj, m_View;
 		glm::vec3 m_TranslationA, m_TranslationB;
 #else
-		Math::CMatrix m_Proj, m_View;
-		Math::CVector m_TranslationA, m_TranslationB;
+		Engine::CMatrix m_Proj, m_View;
+		Engine::CVector m_TranslationA, m_TranslationB;
 #endif
 
 
-		std::unique_ptr<Render::VertexArray> m_VAO;
+		std::unique_ptr<Engine::VertexArray> m_VAO;
 
-		std::unique_ptr<Render::VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<Engine::VertexBuffer> m_VertexBuffer;
 
-		std::unique_ptr<Render::IndexBuffer> m_IndexBuffer;
+		std::unique_ptr<Engine::IndexBuffer> m_IndexBuffer;
 
-		std::unique_ptr<Render::Shader> m_Shader;
+		std::unique_ptr<Engine::Shader> m_Shader;
 
-		std::unique_ptr<Render::Texture> m_Texture;
+		std::unique_ptr<Engine::Texture> m_Texture;
 
 	};
 }
