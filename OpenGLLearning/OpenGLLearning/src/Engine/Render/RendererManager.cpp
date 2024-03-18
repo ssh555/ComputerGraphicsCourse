@@ -5,6 +5,7 @@
 #include "../Component/Transform.h"
 #include "MeshRenderer.h"
 
+
 namespace Engine
 {
 
@@ -32,10 +33,19 @@ namespace Engine
 	{
 		for (auto camera : GlobalManager::GetInstance().cameraManager->GetSortedCameras())
 		{
+			if (camera->GetProjectionType() == Camera::ProjectionType::Perspective)
+			{
+				glEnable(GL_DEPTH_TEST);
+			}
+			else
+			{
+				glDisable(GL_DEPTH_TEST);
+			}
 			CMatrix PV = camera->GetProjectionMatrix() * camera->GetViewMatrix();
+			CVector pos = camera->transform->GetWorldPosition();
 			for (auto renderer : m_enabledRenderers)
 			{
-				renderer->Render(PV, camera->transform->GetWorldPosition());
+				renderer->Render(PV, pos);
 			}
 		}
 	}

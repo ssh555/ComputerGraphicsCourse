@@ -1,6 +1,7 @@
 #pragma once
 #include "../Component/Component.h"
 #include "../Math/CMatrix.h"
+#include "../Global/GlobalManager.h"
 
 namespace Engine
 {
@@ -12,7 +13,15 @@ namespace Engine
 		friend class GameObject;
 
 	private:
-		Camera(GameObject* obj) : Component(obj, false) { }
+		Camera(GameObject* obj) : Component(obj, false) { 
+			GlobalManager::GetInstance().cameraManager->AddCamera(this);
+			updateProjectionMatrix();
+		}
+
+		~Camera()
+		{
+			GlobalManager::GetInstance().cameraManager->RemoveCamera(this);
+		}
 
 	public:
 		// 投影方式
@@ -52,7 +61,14 @@ namespace Engine
 		int GetRenderOrder() const;
 		float GetOrthoSize() const;
 
-		const CMatrix& GetProjectionMatrix() const;
+		float GetFOV() const;
+		float GetAspectRatio() const;
+		float GetNearClip() const;
+		float GetFarClip() const;
+
+		const CMatrix& GetProjectionMatrix();
+
+		ProjectionType GetProjectionType();
 
 		// 获取摄像机的视图矩阵
 		CMatrix GetViewMatrix() const;

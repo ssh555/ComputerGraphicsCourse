@@ -1,10 +1,13 @@
 #include "SphereRenderer.h"
 #include "../Math/CMath.h"
 #include "Mesh.h"
+#include "Material.h"
 
 Engine::SphereRenderer::SphereRenderer(GameObject* obj, float radius /*= 1.0f*/, unsigned int rings /*= 20*/, unsigned int sectors /*= 20*/) : MeshRenderer(obj)
 {
 	SetSphereMesh(radius, rings, sectors);
+
+	m_mat = new Material();
 }
 
 void Engine::SphereRenderer::SetSphereMesh(float radius, unsigned int rings, unsigned int sectors)
@@ -39,7 +42,7 @@ void Engine::SphereRenderer::SetSphereMesh(float radius, unsigned int rings, uns
 		}
 	}
 
-	Mesh mesh(positions.data(), static_cast<unsigned int>(positions.size() / 3),
+	Mesh* mesh =new Mesh(positions.data(), static_cast<unsigned int>(positions.size() / 3),
 		indices.data(), static_cast<unsigned int>(indices.size()));
-	SetMesh(&mesh);
+	SetMesh(mesh);
 }

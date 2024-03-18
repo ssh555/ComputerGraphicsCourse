@@ -14,7 +14,7 @@ namespace Engine
 	MeshRenderer::MeshRenderer(GameObject* obj) : Component(obj),
 		m_mesh(nullptr), m_mat(nullptr)
 	{
-
+		GlobalManager::GetInstance().rendererManager->AlterRendererEnableList(this);
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -32,7 +32,7 @@ namespace Engine
 
 		m_VAO = std::make_unique<VertexArray>();
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount());
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount() * sizeof(float));
 		VertexBufferLayout layout;
 
 		// 顶点位置
@@ -42,7 +42,7 @@ namespace Engine
 		// 纹理坐标
 		layout.Push<float>(2);
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = std::make_unique<IndexBuffer>(m_mesh->GetIndices(), m_mesh->GetIndexCount());
+		m_IndexBuffer = std::make_unique<IndexBuffer>(m_mesh->GetIndices(), m_mesh->GetIndexCount() * sizeof(float));
 	}
 
 	const Mesh* MeshRenderer::GetMesh()
@@ -80,7 +80,8 @@ namespace Engine
 		m_mat->SetUniform3f("lightDir", lightdir.x, lightdir.y, lightdir.z);
 		auto color = GlobalManager::GetInstance().globalLight->GetLightColor();
 		m_mat->SetUniform3f("lightColor", color.x, color.y, color.z);
-		m_mat->SetUniform1f("lightIntensity", GlobalManager::GetInstance().globalLight->GetIntensity());
+		m_mat->SetUniform1f("ambientStrength", GlobalManager::GetInstance().globalLight->GetIntensity());
+
 		renderer.Draw(*m_VAO, *m_IndexBuffer, *m_mat);
 	}
 

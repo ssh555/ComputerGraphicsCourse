@@ -3,6 +3,8 @@
 #include "../Component/Component.h"
 #include "../Component/Transform.h"
 #include "../Math/CMath.h"
+#include "../Math/CEuler.h"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace Engine
 {
@@ -10,32 +12,27 @@ namespace Engine
 	void Camera::SetProjectionType(ProjectionType projectionType)
 	{
 		m_ProjectionType = projectionType;
-		updateProjectionMatrix();
 	}
 
 	void Camera::SetFOV(float fov)
 	{
 		m_FOV = fov;
-		updateProjectionMatrix();
 	}
 
 	void Camera::SetAspectRatio(float aspectRatio)
 	{
 		m_AspectRatio = aspectRatio;
-		updateProjectionMatrix();
 	}
 
 	void Camera::SetOrthoSize(float size)
 	{
 		m_OrthoSize = size;
-		updateProjectionMatrix();
 	}
 
 	void Camera::SetClippingPlanes(float nearClip, float farClip)
 	{
 		m_NearClip = nearClip;
 		m_FarClip = farClip;
-		updateProjectionMatrix();
 	}
 
 	void Camera::SetRenderOrder(int order)
@@ -67,8 +64,9 @@ namespace Engine
 		return m_OrthoSize;
 	}
 
-	const Engine::CMatrix& Camera::GetProjectionMatrix() const
+	const Engine::CMatrix& Camera::GetProjectionMatrix()
 	{
+		updateProjectionMatrix();
 		return m_ProjectionMatrix;
 	}
 
@@ -94,6 +92,31 @@ namespace Engine
 			float halfWidth = m_AspectRatio * m_OrthoSize;
 			m_ProjectionMatrix = CMatrix::ortho(-halfWidth, halfWidth, -m_OrthoSize, m_OrthoSize, m_NearClip, m_FarClip);
 		}
+	}
+
+	float Camera::GetFOV() const
+	{
+		return m_FOV;
+	}
+
+	float Camera::GetAspectRatio() const
+	{
+		return m_AspectRatio;
+	}
+
+	float Camera::GetNearClip() const
+	{
+		return m_NearClip;
+	}
+
+	float Camera::GetFarClip() const
+	{
+		return m_FarClip;
+	}
+
+	Camera::ProjectionType Camera::GetProjectionType()
+	{
+		return m_ProjectionType;
 	}
 
 }

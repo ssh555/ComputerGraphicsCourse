@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 namespace Engine
 {
 	class CEuler;
@@ -79,6 +80,16 @@ namespace Engine
 		// 重载&运算符，用于获取矩阵元素的地址
 		float* operator&() {
 			return &data[0][0];
+		}
+
+		// 打印矩阵的值
+		void PrintMatrix() const {
+			for (int i = 0; i < 4; ++i) {
+				for (int j = 0; j < 4; ++j) {
+					std::cout << data[i][j] << " ";
+				}
+				std::cout << std::endl;
+			}
 		}
 
 	private:

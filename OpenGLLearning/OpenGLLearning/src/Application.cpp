@@ -103,6 +103,8 @@ int main(void)
 		// (src * factor [+](mode) dest * factor)
 		//GLCall(glBlendEquation())
 
+		// TODO : 双面渲染
+		glDisable(GL_CULL_FACE);
 
 		Renderer renderer;
 
@@ -129,7 +131,7 @@ int main(void)
 		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
 
 		GlobalManager::GetInstance().Init();
-		GlobalManager::GetInstance().inputManager->BindInputAction(window);
+		//GlobalManager::GetInstance().inputManager->BindInputAction(window);
 		EntryPoint entrypoint;
 		entrypoint.Awake();
 		entrypoint.Start();
@@ -153,7 +155,6 @@ int main(void)
 			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // 前面 ibo 已绑定索引
 			//GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
-			// TODO : 主逻辑循环
 #pragma region 主逻辑
 			GlobalManager::GetInstance().Run();
 #pragma endregion

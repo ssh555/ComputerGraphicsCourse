@@ -75,4 +75,105 @@ namespace Engine
 		void RemoveChild(GameObject* obj);
 	};
 
+	template <typename T, typename/* = std::enable_if_t<std::is_base_of<Component, T>::value>*/ >
+	T* GameObject::AddComponent()
+	{
+		T* newComponent = new T(this);
+		m_components.push_back(newComponent);
+		return newComponent;
+	}
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	std::vector<T*>
+		GameObject::GetComponentsInParent()
+	{
+		// 从当前物体开始搜索
+		std::vector<T*> result;
+		GameObject* parent = this;
+		while (parent != nullptr) {
+			std::vector<T*> comps = parent->GetComponents<T>();
+			result.insert(result.end(), comps.begin(), comps.end());
+			parent = parent->m_parent;
+		}
+		return result;
+	}
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	T* GameObject::GetComponentInParent()
+	{
+		GameObject* parent = this;
+		while (parent != nullptr) {
+			T* comp = parent->GetComponent<T>();
+			if (comp != nullptr) {
+				return comp;
+			}
+			parent = parent->m_parent;
+		}
+		return nullptr;
+	}
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	std::vector<T*>
+		GameObject::GetComponentsInChildren()
+	{
+		std::vector<T*> result;
+
+		// 从当前物体开始搜索
+		std::vector<T*> comps = GetComponents<T>();
+		result.insert(result.end(), comps.begin(), comps.end());
+
+		// 从子物体中搜索
+		for (GameObject* child : this->m_components) {
+			std::vector<T*> childComps = child->GetComponentsInChildren<T>();
+			result.insert(result.end(), childComps.begin(), childComps.end());
+		}
+
+		return result;
+	}
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	T* GameObject::GetComponentInChildren()
+	{
+		// 从当前物体开始搜索
+		T* comp = GetComponent<T>();
+		if (comp != nullptr) {
+			return comp;
+		}
+
+		// 从子物体中搜索
+		for (GameObject* child : this->m_components) {
+			comp = child->GetComponentInChildren<T>();
+			if (comp != nullptr) {
+				return comp;
+			}
+		}
+
+		return nullptr;
+	}
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	std::vector<T*>
+		GameObject::GetComponents()
+	{
+		std::vector<T*> result;
+		for (Component* comp : this->m_components) {
+			if (dynamic_cast<T*>(comp) != nullptr) {
+				result.push_back(dynamic_cast<T*>(comp));
+			}
+		}
+		return result;
+	}
+
+
+	template <typename T, typename /*= std::enable_if_t<std::is_base_of<Component, T>::value>*/>
+	T* GameObject::GetComponent()
+	{
+		for (Component* comp : this->m_components) {
+			if (dynamic_cast<T*>(comp) != nullptr) {
+				return dynamic_cast<T*>(comp);
+			}
+		}
+		return nullptr;
+	}
+
 }

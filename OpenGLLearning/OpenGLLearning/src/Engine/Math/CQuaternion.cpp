@@ -6,11 +6,34 @@
 namespace Engine
 {
 
+	//CQuaternion CQuaternion::quatLookAt(const CVector& direction, const CVector& up)
+	//{
+	//	CVector right = direction.crossMul(up).Normalized();
+
+	//	CVector correctedUp = right.crossMul(direction).Normalized();
+
+	//	// 构造一个旋转矩阵
+	//	CMatrix rotationMatrix;
+	//	rotationMatrix[0][0] = right.x;
+	//	rotationMatrix[0][1] = right.y;
+	//	rotationMatrix[0][2] = right.z;
+	//	rotationMatrix[1][0] = correctedUp.x;
+	//	rotationMatrix[1][1] = correctedUp.y;
+	//	rotationMatrix[1][2] = correctedUp.z;
+	//	rotationMatrix[2][0] = -direction.x;
+	//	rotationMatrix[2][1] = -direction.y;
+	//	rotationMatrix[2][2] = -direction.z;
+
+	//	// 将旋转矩阵转换为四元数
+	//	return rotationMatrix.ToCQuaternion();
+	//}
 	CQuaternion CQuaternion::quatLookAt(const CVector& direction, const CVector& up)
 	{
-		CVector right = direction.crossMul(up).Normalized();
+		// 计算右方向向量
+		CVector right = up.crossMul(direction).Normalized();
 
-		CVector correctedUp = right.crossMul(direction).Normalized();
+		// 计算修正后的上方向向量
+		CVector correctedUp = direction.crossMul(right).Normalized();
 
 		// 构造一个旋转矩阵
 		CMatrix rotationMatrix;
@@ -20,13 +43,16 @@ namespace Engine
 		rotationMatrix[1][0] = correctedUp.x;
 		rotationMatrix[1][1] = correctedUp.y;
 		rotationMatrix[1][2] = correctedUp.z;
-		rotationMatrix[2][0] = -direction.x;
-		rotationMatrix[2][1] = -direction.y;
-		rotationMatrix[2][2] = -direction.z;
+		rotationMatrix[2][0] = direction.x;
+		rotationMatrix[2][1] = direction.y;
+		rotationMatrix[2][2] = direction.z;
 
 		// 将旋转矩阵转换为四元数
-		return rotationMatrix.ToCQuaternion();
+		CQuaternion qua = rotationMatrix.ToCQuaternion();
+		qua.Normalize();
+		return qua;
 	}
+
 
 
 
@@ -137,7 +163,20 @@ namespace Engine
 
 	Engine::CVector CQuaternion::operator*(const CVector& vec) const
 	{
-		return (*this) * vec;
+		// 将四元数转换为四元数对象（假设存在名为 Quaternion 的类）
+		CQuaternion q(x, y, z, w);
+
+		// 计算四元数的共轭
+		CQuaternion qConjugate = q.GetConjugate();
+
+		// 创建一个四元数表示向量
+		CQuaternion v(vec.x, vec.y, vec.z, 0);
+
+		// 应用四元数的旋转作用于向量
+		CQuaternion rotatedVector = q * v * qConjugate;
+
+		// 返回旋转后的向量
+		return CVector(rotatedVector.x, rotatedVector.y, rotatedVector.z);
 	}
 
 	//点乘

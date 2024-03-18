@@ -20,7 +20,7 @@ namespace Engine
 	protected:
 		MeshRenderer(GameObject* obj);
 
-		~MeshRenderer();
+		virtual ~MeshRenderer();
 
 	public:
 		void SetMesh(Mesh* mesh);
@@ -39,7 +39,7 @@ namespace Engine
 	private:
 		void Render(const CMatrix& PV, const CVector& viewpoint);
 
-	private:
+	protected:
 		Mesh* m_mesh;
 		Material* m_mat;
 

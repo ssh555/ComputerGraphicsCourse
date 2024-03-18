@@ -1,5 +1,6 @@
 #include "transform.h"
 #include "../GameObject/GameObject.h"
+#include "../Math/CEuler.h"
 
 
 namespace Engine
@@ -119,6 +120,7 @@ namespace Engine
 		worldTransform = CMatrix::scale(worldTransform, GetWorldScale());
 		worldTransform *= GetWorldRotation().ToCMatrix();
 		worldTransform = CMatrix::translate(worldTransform, GetWorldPosition());
+
 		return worldTransform;
 	}
 
@@ -126,6 +128,7 @@ namespace Engine
 	{
 		CVector direction = (target - GetWorldPosition()).Normalized();
 		CQuaternion rotation = CQuaternion::quatLookAt(direction, CVector::Up());
+		auto t = rotation.ToCEuler();
 		SetWorldRotation(rotation);
 	}
 
