@@ -1,5 +1,9 @@
 #include <chrono>
 
+EntryPoint entrypoint;
+entrypoint.Awake();
+entrypoint.Start();
+
 auto lastFrameTime = steady_clock::now();
 while(true)
 {

@@ -271,13 +271,6 @@ private:
     // 窗口大小调整事件回调函数集合
     std::vector<std::function<void(int, int)>> windowResizeCallbacks;
 
-    // 触发鼠标按钮事件
-    void TriggerMouseButtonEvent(int button, int action, double xpos, double ypos) {
-        if (mouseButtonCallbacks.find(button) != mouseButtonCallbacks.end()) {
-            mouseButtonCallbacks[button](button, action, xpos, ypos);
-        }
-    }
-
     // 触发键盘按键事件
     void TriggerKeyEvent(Key key, KeyAction action) {
         if (keyCallbacks.find(key) != keyCallbacks.end()) {

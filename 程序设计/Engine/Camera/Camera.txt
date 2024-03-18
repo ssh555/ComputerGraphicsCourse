@@ -40,7 +40,8 @@ public:
 
     void SetOrthoSize(float size)
     {
-        m_OrthoSize = size
+        m_OrthoSize = size;
+        updateProjectionMatrix();
     }
 
     void SetClippingPlanes(float nearClip, float farClip)
@@ -65,11 +66,6 @@ public:
             m_RenderOrder = order;
             GlobalManager.GetInstance().CameraManager.IsSorted = false;
         }
-    }
-
-    const CMatrix& GetProjectionMatrix() const
-    {
-        return m_ProjectionMatrix;
     }
 
     // int GetViewportX() const { return m_ViewportX; }

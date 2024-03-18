@@ -1,0 +1,78 @@
+// 圆柱体模型渲染
+
+#include "MeshRenderer.h"
+
+class CylinderRenderer : public MeshRenderer
+{
+public:
+    CylinderRenderer(GameObject& obj, float radius = 1.0f, float height = 2.0f, unsigned int segments = 20)
+        : MeshRenderer(obj)
+    {
+        SetCylinderMesh(radius, height, segments);
+    }
+
+public:
+    void SetCylinderMesh(float radius, float height, unsigned int segments)
+    {
+        const float PI = 3.14159265359f;
+
+        std::vector<float> positions;
+        std::vector<unsigned int> indices;
+
+        // 生成圆柱体的顶点和索引
+        for (unsigned int i = 0; i <= segments; ++i) {
+            float angle = 2.0f * PI * (static_cast<float>(i) / segments);
+            float x = radius * std::cos(angle);
+            float z = radius * std::sin(angle);
+
+            // 上面圆盖的顶点
+            positions.push_back(x);
+            positions.push_back(height * 0.5f);
+            positions.push_back(z);
+
+            // 底面圆盖的顶点
+            positions.push_back(x);
+            positions.push_back(-height * 0.5f);
+            positions.push_back(z);
+
+            // 侧面的顶点
+            positions.push_back(x);
+            positions.push_back(height * 0.5f);
+            positions.push_back(z);
+
+            positions.push_back(x);
+            positions.push_back(-height * 0.5f);
+            positions.push_back(z);
+
+            // 计算索引
+            if (i > 0) {
+                unsigned int base = (i - 1) * 4;
+                unsigned int nextBase = i * 4;
+
+                // 上面圆盖
+                indices.push_back(base);
+                indices.push_back(nextBase - 4);
+                indices.push_back(nextBase);
+
+                // 底面圆盖
+                indices.push_back(nextBase + 1);
+                indices.push_back(nextBase + 5);
+                indices.push_back(base + 1);
+
+                // 侧面
+                indices.push_back(base + 2);
+                indices.push_back(nextBase);
+                indices.push_back(nextBase + 2);
+
+                indices.push_back(base + 2);
+                indices.push_back(base + 1);
+                indices.push_back(nextBase + 1);
+            }
+        }
+
+        // 将顶点和索引数据设置到网格中
+        Mesh mesh(positions.data(), static_cast<unsigned int>(positions.size() / 3),
+                  indices.data(), static_cast<unsigned int>(indices.size()));
+        SetMesh(mesh);
+    }
+};

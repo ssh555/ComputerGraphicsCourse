@@ -3,12 +3,12 @@ class Component
     friend class ComponentManager;
 
 public:
-    void SetEnable(bool enable) final
+    void SetEnable(bool enable)
     {
         GlobalManager.GetInstance().ComponentManager.SetComponentEnable(this, enable);
     }
 
-    bool GetEnable() final
+    bool GetEnable()
     {
         return m_enabled;
     }
@@ -16,32 +16,32 @@ public:
     // 获取组件
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    T* GetComponent() final;
+    T* GetComponent();
 
     // 获取组件
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    vector<T*> GetComponents() final;
+    vector<T*> GetComponents();
 
     // 获取子物体中的组件, 先从当前物体开始找
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    T* GetComponentInChildren() final;
+    T* GetComponentInChildren();
 
     // 获取子物体中的组件, 先从当前物体开始找
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    vector<T*> GetComponentsInChildren() final;
+    vector<T*> GetComponentsInChildren();
 
     // 获取父物体中的组件, 先从当前物体开始找
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    T& GetComponentInParent() final;
+    T& GetComponentInParent();
 
     // 获取父物体中的组件, 先从当前物体开始找
     template <typename T>
     typename std::enable_if<std::is_base_of<Component, T>::value>::type
-    vector<T*> GetComponentsInParent() final;
+    vector<T*> GetComponentsInParent();
 
 private:
     // 挂载的GameObject

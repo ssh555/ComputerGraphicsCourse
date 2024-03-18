@@ -7,8 +7,8 @@
 #include "glm/ext/vector_float3.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #else
-#include "Math/CMatrix.h"
-#include "Math/CVector.h"
+#include "Engine/Math/CMatrix.h"
+#include "Engine/Math/CVector.h"
 #endif
 
 namespace Engine

@@ -11,6 +11,9 @@ private:
     // 父物体
     GameObject& m_parant;
 
+    // 直接子物体
+    vector<GameObject*> m_children;
+
 public:
     // 获取组件
     template <typename T>
@@ -55,6 +58,8 @@ public:
 
     // 获得父物体
     GameObject& GetParent() const final;
+
+    const vector<GameObject*> GetChildren();
 
 public:
     GameObject() : transform(*this) { }

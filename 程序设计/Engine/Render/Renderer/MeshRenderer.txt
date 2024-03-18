@@ -1,0 +1,84 @@
+// 模型渲染基类
+
+class MeshRenderer : Component
+{
+    friend class GameObject;
+    friend class RendererManager;
+
+private:
+    MeshRenderer(GameObject& obj) : Component(obj)
+    {
+    }
+
+public:
+    void SetMesh(const Mesh& mesh)
+    {
+        m_mesh = mesh;
+
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+		m_VAO = std::make_unique<VertexArray>();
+
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh.GetPositions(), m_mesh.GetPositionCount());
+		VertexBufferLayout layout;
+
+        // 顶点位置
+		layout.Push<float>(3);
+        // 顶点法线
+		layout.Push<float>(3);
+        // 纹理坐标
+		layout.Push<float>(2);
+		m_VAO->AddBuffer(*m_VertexBuffer, layout);
+		m_IndexBuffer = std::make_unique<IndexBuffer>(m_mesh.GetIndices(), m_mesh.GetIndexCount());
+    }
+
+    const Mesh& GetMesh()
+    {
+        return m_mesh;
+    }
+
+    void SetMaterial(const Material& mat)
+    {
+        m_mat = mat;
+    }
+
+    const Material& GetMaterial()
+    {
+        return m_mat;
+    }
+
+protected:
+    override void OnEnable()
+    {
+        AlterRendererEnableList(this);
+    }
+
+    override void OnDisable()
+    {
+        AlterRendererEnableList(this);
+    }
+
+private:
+    void Render(const CMatrix& PV, const CVector& viewpoint)
+    {
+        Renderer renderer;
+        m_mat->SetUniformMat4f("PV", PV);
+        m_mat->SetUniformMat4f("model", transform.GetWorldTransform());
+        m_mat->SetUniform3f("viewPos", viewpoint);
+        m_mat->SetUniform3f("lightDir", (GlobalManager.DirectionalLight.transform.GetWorldRotation() * CVector::Backward()).Normalized());
+        m_mat->SetUniform3f("lightColor", GlobalManager.DirectionalLight.GetColor());
+        m_mat->SetUniform1f("lightIntensity", GlobalManager.DirectionalLight.GetInvensity());
+
+        renderer.Draw(*m_VAO, *m_IndexBuffer, *m_mat);
+    }
+
+private:
+    Mesh& m_mesh;
+    Material& m_mat;
+
+    std::unique_ptr<Engine::VertexArray> m_VAO;
+    std::unique_ptr<Engine::VertexBuffer> m_VertexBuffer;
+    std::unique_ptr<Engine::IndexBuffer> m_IndexBuffer;
+
+}

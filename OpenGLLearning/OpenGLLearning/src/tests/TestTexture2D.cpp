@@ -1,6 +1,6 @@
 #include "TestTexture2D.h"
 
-#include "Render/Renderer.h"
+#include "Engine/Render/Renderer.h"
 using namespace Engine;
 
 #include <GL/glew.h>
@@ -11,16 +11,16 @@ using namespace Engine;
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #else
-#include "Math/CMatrix.h"
-#include "Math/CVector.h"
+#include "Engine/Math/CMatrix.h"
+#include "Engine/Math/CVector.h"
 #endif
 
-#include "Render/VertexBuffer.h"
-#include "Render/VertexBufferLayout.h"
-#include "Render/Texture.h"
-#include "Render/VertexArray.h"
-#include "Render/IndexBuffer.h"
-#include "Render/Shader.h"
+#include "Engine/Render/VertexBuffer.h"
+#include "Engine/Render/VertexBufferLayout.h"
+#include "Engine/Render/Texture.h"
+#include "Engine/Render/VertexArray.h"
+#include "Engine/Render/IndexBuffer.h"
+#include "Engine/Render/Shader.h"
 
 #include <iostream>
 
@@ -53,8 +53,7 @@ namespace test
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		m_VAO = std::make_unique<VertexArray>();
-
-		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);

@@ -12,6 +12,10 @@ public:
 
     const InputManager InputManager;
 
+    const RendererManager RendererManager;
+
+    const DirectionalLight GlobalLight;
+
     void Run()
     {
         // 更新输入
@@ -22,7 +26,7 @@ public:
         ComponentManager.TickAll(Time.deltatime);
 
         // 更新Render <- 更新MVP
-
+        RendererManager.RenderAll();
         
     }
 

@@ -7,13 +7,13 @@
 // 字符串流
 #include <sstream>
 
-#include "Render/Renderer.h"
-#include "Render/VertexBuffer.h"
-#include "Render/IndexBuffer.h"
-#include "Render/VertexArray.h"
-#include "Render/Shader.h"
-#include "Render/Renderer.h"
-#include "Render/Texture.h"
+#include "Engine/Render/Renderer.h"
+#include "Engine/Render/VertexBuffer.h"
+#include "Engine/Render/IndexBuffer.h"
+#include "Engine/Render/VertexArray.h"
+#include "Engine/Render/Shader.h"
+#include "Engine/Render/Renderer.h"
+#include "Engine/Render/Texture.h"
 using namespace Engine;
 
 #include "imgui/imgui.h"
@@ -23,11 +23,13 @@ using namespace Engine;
 #include "tests/TestClearColor.h"
 #include "Application.h"
 #include "tests/TestTexture2D.h"
+#include "Homework/EntryPoint.h"
+
+#include "Engine/Global/GlobalManager.h"
+
 
 void windowResizeCallback(GLFWwindow* window, int width, int height) {
-	// 设置OpenGL视口的尺寸以匹配新的窗口尺寸
-	glViewport(0, 0, width, height);
-	// TODO : 更新数据 & Camera & Shader
+	GlobalManager::GetInstance().windowResizeCallback(window, width, height);
 }
 
 
@@ -102,7 +104,7 @@ int main(void)
 		//GLCall(glBlendEquation())
 
 
-		Engine::Renderer renderer;
+		Renderer renderer;
 
 		// glDebugMessageCallback
 		// glGetError
@@ -124,11 +126,22 @@ int main(void)
 		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 #pragma endregion
 
+		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
+
+		GlobalManager::GetInstance().Init();
+		GlobalManager::GetInstance().inputManager->BindInputAction(window);
+		EntryPoint entrypoint;
+		entrypoint.Awake();
+		entrypoint.Start();
+
 #pragma region 主循环
 		// TODO : Add InputManager.InputAction
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
+			Time::Update();
+
+
 			GLCall(glClearColor(0, 0, 0, 1));
 
 			/* Render here */
@@ -142,7 +155,7 @@ int main(void)
 
 			// TODO : 主逻辑循环
 #pragma region 主逻辑
-
+			GlobalManager::GetInstance().Run();
 #pragma endregion
 
 

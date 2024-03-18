@@ -1,0 +1,64 @@
+// 渲染管理器
+
+class final RendererManager : Object
+{
+    friend class MeshRenderer;
+    friend class GlobalManager;
+
+private:
+    ~RendererManager()
+    {
+
+    }
+
+private:
+    void RenderAll()
+    {
+        for(var camera : GlobalManager::GetInstance().CameraManager.GetSortedCameras())
+        {
+            CMatrix PV = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+            m_enabledRenderers.foreach -> renderer.Render(PV, camera.transform.GetWorldPosition());
+        }
+    }
+
+    void AlterRendererEnableList(MeshRenderer* renderer)
+    {
+        if (renderer->GetEnable())
+        {
+            m_disabledRenderers.Remove(renderer);
+            m_enabledRenderers.Add(renderer);
+        }
+        else
+        {
+            m_enabledRenderers.Remove(renderer);
+            m_disabledRenderers.Add(renderer);
+        }
+    }
+
+    Shader& RendererManager::GetShader(const std::string& shaderPath)
+    {
+        auto shaderIt = m_shaderMap.find(shaderPath);
+        if (shaderIt == m_shaderMap.end())
+        {
+            // 如果字典中不存在对应路径的着色器，则创建新的着色器并添加到字典中
+            Shader newShader(shaderPath);
+            newShader.Bind();
+            // 设置uniform等
+            newShader.SetUniform1i("u_Texture", 0);
+            m_shaderMap[shaderPath] = std::move(newShader);
+            return m_shaderMap[shaderPath]; // 返回对应路径的着色器的引用
+        }
+        else
+        {
+            // 如果字典中存在对应路径的着色器，则直接返回引用
+            return shaderIt->second;
+        }
+    }
+
+
+private:
+    std::unordered_map<std::string, Shader> m_shaderMap;
+    vector<MeshRenderer*> m_enabledRenderers;
+    vector<MeshRenderer*> m_disabledRenderers;
+    
+}
