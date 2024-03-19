@@ -52,6 +52,69 @@ namespace Engine
 		qua.Normalize();
 		return qua;
 	}
+	CQuaternion CQuaternion::quatFromAxisAngle(const CVector& axis, float angle)
+	{
+		// 计算旋转角的一半
+		//float halfAngle = CMath::radians(angle) * 0.5f;
+		float halfAngle = angle * 0.5f;
+
+		// 计算旋转轴的单位向量
+		CVector normalizedAxis = axis.Normalized();
+
+		// 计算旋转轴的旋转四元数部分
+		float sinHalfAngle = sin(halfAngle);
+		float cosHalfAngle = cos(halfAngle);
+
+		// 创建旋转四元数
+		CQuaternion result;
+		result.x = normalizedAxis.x * sinHalfAngle;
+		result.y = normalizedAxis.y * sinHalfAngle;
+		result.z = normalizedAxis.z * sinHalfAngle;
+		result.w = cosHalfAngle;
+
+		return result;
+	}
+
+	Engine::CQuaternion CQuaternion::quatFromMatrix(const CMatrix& matrix)
+	{
+		float trace = matrix[0][0] + matrix[1][1] + matrix[2][2];
+		float s;
+		CQuaternion quat;
+
+		if (trace > 0.0f) {
+			s = 0.5f / sqrt(trace + 1.0f);
+			quat.w = 0.25f / s;
+			quat.x = (matrix[2][1] - matrix[1][2]) * s;
+			quat.y = (matrix[0][2] - matrix[2][0]) * s;
+			quat.z = (matrix[1][0] - matrix[0][1]) * s;
+		}
+		else {
+			if (matrix[0][0] > matrix[1][1] && matrix[0][0] > matrix[2][2]) {
+				s = 2.0f * sqrt(1.0f + matrix[0][0] - matrix[1][1] - matrix[2][2]);
+				quat.w = (matrix[2][1] - matrix[1][2]) / s;
+				quat.x = 0.25f * s;
+				quat.y = (matrix[0][1] + matrix[1][0]) / s;
+				quat.z = (matrix[0][2] + matrix[2][0]) / s;
+			}
+			else if (matrix[1][1] > matrix[2][2]) {
+				s = 2.0f * sqrt(1.0f + matrix[1][1] - matrix[0][0] - matrix[2][2]);
+				quat.w = (matrix[0][2] - matrix[2][0]) / s;
+				quat.x = (matrix[0][1] + matrix[1][0]) / s;
+				quat.y = 0.25f * s;
+				quat.z = (matrix[1][2] + matrix[2][1]) / s;
+			}
+			else {
+				s = 2.0f * sqrt(1.0f + matrix[2][2] - matrix[0][0] - matrix[1][1]);
+				quat.w = (matrix[1][0] - matrix[0][1]) / s;
+				quat.x = (matrix[0][2] + matrix[2][0]) / s;
+				quat.y = (matrix[1][2] + matrix[2][1]) / s;
+				quat.z = 0.25f * s;
+			}
+		}
+
+		return quat;
+	}
+
 
 
 
@@ -325,6 +388,11 @@ namespace Engine
 		p[3 * 4 + 2] = 0;
 		p[3 * 4 + 3] = 1;
 		return CMatrix(p);
+	}
+
+	Engine::CVector CQuaternion::GetVectorPart()
+	{
+		return CVector(this->x, this->y, this->z);
 	}
 
 }

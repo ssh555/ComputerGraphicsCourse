@@ -135,7 +135,7 @@ int main(void)
 		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
 
 		GlobalManager::GetInstance().Init();
-		//GlobalManager::GetInstance().inputManager->BindInputAction(window);
+		GlobalManager::GetInstance().inputManager->BindInputAction(window);
 		EntryPoint entrypoint;
 		entrypoint.Awake();
 		entrypoint.Start();

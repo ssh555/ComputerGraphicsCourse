@@ -17,6 +17,7 @@ namespace Engine
 		// 更改Component的队列
 		void SetComponentEnable(Component* component, bool enable);
 
+		void RemoveComponent(Component* component);
 
 		void TickAll(float deltatime) const;
 

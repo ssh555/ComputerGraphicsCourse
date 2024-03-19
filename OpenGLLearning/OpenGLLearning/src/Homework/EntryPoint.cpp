@@ -14,12 +14,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "Engine/Render/CapsuleRenderer.h"
-#include "../TestCVector.h"
+#include "Homework1/TestCVector.h"
+#include "Homework1/Stage.h"
 
 
 using namespace Engine;
 
 EntryPoint::EntryPoint()
+	: m_stage(nullptr), cameraObj(new GameObject())
 {
 	// 光
 	auto light = GlobalManager::GetInstance().globalLight;
@@ -33,11 +35,10 @@ EntryPoint::EntryPoint()
 	auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
 
 	// 摄像机
-	GameObject* cameraObj = new GameObject();
 	auto camera = cameraObj->AddComponent<Camera>();
 	//cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 5 + CVector::Left() * 1 + CVector::Up() * 1);
-	cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 5);
-	cameraObj->GetTransform()->LookAt(CVector::Backward() + cameraObj->GetTransform()->GetWorldPosition());
+	cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 50 + CVector::Up() * 15);
+	cameraObj->GetTransform()->LookAt(CVector::Backward() + CVector::Down() * 2 + cameraObj->GetTransform()->GetWorldPosition());
 }
 
 void EntryPoint::Awake()
@@ -48,9 +49,12 @@ void EntryPoint::Awake()
 
 void EntryPoint::Start()
 {
+	m_stage = new Stage();
 
-	// 测试用球体
-	GameObject* cube = new GameObject();
-	auto renderer = cube->AddComponent<CubeRenderer>();
-	renderer->GetMaterial()->SetUniform3f("objectColor", 0.0f, 1.0f, 1.0f);
+}
+
+EntryPoint::~EntryPoint()
+{
+	delete m_stage;
+	delete cameraObj;
 }

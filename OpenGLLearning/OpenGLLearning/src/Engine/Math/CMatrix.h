@@ -18,7 +18,9 @@ namespace Engine
 		static CMatrix scale(const CMatrix& matrix, const CVector& vec);
 		static CMatrix perspective(float fov, float aspectRatio, float nearVal, float farVal);
 		static CMatrix lookAt(const CVector& eye, const CVector& center, const CVector& up);
-
+		static CMatrix rotate(const CVector& axis, float angle);
+		static CVector getTranslation(const CMatrix& matrix);
+		static CVector getScale(const CMatrix& newTransform);
 
 	public:
 		CMatrix();

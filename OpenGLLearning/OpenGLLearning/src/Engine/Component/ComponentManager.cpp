@@ -45,4 +45,27 @@ namespace Engine
 
 	}
 
+	void ComponentManager::RemoveComponent(Component* component)
+	{
+		if (m_enabledComponents.size() > 0)
+		{
+			auto enabledIt = std::find(m_enabledComponents.begin(), m_enabledComponents.end(), component);
+			if (enabledIt != m_enabledComponents.end())
+			{
+				m_enabledComponents.erase(enabledIt);
+			}
+		}
+		if (m_disabledComponents.size() > 0)
+		{
+			auto disabledIt = std::find(m_disabledComponents.begin(), m_disabledComponents.end(), component);
+			if (disabledIt != m_disabledComponents.end())
+			{
+				m_disabledComponents.erase(disabledIt);
+			}
+		}
+
+
+	}
+
+
 }

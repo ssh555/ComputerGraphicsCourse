@@ -16,6 +16,8 @@ namespace Engine
 		{
 			return CQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
 		}
+		static CQuaternion quatFromAxisAngle(const CVector& axis, float angle);
+		static CQuaternion quatFromMatrix(const CMatrix& newTransform);
 
 	public:
 		CQuaternion();
@@ -73,6 +75,8 @@ namespace Engine
 		CMatrix ToCMatrix();
 
 		operator float* () { return &x; };
+
+		CVector GetVectorPart();
 
 	private:
 

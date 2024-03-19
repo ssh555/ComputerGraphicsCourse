@@ -119,13 +119,13 @@ namespace Engine
 		float len = this->len();
 		this->SetVec(this->x / len, this->y / len, this->z / len);
 	}
-	CVector CVector::Normalized() {
+	CVector CVector::Normalized() const {
 		float len = this->len();
 		return CVector(this->x / len, this->y / len, this->z / len);
 	}
 
 	//向量求模
-	float CVector::len() {
+	float CVector::len() const {
 		return sqrtf((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
 	}
 

@@ -135,7 +135,13 @@
     <ClCompile Include="src\Engine\Render\CapsuleRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TestCVector.cpp">
+    <ClCompile Include="src\Homework\Homework1\TestCVector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework1\Stage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework1\StageController.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1531,7 +1537,13 @@
     <ClInclude Include="src\Engine\Render\CapsuleRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="TestCVector.h">
+    <ClInclude Include="src\Homework\Homework1\TestCVector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework1\Stage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework1\StageController.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1554,5 +1566,233 @@
     <Image Include="res\textures\default_texture.png">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\textures\stage\A-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B_T-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_1F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_1L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_1R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_2F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_2L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_2R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_3F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_3L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_3R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_4C-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_4F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_4L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_4R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_5F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_5L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_5R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_6F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_6L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_6R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_7F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_7L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_7R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_8F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_8L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_8R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_9F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_9L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_9R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B1_10F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_1F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_1L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_1R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_2F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_2L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_2R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_3F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_3L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_3R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_4F-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_4L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_4R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_5L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_5R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_6L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_6R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_7L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_7R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_8L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_8R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_9L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_9R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_10L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_10R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_11L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_11R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_12L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_12R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_13L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_13R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_14L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_14R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_15L-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\B2_15R-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C1_1-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C1_2-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C1_3-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C1_4-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C2_1-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C2_2-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C2_3-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C2_4-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\C3-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\stage\f-项目.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\textures\stage\log.txt" />
   </ItemGroup>
 </Project>

@@ -11,14 +11,7 @@ namespace Engine
 
 	GameObject::~GameObject()
 	{
-		// 销毁挂载的组件
-		for (Component* component : m_components)
-		{
-			delete component;
-		}
-		m_components.clear();
-
-
+		this->IsDelete = true;
 		if (this->m_parent)
 		{
 			this->m_parent->RemoveChild(this);
@@ -27,9 +20,19 @@ namespace Engine
 		// 销毁子物体
 		for (GameObject* child : m_children)
 		{
-			delete child;
+			if (child && !child->IsDelete)
+			{
+				delete child;
+			}
 		}
 		m_children.clear();
+
+		// 销毁挂载的组件
+		for (Component* component : m_components)
+		{
+			delete component;
+		}
+		m_components.clear();
 
 		delete transform;
 	}

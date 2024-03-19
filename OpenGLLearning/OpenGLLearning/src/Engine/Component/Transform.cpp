@@ -1,5 +1,6 @@
 #include "transform.h"
 #include "../GameObject/GameObject.h"
+#include "../Math/CMath.h"
 #include "../Math/CEuler.h"
 
 
@@ -25,7 +26,13 @@ namespace Engine
 		if (this->gameobject->m_parent)
 		{
 			// 如果有父物体，则计算世界坐标
-			return gameobject->m_parent->transform->GetWorldPosition() * (gameobject->m_parent->transform->GetWorldRotation() * (gameobject->m_parent->transform->GetLocalScale() * m_localposition));
+			CVector worldScale = gameobject->m_parent->transform->GetWorldScale();
+			CQuaternion worldRotation = gameobject->m_parent->transform->GetWorldRotation();
+			CVector parentWorldPosition = gameobject->m_parent->transform->GetWorldPosition();
+			CVector t(worldScale.x * m_localposition.x, worldScale.y * m_localposition.y, worldScale.z * m_localposition.z);
+
+			// 应用缩放、旋转、平移变换
+			return parentWorldPosition + (worldRotation * t);
 		}
 		else
 		{
@@ -33,6 +40,7 @@ namespace Engine
 			return m_localposition;
 		}
 	}
+
 
 	void Transform::SetWorldPosition(const CVector& position)
 	{
@@ -149,6 +157,58 @@ namespace Engine
 	Engine::CVector Transform::GetLeft() const
 	{
 		return m_localrotation * CVector::Left();
+	}
+
+	void Transform::Rotate(const CVector& axis, float angle)
+	{
+		// 创建旋转四元数
+		CQuaternion rotation = CQuaternion::quatFromAxisAngle(axis, CMath::radians(angle));
+
+		// 应用旋转
+		m_localrotation = rotation * m_localrotation;
+	}
+
+	void Transform::RotateAround(const CVector& point, const CVector& axis, float angle)
+	{
+		angle = CMath::radians(angle);
+		// 将局部坐标系中的位置转换为世界坐标系中的位置
+		CVector worldPoint = point;
+
+		if (gameobject->m_parent)
+		{
+			worldPoint = gameobject->m_parent->transform->GetWorldTransform().posMul(worldPoint);
+		}
+
+		// 将世界坐标系中的位置转换为局部坐标系中的位置
+		CVector localPoint = worldPoint;
+
+		if (gameobject->m_parent)
+		{
+			localPoint = gameobject->m_parent->transform->GetWorldTransform().GetInverse().posMul(worldPoint);
+		}
+
+		// 将局部坐标系中的位置作为旋转中心
+		CMatrix rotationCenter = CMatrix::translate(CMatrix(1.0f), localPoint);
+
+		// 绕指定轴进行旋转
+		CMatrix rotation = CMatrix::rotate(axis, angle);
+
+		// 将旋转中心与旋转组合起来
+		CMatrix transformMatrix = rotationCenter * rotation;
+
+		// 更新局部变换
+		CMatrix currentTransform = GetWorldTransform();
+		CMatrix newTransform = transformMatrix * currentTransform;
+
+		// 从新的变换矩阵中提取位置、旋转和缩放信息
+		CVector newPosition = CMatrix::getTranslation(newTransform);
+		CQuaternion newRotation = CQuaternion::quatFromMatrix(newTransform);
+		CVector newScale = CMatrix::getScale(newTransform);
+
+		// 设置新的位置、旋转和缩放
+		SetLocalPosition(newPosition);
+		SetLocalRotation(newRotation);
+		SetLocalScale(newScale);
 	}
 
 }

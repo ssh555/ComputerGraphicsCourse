@@ -12,7 +12,7 @@ namespace Engine
 	class CMatrix;
 	class CVector;
 
-	class MeshRenderer : Component
+	class MeshRenderer : public Component
 	{
 		friend class GameObject;
 		friend class RendererManager;
@@ -21,6 +21,12 @@ namespace Engine
 		MeshRenderer(GameObject* obj);
 
 		virtual ~MeshRenderer();
+
+
+		virtual void Tick(float deltatime) override;
+
+
+		virtual void LateTick(float deltatime) override;
 
 	public:
 		void SetMesh(Mesh* mesh);

@@ -23,6 +23,14 @@ namespace Engine
 		delete m_mesh;
 	}
 
+	void MeshRenderer::Tick(float deltatime)
+	{
+	}
+
+	void MeshRenderer::LateTick(float deltatime)
+	{
+	}
+
 	void MeshRenderer::SetMesh(Mesh* mesh)
 	{
 		m_mesh = mesh;

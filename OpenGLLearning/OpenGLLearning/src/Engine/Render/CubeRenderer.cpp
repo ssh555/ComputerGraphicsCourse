@@ -78,4 +78,21 @@ namespace Engine
 		Mesh* mesh = new Mesh(positions, sizeof(positions) / sizeof(float), indices, sizeof(indices) / sizeof(unsigned int));
 		SetMesh(mesh);
 	}
+
+	void CubeRenderer::Tick(float deltatime)
+	{
+	}
+
+	void CubeRenderer::LateTick(float deltatime)
+	{
+	}
+
+	void CubeRenderer::OnEnable()
+	{
+	}
+
+	void CubeRenderer::OnDisable()
+	{
+	}
+
 }

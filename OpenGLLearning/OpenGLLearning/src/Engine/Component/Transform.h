@@ -57,7 +57,8 @@ namespace Engine
 		// 获取局部坐标系中的左方向
 		CVector GetLeft() const;
 
-
+		void Rotate(const CVector& axis, float angle);
+		void RotateAround(const CVector& point, const CVector& axis, float angle);
 	private:
 		// 位置
 		CVector m_localposition;

@@ -116,6 +116,50 @@ namespace Engine
 		return viewMatrix;
 	}
 
+	Engine::CMatrix CMatrix::rotate(const CVector& axis, float angle)
+	{
+		// 创建旋转矩阵
+		float cosAngle = cos(angle);
+		float sinAngle = sin(angle);
+		float oneMinusCosAngle = 1.0f - cosAngle;
+		float x = axis.x;
+		float y = axis.y;
+		float z = axis.z;
+		float xy = x * y;
+		float xz = x * z;
+		float yz = y * z;
+		float xsin = x * sinAngle;
+		float ysin = y * sinAngle;
+		float zsin = z * sinAngle;
+
+		float rot[16] = {
+			cosAngle + oneMinusCosAngle * x * x, oneMinusCosAngle * xy - zsin, oneMinusCosAngle * xz + ysin, 0.0f,
+			oneMinusCosAngle * xy + zsin, cosAngle + oneMinusCosAngle * y * y, oneMinusCosAngle * yz - xsin, 0.0f,
+			oneMinusCosAngle * xz - ysin, oneMinusCosAngle * yz + xsin, cosAngle + oneMinusCosAngle * z * z, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		// 合并旋转矩阵
+		return CMatrix(rot);
+	}
+
+	Engine::CVector CMatrix::getTranslation(const CMatrix& matrix)
+	{
+		// 获取平移分量
+		return CVector(matrix.data[3][0], matrix.data[3][1], matrix.data[3][2]);
+	}
+
+	Engine::CVector CMatrix::getScale(const CMatrix& newTransform)
+	{
+		// 获取缩放分量
+		CVector scale;
+		scale.x = sqrt(newTransform.data[0][0] * newTransform.data[0][0] + newTransform.data[0][1] * newTransform.data[0][1] + newTransform.data[0][2] * newTransform.data[0][2]);
+		scale.y = sqrt(newTransform.data[1][0] * newTransform.data[1][0] + newTransform.data[1][1] * newTransform.data[1][1] + newTransform.data[1][2] * newTransform.data[1][2]);
+		scale.z = sqrt(newTransform.data[2][0] * newTransform.data[2][0] + newTransform.data[2][1] * newTransform.data[2][1] + newTransform.data[2][2] * newTransform.data[2][2]);
+		return scale;
+	}
+
+
 
 
 
@@ -124,6 +168,7 @@ namespace Engine
 	{
 		std::memset(data, 0, sizeof(data));
 	}
+
 
 	CMatrix::CMatrix(float value)
 	{

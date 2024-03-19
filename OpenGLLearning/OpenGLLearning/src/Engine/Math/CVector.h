@@ -23,12 +23,12 @@ namespace Engine
 
 		// 静态成员函数，返回向左的单位向量
 		static CVector Left() {
-			return CVector(-1.0f, 0.0f, 0.0f);
+			return CVector(1.0f, 0.0f, 0.0f);
 		}
 
 		// 静态成员函数，返回向右的单位向量
 		static CVector Right() {
-			return CVector(1.0f, 0.0f, 0.0f);
+			return CVector(-1.0f, 0.0f, 0.0f);
 		}
 
 		// 静态成员函数，返回向前的单位向量
@@ -84,10 +84,10 @@ namespace Engine
 		//改变自身
 		void Normalize();
 		//自身不变，返回单位化的值
-		CVector Normalized();
+		CVector Normalized() const;
 
 		//向量求模
-		float len();
+		float len() const;
 		//向量投影
 		CVector project(CVector& vec);
 		//绕轴旋转

@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-	Component::Component(const GameObject* obj, bool enable /*= true*/)
+	Component::Component(GameObject* obj, bool enable /*= true*/)
 		: gameobject(obj), transform(obj->transform), m_enabled(enable)
 	{
 		if (m_enabled)
@@ -20,7 +20,7 @@ namespace Engine
 
 	Component::~Component()
 	{
-
+		GlobalManager::GetInstance().componentManager->RemoveComponent(this);
 	}
 
 	void Component::Tick(float deltatime)

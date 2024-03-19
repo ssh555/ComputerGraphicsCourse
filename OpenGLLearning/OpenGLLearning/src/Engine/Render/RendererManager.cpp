@@ -4,7 +4,9 @@
 #include "../Camera/Camera.h"
 #include "../Component/Transform.h"
 #include "MeshRenderer.h"
-
+#include <algorithm>
+#include <execution>
+#include <future>
 
 namespace Engine
 {
@@ -45,10 +47,33 @@ namespace Engine
 			}
 			CMatrix PV = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 			CVector pos = camera->transform->GetWorldPosition();
+			//// 使用并行for循环并行渲染
+			//std::for_each(std::execution::par, m_enabledRenderers.begin(), m_enabledRenderers.end(),
+			//	[&](MeshRenderer* renderer) {
+			//		renderer->Render(PV, pos);
+			//	});
+			
 			for (auto renderer : m_enabledRenderers)
 			{
 				renderer->Render(PV, pos);
 			}
+
+			// 创建一个 vector 来存储所有的 std::future 对象
+			//std::vector<std::future<void>> futures;
+
+			//// 在并行循环中启动任务，并将 std::future 对象存储在 vector 中
+			//for (auto& renderer : m_enabledRenderers)
+			//{
+			//	futures.push_back(std::async(std::launch::async, [&](MeshRenderer* renderer) {
+			//		renderer->Render(PV, pos);
+			//		}, renderer));
+			//}
+
+			//// 等待所有任务完成
+			//for (auto& future : futures)
+			//{
+			//	future.wait();
+			//}
 		}
 	}
 

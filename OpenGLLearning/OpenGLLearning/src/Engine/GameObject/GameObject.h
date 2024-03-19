@@ -26,6 +26,8 @@ namespace Engine
 		// 直接子物体
 		std::vector<GameObject*> m_children;
 
+		bool IsDelete = false;
+
 	public:
 		// 获取组件
 		template <typename T, typename = std::enable_if_t<std::is_base_of<Component, T>::value>>
@@ -68,9 +70,9 @@ namespace Engine
 
 	public:
 		GameObject();
+		virtual ~GameObject();
 
 	protected:
-		virtual ~GameObject();
 
 		void RemoveChild(GameObject* obj);
 	};

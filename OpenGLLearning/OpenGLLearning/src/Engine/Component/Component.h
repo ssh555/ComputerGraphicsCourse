@@ -45,7 +45,7 @@ namespace Engine
 
 	protected:
 		// 挂载的GameObject
-		Component(const GameObject* obj, bool enable = true);
+		Component(GameObject* obj, bool enable = true);
 
 		virtual ~Component();
 
@@ -61,9 +61,9 @@ namespace Engine
 
 	public:
 		// 所在物体
-		const GameObject* gameobject;
+		GameObject* gameobject;
 		// 所在物体的Transform
-		const Transform* transform;
+		Transform* transform;
 
 	private:
 		bool m_enabled = false;
