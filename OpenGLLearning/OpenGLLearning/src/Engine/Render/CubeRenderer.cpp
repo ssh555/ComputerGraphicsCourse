@@ -10,6 +10,7 @@ namespace Engine
 
 		m_mat = new Material();
 
+		m_mat->SetUniform1f("ambientStrength", 0.6f);
 		m_mat->SetUniform1f("specularStrength", 0.5);
 		m_mat->SetUniform1f("shininess", 1);
 	}

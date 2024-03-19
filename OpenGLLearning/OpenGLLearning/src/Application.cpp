@@ -104,7 +104,11 @@ int main(void)
 		//GLCall(glBlendEquation())
 
 		// TODO : 双面渲染
-		glDisable(GL_CULL_FACE);
+		//glDisable(GL_CULL_FACE);
+		// 启用面剔除
+		glEnable(GL_CULL_FACE);
+		// 指定要剔除的面为背面
+		glCullFace(GL_BACK);
 
 		Renderer renderer;
 
@@ -124,8 +128,8 @@ int main(void)
 		test::Test* currentTest = nullptr;
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
-		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+		//testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+		//testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 #pragma endregion
 
 		glfwSetFramebufferSizeCallback(window, windowResizeCallback);

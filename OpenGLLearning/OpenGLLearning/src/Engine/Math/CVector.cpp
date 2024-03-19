@@ -72,6 +72,11 @@ namespace Engine
 		return rot * (*this);
 	}
 
+	Engine::CVector CVector::operator*(const float num) const
+	{
+		return CVector(this->x * num, this->y * num, this->z * num);
+	}
+
 	Engine::CVector CVector::operator/(const CVector& vec)
 	{
 		// 除法运算符应用逐个分量的除法

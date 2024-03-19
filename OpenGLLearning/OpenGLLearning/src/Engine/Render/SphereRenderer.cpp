@@ -8,6 +8,11 @@ Engine::SphereRenderer::SphereRenderer(GameObject* obj, float radius /*= 1.0f*/,
 	SetSphereMesh(radius, rings, sectors);
 
 	m_mat = new Material();
+
+	m_mat->SetUniform1f("ambientStrength", 0.6f);
+	m_mat->SetUniform1f("specularStrength", 0.5f);
+	m_mat->SetUniform1f("shininess", 1);
+
 }
 
 void Engine::SphereRenderer::SetSphereMesh(float radius, unsigned int rings, unsigned int sectors)
@@ -27,22 +32,29 @@ void Engine::SphereRenderer::SetSphereMesh(float radius, unsigned int rings, uns
 			positions.push_back(x * radius);
 			positions.push_back(y * radius);
 			positions.push_back(z * radius);
+
+			positions.push_back(x); // Add normals directly to positions array
+			positions.push_back(y);
+			positions.push_back(z);
+
+			positions.push_back(s * S); // Add texture coordinates directly to positions array
+			positions.push_back(r * R);
 		}
 	}
 
 	for (unsigned int r = 0; r < rings - 1; ++r) {
 		for (unsigned int s = 0; s < sectors - 1; ++s) {
 			indices.push_back(r * sectors + s);
-			indices.push_back((r + 1) * sectors + (s + 1));
-			indices.push_back(r * sectors + (s + 1));
-
-			indices.push_back(r * sectors + s);
 			indices.push_back((r + 1) * sectors + s);
 			indices.push_back((r + 1) * sectors + (s + 1));
+
+			indices.push_back(r * sectors + s);
+			indices.push_back((r + 1) * sectors + (s + 1));
+			indices.push_back(r * sectors + (s + 1));
 		}
 	}
 
-	Mesh* mesh =new Mesh(positions.data(), static_cast<unsigned int>(positions.size() / 3),
+	Mesh* mesh = new Mesh(positions.data(), static_cast<unsigned int>(positions.size()),
 		indices.data(), static_cast<unsigned int>(indices.size()));
 	SetMesh(mesh);
 }

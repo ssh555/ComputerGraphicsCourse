@@ -5,147 +5,102 @@
 class CapsuleRenderer : public MeshRenderer
 {
 public:
-    CapsuleRenderer(GameObject& obj, float radius = 1.0f, float height = 2.0f, unsigned int segments = 20) 
+    CapsuleRenderer(GameObject& obj, float radius = 1.0f, float height = 2.0f, unsigned int rings = 20, unsigned int sectors = 20) 
         : MeshRenderer(obj)
     {
-        SetCapsuleMesh(radius, height, segments);
+        SetCapsuleMesh(radius, height, rings, sectors);
+        m_mat = new Material();
+
+        m_mat->SetUniform1f("ambientStrength", 0.6f);
+        m_mat->SetUniform1f("specularStrength", 0.5f);
+        m_mat->SetUniform1f("shininess", 1);
     }
 
-    void SetCapsuleMesh(float radius, float height, unsigned int segments)
+    void Engine::CapsuleRenderer::SetCapsuleMesh(float radius, float height, unsigned int rings, unsigned int sectors)
     {
-        // 计算顶点和索引数量
-        unsigned int vertexCount = (segments + 1) * 2 + segments * (segments + 1) / 2 * 2;
-        unsigned int indexCount = segments * 3 * 2 + segments * segments * 3 * 2;
+        std::vector<float> positions;
+        std::vector<unsigned int> indices;
 
-        // 创建顶点数组和索引数组
-        float* positions = new float[vertexCount * 3];
-        unsigned int* indices = new unsigned int[indexCount];
+        // Generate the top hemisphere
+        for (unsigned int r = 0; r < rings / 2; ++r) {
+            for (unsigned int s = 0; s < sectors; ++s) {
+                float const y = sin(-CMath::PI * 0.5f + CMath::PI * r * (1.0f / (rings / 2 - 1)));
+                float const x = cos(2 * CMath::PI * s * (1.0f / (sectors - 1))) * sin(CMath::PI * r * (1.0f / (rings / 2 - 1)));
+                float const z = sin(2 * CMath::PI * s * (1.0f / (sectors - 1))) * sin(CMath::PI * r * (1.0f / (rings / 2 - 1)));
 
-        // 生成顶点数据
-        GenerateCapsuleVertices(radius, height, segments, positions);
+                positions.push_back(x * radius);
+                positions.push_back(y * radius + height / 2); // Translate upwards
+                positions.push_back(z * radius);
 
-        // 生成索引数据
-        GenerateCapsuleIndices(segments, indices);
+                positions.push_back(x);
+                positions.push_back(y);
+                positions.push_back(z);
 
-        // 创建Mesh对象并设置网格数据
-        Mesh mesh(positions, vertexCount, indices, indexCount);
+                positions.push_back(s * (1.0f / (sectors - 1)));
+                positions.push_back(r * (1.0f / (rings / 2 - 1)));
+            }
+        }
+
+        // Generate the bottom hemisphere
+        for (unsigned int r = rings / 2; r < rings; ++r) {
+            for (unsigned int s = 0; s < sectors; ++s) {
+                float const y = sin(-CMath::PI * 0.5f + CMath::PI * r * (1.0f / (rings / 2 - 1)));
+                float const x = cos(2 * CMath::PI * s * (1.0f / (sectors - 1))) * sin(CMath::PI * r * (1.0f / (rings / 2 - 1)));
+                float const z = sin(2 * CMath::PI * s * (1.0f / (sectors - 1))) * sin(CMath::PI * r * (1.0f / (rings / 2 - 1)));
+
+                positions.push_back(x * radius);
+                positions.push_back(y * radius - height / 2); // Translate downwards
+                positions.push_back(z * radius);
+
+                positions.push_back(x);
+                positions.push_back(y);
+                positions.push_back(z);
+
+                positions.push_back(s * (1.0f / (sectors - 1)));
+                positions.push_back(r * (1.0f / (rings / 2 - 1)));
+            }
+        }
+
+        // Generate the cylinder part
+        for (unsigned int i = 0; i < rings / 2; ++i) {
+            float const y = sin(-CMath::PI * 0.5f + CMath::PI * i * (1.0f / (rings / 2 - 1)));
+            float const yPos = y * radius + height / 2;
+            float const yNeg = y * radius - height / 2;
+
+            for (unsigned int s = 0; s < sectors; ++s) {
+                float const x = cos(2 * CMath::PI * s * (1.0f / (sectors - 1)));
+                float const z = sin(2 * CMath::PI * s * (1.0f / (sectors - 1)));
+
+                positions.push_back(x * radius);
+                positions.push_back(yPos);
+                positions.push_back(z * radius);
+
+                positions.push_back(0); // Cylinder normals are uniform along the y-axis
+                positions.push_back(y > 0 ? 1 : -1); // Cylinder normals point outwards
+                positions.push_back(0);
+
+                positions.push_back(s * (1.0f / (sectors - 1)));
+                positions.push_back(i * (1.0f / (rings / 2 - 1)));
+            }
+        }
+
+        // Generate indices for the capsule
+        for (unsigned int r = 0; r < rings - 1; ++r) {
+            for (unsigned int s = 0; s < sectors - 1; ++s) {
+                indices.push_back(r * sectors + s);
+                indices.push_back((r + 1) * sectors + s);
+                indices.push_back((r + 1) * sectors + (s + 1));
+
+                indices.push_back(r * sectors + s);
+                indices.push_back((r + 1) * sectors + (s + 1));
+                indices.push_back(r * sectors + (s + 1));
+            }
+        }
+
+        // Create and set the mesh
+        Mesh* mesh = new Mesh(positions.data(), static_cast<unsigned int>(positions.size()),
+                            indices.data(), static_cast<unsigned int>(indices.size()));
         SetMesh(mesh);
-
-        // 释放临时数组
-        delete[] positions;
-        delete[] indices;
     }
 
-private:
-    // 生成胶囊体的顶点数据
-    void GenerateCapsuleVertices(float radius, float height, unsigned int segments, float* positions)
-    {
-        // 生成两个半球体的顶点
-        GenerateHalfSphereVertices(radius, segments, positions);
-        GenerateHalfSphereVertices(radius, segments, positions + (segments + 1) * 3);
-
-        // 偏移第二个半球体的顶点位置
-        for (unsigned int i = 0; i < (segments + 1) * 3; i += 3)
-        {
-            positions[(segments + 1) * 3 + i] += height;
-        }
-
-        // 生成柱体的顶点
-        GenerateCylinderVertices(radius, height, segments, positions + 2 * (segments + 1) * 3);
-    }
-
-    // 生成半球体的顶点数据
-    void GenerateHalfSphereVertices(float radius, unsigned int segments, float* positions)
-    {
-        float segmentAngle = glm::pi<float>() / segments;
-        float phi = 0.0f;
-
-        for (unsigned int i = 0; i <= segments; ++i)
-        {
-            float theta = 0.0f;
-            for (unsigned int j = 0; j <= segments; ++j)
-            {
-                positions[(i * (segments + 1) + j) * 3] = radius * sin(phi) * cos(theta);
-                positions[(i * (segments + 1) + j) * 3 + 1] = radius * sin(phi) * sin(theta);
-                positions[(i * (segments + 1) + j) * 3 + 2] = radius * cos(phi);
-                theta += segmentAngle;
-            }
-            phi += segmentAngle;
-        }
-    }
-
-    // 生成柱体的顶点数据
-    void GenerateCylinderVertices(float radius, float height, unsigned int segments, float* positions)
-    {
-        float segmentAngle = glm::two_pi<float>() / segments;
-        float y = -height * 0.5f;
-
-        for (unsigned int i = 0; i < segments; ++i)
-        {
-            float theta = 0.0f;
-            for (unsigned int j = 0; j <= segments; ++j)
-            {
-                positions[(i * (segments + 1) + j) * 3] = radius * cos(theta);
-                positions[(i * (segments + 1) + j) * 3 + 1] = y;
-                positions[(i * (segments + 1) + j) * 3 + 2] = radius * sin(theta);
-                theta += segmentAngle;
-            }
-            y += height / segments;
-        }
-    }
-
-    // 生成胶囊体的索引数据
-    void GenerateCapsuleIndices(unsigned int segments, unsigned int* indices)
-    {
-        unsigned int index = 0;
-        index = GenerateHalfSphereIndices(segments, indices, index);
-        index = GenerateHalfSphereIndices(segments, indices, index);
-        GenerateCylinderIndices(segments, indices, index);
-    }
-
-    // 生成半球体的索引数据
-    unsigned int GenerateHalfSphereIndices(unsigned int segments, unsigned int* indices, unsigned int startIndex)
-    {
-        unsigned int index = startIndex;
-        unsigned int rowStart = 0;
-
-        for (unsigned int i = 0; i < segments; ++i)
-        {
-            for (unsigned int j = 0; j < segments; ++j)
-            {
-                indices[index++] = rowStart + j;
-                indices[index++] = rowStart + j + 1;
-                indices[index++] = rowStart + j + segments + 1;
-
-                indices[index++] = rowStart + j + 1;
-                indices[index++] = rowStart + j + segments + 2;
-                indices[index++] = rowStart + j + segments + 1;
-            }
-            rowStart += segments + 1;
-        }
-
-        return index;
-    }
-
-    // 生成柱体的索引数据
-    void GenerateCylinderIndices(unsigned int segments, unsigned int* indices, unsigned int startIndex)
-    {
-        unsigned int index = startIndex;
-        unsigned int rowStart = (segments + 1) * 2;
-
-        for (unsigned int i = 0; i < segments; ++i)
-        {
-            for (unsigned int j = 0; j < segments; ++j)
-            {
-                indices[index++] = rowStart + j;
-                indices[index++] = rowStart + j + 1;
-                indices[index++] = rowStart + j + segments + 1;
-
-                indices[index++] = rowStart + j + 1;
-                indices[index++] = rowStart + j + segments + 2;
-                indices[index++] = rowStart + j + segments + 1;
-            }
-            rowStart += segments + 1;
-        }
-    }
 };

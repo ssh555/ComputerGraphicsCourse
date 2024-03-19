@@ -128,7 +128,6 @@ namespace Engine
 	{
 		CVector direction = (target - GetWorldPosition()).Normalized();
 		CQuaternion rotation = CQuaternion::quatLookAt(direction, CVector::Up());
-		auto t = rotation.ToCEuler();
 		SetWorldRotation(rotation);
 	}
 

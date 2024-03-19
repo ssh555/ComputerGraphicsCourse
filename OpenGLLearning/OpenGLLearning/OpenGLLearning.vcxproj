@@ -187,6 +187,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Render\CapsuleRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\CubeRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\SphereRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\Mesh.cpp" />
@@ -226,6 +227,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClCompile Include="src\Engine\Render\Texture.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\Engine\Component\Transform.cpp" />
+    <ClCompile Include="TestCVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
@@ -369,6 +371,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Render\CapsuleRenderer.h" />
     <ClInclude Include="src\Engine\Render\CubeRenderer.h" />
     <ClInclude Include="src\Engine\Render\SphereRenderer.h" />
     <ClInclude Include="src\Engine\Render\Mesh.h" />
@@ -694,6 +697,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClInclude Include="src\Engine\Render\VertexBuffer.h" />
     <ClInclude Include="src\Engine\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Engine\Component\Transform.h" />
+    <ClInclude Include="TestCVector.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Circle1.png" />

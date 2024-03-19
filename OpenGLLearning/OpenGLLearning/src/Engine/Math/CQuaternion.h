@@ -14,7 +14,7 @@ namespace Engine
 		static CQuaternion quatLookAt(const CVector& direction, const CVector& up);
 		static CQuaternion Identity()
 		{
-			return CQuaternion(1.0f, 0.0f, 0.0f, 0.0f);
+			return CQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
 	public:

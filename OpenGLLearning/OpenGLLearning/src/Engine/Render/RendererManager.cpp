@@ -36,6 +36,8 @@ namespace Engine
 			if (camera->GetProjectionType() == Camera::ProjectionType::Perspective)
 			{
 				glEnable(GL_DEPTH_TEST);
+				// 设置深度比较函数为小于等于
+				glDepthFunc(GL_LEQUAL);
 			}
 			else
 			{

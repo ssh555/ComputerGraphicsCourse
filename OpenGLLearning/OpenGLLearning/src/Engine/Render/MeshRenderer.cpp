@@ -42,7 +42,7 @@ namespace Engine
 		// ÎÆÀí×ø±ê
 		layout.Push<float>(2);
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = std::make_unique<IndexBuffer>(m_mesh->GetIndices(), m_mesh->GetIndexCount() * sizeof(float));
+		m_IndexBuffer = std::make_unique<IndexBuffer>(m_mesh->GetIndices(), m_mesh->GetIndexCount());
 	}
 
 	const Mesh* MeshRenderer::GetMesh()
@@ -76,11 +76,10 @@ namespace Engine
 		m_mat->SetUniformMat4f("PV", PV);
 		m_mat->SetUniformMat4f("model", transform->GetWorldTransform());
 		m_mat->SetUniform3f("viewPos", viewpoint.x, viewpoint.y, viewpoint.z);
-		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetWorldRotation() * CVector::Backward()).Normalized();
+		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
 		m_mat->SetUniform3f("lightDir", lightdir.x, lightdir.y, lightdir.z);
-		auto color = GlobalManager::GetInstance().globalLight->GetLightColor();
+		auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
 		m_mat->SetUniform3f("lightColor", color.x, color.y, color.z);
-		m_mat->SetUniform1f("ambientStrength", GlobalManager::GetInstance().globalLight->GetIntensity());
 
 		renderer.Draw(*m_VAO, *m_IndexBuffer, *m_mat);
 	}

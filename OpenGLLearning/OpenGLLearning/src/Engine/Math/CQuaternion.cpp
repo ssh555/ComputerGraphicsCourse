@@ -31,7 +31,7 @@ namespace Engine
 	{
 		// 计算右方向向量
 		CVector right = up.crossMul(direction).Normalized();
-
+		
 		// 计算修正后的上方向向量
 		CVector correctedUp = direction.crossMul(right).Normalized();
 
@@ -139,9 +139,9 @@ namespace Engine
 		float w1 = this->w;
 		float w2 = p.w;
 		float w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
-		float x = w1 * x2 + x1 * w2 + z1 * y2 - y1 * z2;
-		float y = w1 * y2 + y1 * w2 + x1 * z2 - z1 * x2;
-		float z = w1 * z2 + z1 * w2 + y1 * x2 - x1 * y2;
+		float x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
+		float y = w1 * y2 + y1 * w2 + z1 * x2 - x1 * z2;
+		float z = w1 * z2 + z1 * w2 + x1 * y2 - y1 * x2;
 		return CQuaternion(x, y, z, w);
 	}
 
@@ -155,7 +155,7 @@ namespace Engine
 		CQuaternion vecQuat(0.0f, vec);
 
 		// 计算结果四元数
-		CQuaternion resultQuat = *this * vecQuat * invQuat;
+		CQuaternion resultQuat = (*this * vecQuat) * invQuat;
 
 		// 返回结果向量（取四元数的前三个分量）
 		return CVector(resultQuat.x, resultQuat.y, resultQuat.z);
@@ -165,7 +165,6 @@ namespace Engine
 	{
 		// 将四元数转换为四元数对象（假设存在名为 Quaternion 的类）
 		CQuaternion q(x, y, z, w);
-
 		// 计算四元数的共轭
 		CQuaternion qConjugate = q.GetConjugate();
 
@@ -173,7 +172,7 @@ namespace Engine
 		CQuaternion v(vec.x, vec.y, vec.z, 0);
 
 		// 应用四元数的旋转作用于向量
-		CQuaternion rotatedVector = q * v * qConjugate;
+		CQuaternion rotatedVector = (q * v) * qConjugate;
 
 		// 返回旋转后的向量
 		return CVector(rotatedVector.x, rotatedVector.y, rotatedVector.z);

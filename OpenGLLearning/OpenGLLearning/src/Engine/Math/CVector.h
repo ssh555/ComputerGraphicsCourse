@@ -68,6 +68,7 @@ namespace Engine
 
 		friend CVector operator*(const float num, CVector& vec);//重载 * 操作符 向量数乘
 		CVector operator*(const float num);
+		CVector operator*(const float num) const;
 		float operator*(const CVector& vec);
 		CVector operator*(const CQuaternion& rot);
 		CVector operator/(const CVector& vec);

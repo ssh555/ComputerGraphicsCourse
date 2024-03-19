@@ -9,6 +9,11 @@ public:
         : MeshRenderer(obj)
     {
         SetCylinderMesh(radius, height, segments);
+        m_mat = new Material();
+
+        m_mat->SetUniform1f("ambientStrength", 0.6f);
+        m_mat->SetUniform1f("specularStrength", 0.5f);
+        m_mat->SetUniform1f("shininess", 1);
     }
 
 public:
