@@ -15,10 +15,15 @@
 #include "Engine/Render/Renderer.h"
 #include "Engine/Render/Texture.h"
 using namespace Engine;
+#define USE_IMGUI
+
+#ifdef USE_IMGUI
+
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#endif
 
 #include "tests/TestClearColor.h"
 #include "Application.h"
@@ -98,7 +103,7 @@ int main(void)
 		// 混合 => 如何将输出的Color与当前处于缓冲区的Color结合起来
 		// (source = GL_ONE, destination = GL_ZERO) => src 和 dest 计算因子
 		// src * src factor, dest * dest factor
-		Engine::GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // => (src_alpha, 1 - src_alpha)
 		// (mode = GL_FUNC_ADD) => 如何将两种颜色混合在一起
 		// (src * factor [+](mode) dest * factor)
 		//GLCall(glBlendEquation())
@@ -114,6 +119,7 @@ int main(void)
 
 		// glDebugMessageCallback
 		// glGetError
+#ifdef USE_IMGUI
 
 		// Setup ImGui binding
 		ImGui::CreateContext();
@@ -131,6 +137,7 @@ int main(void)
 		//testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		//testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 #pragma endregion
+#endif
 
 		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
 
@@ -163,6 +170,7 @@ int main(void)
 			GlobalManager::GetInstance().Run();
 #pragma endregion
 
+#ifdef USE_IMGUI
 
 #pragma region IMGUI
 						// 开始一个ImGui新帧
@@ -193,7 +201,7 @@ int main(void)
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 #pragma endregion
-
+#endif
 
 
 			/* Swap front and back buffers */
@@ -204,16 +212,22 @@ int main(void)
 		}
 
 #pragma endregion
+#ifdef USE_IMGUI
 
 		delete currentTest;
 		if (currentTest != testMenu)
 			delete testMenu;
+#endif
 	}
+
+#ifdef USE_IMGUI
+
 
 
 	// 关闭 ImGui
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+#endif
 
 	glfwTerminate();
 	return 0;

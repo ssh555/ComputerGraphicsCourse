@@ -1,6 +1,7 @@
 #pragma once
 #include "../Component/Component.h"
 #include <memory>
+#include <string>
 
 namespace Engine
 {
@@ -14,6 +15,13 @@ namespace Engine
 
 	class MeshRenderer : public Component
 	{
+	public:
+		static const std::string PVSTR;
+		static const  std::string MODELSTR;
+		static const  std::string VIEWPOSSTR;
+		static const  std::string LIGHTDIRSTR;
+		static const  std::string LIGHTCOLOR;
+
 		friend class GameObject;
 		friend class RendererManager;
 
@@ -45,6 +53,8 @@ namespace Engine
 	private:
 		void Render(const CMatrix& PV, const CVector& viewpoint);
 
+		bool IsDelete = false;
+
 	protected:
 		Mesh* m_mesh;
 		Material* m_mat;
@@ -52,6 +62,8 @@ namespace Engine
 		std::unique_ptr<Engine::VertexArray> m_VAO;
 		std::unique_ptr<Engine::VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<Engine::IndexBuffer> m_IndexBuffer;
+
+	private:
 
 	};
 

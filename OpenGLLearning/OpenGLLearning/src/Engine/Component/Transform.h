@@ -42,7 +42,7 @@ namespace Engine
 
 		void SetLocalScale(const CVector& scale);
 
-		CMatrix GetWorldTransform() const;
+		CMatrix GetWorldTransform();
 
 		void LookAt(const CVector& target);
 
@@ -68,6 +68,11 @@ namespace Engine
 
 		// Ëõ·Å
 		CVector m_localscale;
+
+		CMatrix m_worldTransform;
+
+		void SetDirty(bool dirty);
+		bool IsDirty = true;
 
 	};
 

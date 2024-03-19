@@ -18,12 +18,24 @@ namespace Engine
 
 	public:
 		float GetIntensity() const { return m_intensity; }
-		void SetIntensity(float intensity) { m_intensity = intensity; }
+		void SetIntensity(float intensity) {
+			m_intensity = intensity; 
+			m_lightcolorWithIntensity = m_intensity * m_lightcolor;
+			IsDirty = true;
+		}
 		const CVector& GetLightColor() const { return m_lightcolor; }
-		void SetLightColor(const CVector& color) { m_lightcolor = color; }
+		const CVector& GetLightColorWithIntensity() const { return m_lightcolorWithIntensity; }
+		void SetLightColor(const CVector& color) { 
+			m_lightcolor = color; 
+			m_lightcolorWithIntensity = m_intensity * m_lightcolor;
+			IsDirty = true;
+		}
+
+		bool IsDirty = true;
 
 	private:
 		float m_intensity;
 		CVector m_lightcolor;
+		CVector m_lightcolorWithIntensity;
 	};
 }

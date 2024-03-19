@@ -102,6 +102,14 @@ namespace Engine
 		return CVector(vec.x * num, vec.y * num, vec.z * num);
 	}
 
+	bool CVector::operator!=(const std::array<float, 3>& otherArray) const
+	{
+		return (x != otherArray[0] || y != otherArray[1] || z != otherArray[2]);
+	}
+	bool operator!=(const std::array<float, 3>& array, const CVector& vector)
+	{
+		return (array[0] != vector.x || array[1] != vector.y || array[2] != vector.z);
+	}
 	//ÏòÁ¿µã³Ë
 	float CVector::dotMul(const CVector& vec) {
 		return (this->x * vec.x) + (this->y * vec.y) + (this->z * vec.z);

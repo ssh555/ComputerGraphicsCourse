@@ -47,7 +47,7 @@ namespace Engine
 		GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 	}
 
-	void Renderer::Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, const Texture& texture) const
+	void Renderer::Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, Texture& texture) const
 	{
 		shader.Bind();
 		texture.Bind(); // Bind texture

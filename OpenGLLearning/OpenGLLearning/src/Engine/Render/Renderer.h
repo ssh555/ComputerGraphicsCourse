@@ -11,11 +11,15 @@ namespace Engine
 	class Texture;
 	class Material;
 
+#if false
 #define ASSERT(x) if(!(x)) __debugbreak();// Only MSVC
 #define GLCall(x) GLClearError();\
 		x;\
 		ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
+#else
+#define ASSERT(x) x;
+#define GLCall(x) x;
+#endif
 
 
 	void GLClearError();
@@ -30,7 +34,7 @@ namespace Engine
 		//void SetClearColor() const;
 
 		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader) const;
-		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, const Texture& texture) const;
+		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, Texture& texture) const;
 		void Draw(VertexArray& va, IndexBuffer& ib, Material& material);
 
 	};

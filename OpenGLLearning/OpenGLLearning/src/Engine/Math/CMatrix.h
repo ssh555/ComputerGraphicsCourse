@@ -43,6 +43,7 @@ namespace Engine
 		//矩阵相乘
 		CMatrix operator*(const CMatrix& p) const;
 		CMatrix& operator*=(const CMatrix& p);
+		bool operator!=(const CMatrix& other) const;
 		//矩阵与向量相乘
 		CVector vecMul(CVector& p) const;
 		//矩阵与点相乘

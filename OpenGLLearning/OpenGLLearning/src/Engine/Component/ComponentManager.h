@@ -8,6 +8,7 @@ namespace Engine
 	{
 		friend class Component;
 		friend class GlobalManager;
+		friend class RendererManager;
 
 	private:
 		ComponentManager();

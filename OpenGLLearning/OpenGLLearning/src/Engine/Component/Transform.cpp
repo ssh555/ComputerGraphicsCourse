@@ -18,6 +18,7 @@ namespace Engine
 
 	void Transform::SetLocalPosition(const CVector& position)
 	{
+		SetDirty(true);
 		m_localposition = position;
 	}
 
@@ -44,6 +45,7 @@ namespace Engine
 
 	void Transform::SetWorldPosition(const CVector& position)
 	{
+		SetDirty(true);
 		if (gameobject->m_parent)
 		{
 			// 如果有父物体，则计算局部坐标并设置
@@ -77,11 +79,13 @@ namespace Engine
 
 	void Transform::SetLocalRotation(const CQuaternion& rotation)
 	{
+		SetDirty(true);
 		m_localrotation = rotation;
 	}
 
 	void Transform::SetWorldRotation(const CQuaternion& rotation)
 	{
+		SetDirty(true);
 		if (gameobject->m_parent)
 		{
 			// 如果有父物体，则计算局部旋转并设置
@@ -119,21 +123,29 @@ namespace Engine
 
 	void Transform::SetLocalScale(const CVector& scale)
 	{
+		SetDirty(true);
 		m_localscale = scale;
 	}
 
-	Engine::CMatrix Transform::GetWorldTransform() const
+	Engine::CMatrix Transform::GetWorldTransform()
 	{
-		CMatrix worldTransform(1);
-		worldTransform = CMatrix::scale(worldTransform, GetWorldScale());
-		worldTransform *= GetWorldRotation().ToCMatrix();
-		worldTransform = CMatrix::translate(worldTransform, GetWorldPosition());
+		if (IsDirty)
+		{
+			IsDirty = false;
+			CMatrix worldTransform(1);
+			worldTransform = CMatrix::scale(worldTransform, GetWorldScale());
+			worldTransform *= GetWorldRotation().ToCMatrix();
+			worldTransform = CMatrix::translate(worldTransform, GetWorldPosition());
+			m_worldTransform = worldTransform;
+		}
 
-		return worldTransform;
+
+		return m_worldTransform;
 	}
 
 	void Transform::LookAt(const CVector& target)
 	{
+		SetDirty(true);
 		CVector direction = (target - GetWorldPosition()).Normalized();
 		CQuaternion rotation = CQuaternion::quatLookAt(direction, CVector::Up());
 		SetWorldRotation(rotation);
@@ -141,6 +153,7 @@ namespace Engine
 
 	void Transform::Translate(const CVector& translation)
 	{
+		SetDirty(true);
 		m_localposition += m_localrotation * translation;
 	}
 
@@ -161,6 +174,7 @@ namespace Engine
 
 	void Transform::Rotate(const CVector& axis, float angle)
 	{
+		SetDirty(true);
 		// 创建旋转四元数
 		CQuaternion rotation = CQuaternion::quatFromAxisAngle(axis, CMath::radians(angle));
 
@@ -170,6 +184,8 @@ namespace Engine
 
 	void Transform::RotateAround(const CVector& point, const CVector& axis, float angle)
 	{
+		SetDirty(true);
+
 		angle = CMath::radians(angle);
 		// 将局部坐标系中的位置转换为世界坐标系中的位置
 		CVector worldPoint = point;
@@ -209,6 +225,16 @@ namespace Engine
 		SetLocalPosition(newPosition);
 		SetLocalRotation(newRotation);
 		SetLocalScale(newScale);
+	}
+
+	void Transform::SetDirty(bool dirty)
+	{
+		this->IsDirty = dirty;
+		if(this->IsDirty)
+			for (auto obj : this->gameobject->GetChildren())
+			{
+				obj->GetTransform()->SetDirty(IsDirty);
+			}
 	}
 
 }

@@ -5,6 +5,7 @@
 #if USING_GLM
 #include "glm/glm.hpp"
 #endif
+#include <array>
 
 
 namespace Engine
@@ -55,6 +56,14 @@ namespace Engine
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 		unsigned int CompileShader(unsigned int type, const std::string& source);
 		unsigned int GetUniformLocation(const std::string& name);
+
+	private:
+		std::unordered_map<std::string, int> m_Uniform1iDict;
+		std::unordered_map<std::string, float> m_Uniform1fDict;
+		std::unordered_map<std::string, std::array<float, 2>> m_Uniform2fDict;
+		std::unordered_map<std::string, std::array<float, 3>> m_Uniform3fDict;
+		std::unordered_map<std::string, std::array<float, 4>> m_Uniform4fDict;
+		std::unordered_map<std::string, CMatrix> m_UniformMat4fDict;
 	};
 
 

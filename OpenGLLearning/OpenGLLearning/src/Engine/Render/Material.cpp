@@ -4,16 +4,21 @@
 #include "../Math/CMatrix.h"
 #include "../Global/GlobalManager.h"
 #include "RendererManager.h"
+#include "../Component/Transform.h"
+#include <Engine/Render/MeshRenderer.h>
 
 namespace Engine
 {
-
 	Material::Material()
 		: m_shader("res/shaders/StandardShader.shader"),
 		m_texturePath("res/textures/default_texture.png"),
-		m_Texture(std::make_unique<Engine::Texture>(m_texturePath))
+		m_pShader(GlobalManager::GetInstance().rendererManager->GetShader(m_shader)),
+		m_Texture(GlobalManager::GetInstance().rendererManager->GetTexture(m_texturePath))
 	{
-
+		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
+		this->SetUniform3f(MeshRenderer::LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
+		auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
+		this->SetUniform3f(MeshRenderer::LIGHTCOLOR, color.x, color.y, color.z);
 	}
 
 	const std::string& Material::GetShaderResPath() const
@@ -21,7 +26,7 @@ namespace Engine
 		return m_shader;
 	}
 
-	void Material::SetShader(const std::string shader)
+	void Material::SetShader(const std::string& shader)
 	{
 		// 清空存储的值
 		m_Uniform1iDict.clear();
@@ -33,11 +38,15 @@ namespace Engine
 
 		// 更换 Shader
 		m_shader = shader;
+		m_pShader = GlobalManager::GetInstance().rendererManager->GetShader(m_shader);
+		m_pShader->SetUniform1i("textureDiffuse", 0); // 假设纹理单元为0
 	}
 
-	Engine::Shader* Material::GetShader() 
+	Shader* Material::GetShader()
 	{
-		return GlobalManager::GetInstance().rendererManager->GetShader(m_shader);
+		if (!m_pShader)
+			m_pShader = GlobalManager::GetInstance().rendererManager->GetShader(m_shader);
+		return m_pShader;
 	}
 
 	const std::string& Material::GetTexturePath() const
@@ -45,45 +54,64 @@ namespace Engine
 		return m_texturePath;
 	}
 
-	const std::unique_ptr<Engine::Texture>& Material::GetTexture() const
+	const Engine::Texture& Material::GetTexture() const
 	{
-		return m_Texture;
+		return *m_Texture;
 	}
 
 	void Material::SetTexture(const std::string& texturePath)
 	{
-		m_Texture = std::make_unique<Engine::Texture>(texturePath);
+		m_Texture = GlobalManager::GetInstance().rendererManager->GetTexture(m_texturePath);
 		m_texturePath = texturePath;
 	}
 
 	void Material::SetUniform1i(const std::string& name, int value)
 	{
-		m_Uniform1iDict[name] = value;
+		if(m_Uniform1iDict[name] != value)
+			m_Uniform1iDict[name] = value;
 	}
 
 	void Material::SetUniform1f(const std::string& name, float v0)
 	{
-		m_Uniform1fDict[name] = v0;
+		if (m_Uniform1fDict[name] != v0)
+		{
+			m_Uniform1fDict[name] = v0;
+		}
 	}
 
 	void Material::SetUniform2f(const std::string& name, float v0, float v1)
 	{
-		m_Uniform2fDict[name] = { v0, v1 };
+		std::array<float, 2> tmp = { v0, v1 };
+		if (m_Uniform2fDict[name] != tmp)
+		{
+			m_Uniform2fDict[name] = tmp;
+		}
 	}
 
 	void Material::SetUniform3f(const std::string& name, float v0, float v1, float v2)
 	{
-		m_Uniform3fDict[name] = { v0, v1, v2 };
+		std::array<float, 3> tmp = { v0, v1, v2 };
+		if (m_Uniform3fDict[name] != tmp)
+		{
+			m_Uniform3fDict[name] = tmp;
+		}
 	}
 
 	void Material::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 	{
-		m_Uniform4fDict[name] = { v0, v1, v2, v3 };
+		std::array<float, 4> tmp = { v0, v1, v2, v3 };
+		if (m_Uniform4fDict[name] != tmp)
+		{
+			m_Uniform4fDict[name] = tmp;
+		}
 	}
 
 	void Material::SetUniformMat4f(const std::string& name, const CMatrix& matrix)
 	{
-		m_UniformMat4fDict[name] = matrix;
+		if (m_UniformMat4fDict[name] != matrix)
+		{
+			m_UniformMat4fDict[name] = matrix;
+		}
 	}
 
 	int Material::GetUniform1i(const std::string& name) const
@@ -150,40 +178,36 @@ namespace Engine
 	void Material::Bind()
 	{
 		m_Texture->Bind();
-
-		Shader* shader = GetShader();
 		// 绑定 Shader
-		shader->Bind();
+		m_pShader->Bind();
 
-		shader->SetUniform1i("textureDiffuse", 0); // 假设纹理单元为0
 		// 设置 uniform 值
 		for (const auto& pair : m_Uniform1iDict) {
-			shader->SetUniform1i(pair.first, pair.second);
+			m_pShader->SetUniform1i(pair.first, pair.second);
 		}
 
 		for (const auto& pair : m_Uniform1fDict) {
-			shader->SetUniform1f(pair.first, pair.second);
+			m_pShader->SetUniform1f(pair.first, pair.second);
 		}
 
 		for (const auto& pair : m_Uniform2fDict) {
 			const auto& value = pair.second;
-			shader->SetUniform2f(pair.first, value[0], value[1]);
+			m_pShader->SetUniform2f(pair.first, value[0], value[1]);
 		}
 
 		for (const auto& pair : m_Uniform3fDict) {
 			const auto& value = pair.second;
-			shader->SetUniform3f(pair.first, value[0], value[1], value[2]);
+			m_pShader->SetUniform3f(pair.first, value[0], value[1], value[2]);
 		}
 
 		for (const auto& pair : m_Uniform4fDict) {
 			const auto& value = pair.second;
-			shader->SetUniform4f(pair.first, value[0], value[1], value[2], value[3]);
+			m_pShader->SetUniform4f(pair.first, value[0], value[1], value[2], value[3]);
 		}
 
 		for (const auto& pair : m_UniformMat4fDict) {
-			shader->SetUniformMat4f(pair.first, pair.second);
+			m_pShader->SetUniformMat4f(pair.first, pair.second);
 		}
-
 	}
 
 	void Material::Unbind()
@@ -191,5 +215,4 @@ namespace Engine
 		Shader* shader = GetShader();
 		shader->Unbind();
 	}
-
 }

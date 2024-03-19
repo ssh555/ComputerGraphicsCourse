@@ -16,7 +16,7 @@ namespace Engine
 		Texture(const std::string& path);
 		~Texture();
 
-		void Bind(unsigned int slot = 0) const;
+		void Bind(unsigned int slot = 0);
 		void Unbind() const;
 
 		inline int GetWidth() const { return this->m_Width; }

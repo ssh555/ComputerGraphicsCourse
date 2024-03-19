@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "stb_image/stb_image.h"
+#include "../Global/GlobalManager.h"
 
 
 namespace Engine
@@ -44,10 +45,15 @@ namespace Engine
 		GLCall(glDeleteTextures(1, &this->m_RendererID));
 	}
 
-	void Texture::Bind(unsigned int slot /*= 0*/) const
+	void Texture::Bind(unsigned int slot /*= 0*/)
 	{
-		GLCall(glActiveTexture(GL_TEXTURE0 + slot));
-		GLCall(glBindTexture(GL_TEXTURE_2D, this->m_RendererID));
+		auto& map = GlobalManager::GetInstance().rendererManager->m_textureIDMap;
+		if (map[slot] != this->m_RendererID)
+		{
+			map[slot] = this->m_RendererID;
+			GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+			GLCall(glBindTexture(GL_TEXTURE_2D, this->m_RendererID));
+		}
 	}
 
 	void Texture::Unbind() const

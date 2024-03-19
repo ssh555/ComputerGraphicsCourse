@@ -1,6 +1,7 @@
 #pragma once
 #include <math.h>
 #include <iostream>
+#include <array>
 
 namespace Engine
 {
@@ -73,6 +74,8 @@ namespace Engine
 		CVector operator*(const CQuaternion& rot);
 		CVector operator/(const CVector& vec);
 		CVector& operator+=(const CVector& vec);
+		bool operator!=(const std::array<float, 3>& otherArray) const;
+		friend bool operator!=(const std::array<float, 3>& array, const CVector& vector);
 
 		//œÚ¡øµ„≥À
 		float dotMul(const CVector& vec);

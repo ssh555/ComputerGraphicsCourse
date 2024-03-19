@@ -269,6 +269,21 @@ namespace Engine
 		return *this;
 	}
 
+	bool CMatrix::operator!=(const CMatrix& other) const
+	{
+		// 在这里实现不相等比较的逻辑
+		// 你需要逐个比较矩阵中的每个元素，如果有任何一个元素不相等，则返回true，否则返回false
+		// 这里假设矩阵的维度和元素都是浮点型
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (data[i][j] != other.data[i][j]) {
+					return true; // 如果有元素不相等，返回true
+				}
+			}
+		}
+		return false; // 所有元素都相等，返回false
+	}
+
 	//矩阵与向量相乘
 	CVector CMatrix::vecMul(CVector& p) const
 	{//补0

@@ -47,27 +47,50 @@ namespace Engine
 
 	void Shader::SetUniform1i(const std::string& name, int value)
 	{
-		GLCall(glUniform1i(this->GetUniformLocation(name), value));
+		if (m_Uniform1iDict[name] != value)
+		{
+			GLCall(glUniform1i(this->GetUniformLocation(name), value));
+			m_Uniform1iDict[name] = value;
+		}
 	}
 
 	void Shader::SetUniform1f(const std::string& name, float v0)
 	{
-		GLCall(glUniform1f(this->GetUniformLocation(name), v0));
+		if (m_Uniform1fDict[name] != v0)
+		{
+			m_Uniform1fDict[name] = v0;
+			GLCall(glUniform1f(this->GetUniformLocation(name), v0));
+		}
 	}
 
 	void Shader::SetUniform2f(const std::string& name, float v0, float v1)
 	{
-		GLCall(glUniform2f(this->GetUniformLocation(name), v0, v1));
+		std::array<float, 2> tmp = { v0, v1 };
+		if (m_Uniform2fDict[name] != tmp)
+		{
+			m_Uniform2fDict[name] = tmp;
+			GLCall(glUniform2f(this->GetUniformLocation(name), v0, v1));
+		}
 	}
 
 	void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
 	{
-		GLCall(glUniform3f(this->GetUniformLocation(name), v0, v1, v2));
+		std::array<float, 3> tmp = { v0, v1, v2 };
+		if (m_Uniform3fDict[name] != tmp)
+		{
+			m_Uniform3fDict[name] = tmp;
+			GLCall(glUniform3f(this->GetUniformLocation(name), v0, v1, v2));
+		}
 	}
 
 	void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 	{
-		GLCall(glUniform4f(this->GetUniformLocation(name), v0, v1, v2, v3));
+		std::array<float, 4> tmp = { v0, v1, v2, v3 };
+		if (m_Uniform4fDict[name] != tmp)
+		{
+			m_Uniform4fDict[name] = tmp;
+			GLCall(glUniform4f(this->GetUniformLocation(name), v0, v1, v2, v3));
+		}
 	}
 
 #if USING_GLM
@@ -76,7 +99,11 @@ namespace Engine
 	void Shader::SetUniformMat4f(const std::string& name, const Engine::CMatrix& matrix)
 #endif
 	{
-		GLCall(glUniformMatrix4fv(this->GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+		if (m_UniformMat4fDict[name] != matrix)
+		{
+			m_UniformMat4fDict[name] = matrix;
+			GLCall(glUniformMatrix4fv(this->GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+		}
 	}
 
 

@@ -19,6 +19,7 @@ namespace Engine
 		friend class RendererManager;
 		friend class Material;
 		friend class MeshRenderer;
+		friend class Texture;
 
 	public:
 		static GlobalManager& GetInstance()
@@ -60,6 +61,7 @@ namespace Engine
 			// 更新Render <- 更新MVP
 			rendererManager->RenderAll();
 
+			globalLight->IsDirty = false;
 		}
 
 		void windowResizeCallback(GLFWwindow* window, int width, int height) {
