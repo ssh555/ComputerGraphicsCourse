@@ -1,0 +1,1 @@
+#shader vertex// 通用顶点着色器layout(location = 0) in vec4 position; // 顶点位置uniform mat4 model;       // 模型矩阵uniform mat4 PV;        // 投影矩阵 视图矩阵void main() {    gl_Position = PV * model * position;}#shader fragment#version 330 coreout vec4 FragColor; // 输出颜色uniform vec3 lineColor; // 线条颜色void main() {    FragColor = vec4(lineColor, 1.0); // 使用线条颜色，不考虑光照}

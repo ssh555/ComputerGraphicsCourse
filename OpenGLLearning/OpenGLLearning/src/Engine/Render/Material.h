@@ -14,7 +14,8 @@ namespace Engine
 	class Material
 	{
 	public:
-		Material();
+		//Material();
+		Material(const std::string& shaderpath = "res/shaders/StandardShader.shader");
 
 		const std::string& GetShaderResPath() const;
 		void SetShader(const std::string& shader);

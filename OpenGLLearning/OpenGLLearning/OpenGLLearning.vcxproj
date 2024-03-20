@@ -189,6 +189,8 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Render\CubeOutlineRenderer.cpp" />
+    <ClCompile Include="src\Engine\Render\LineRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\CapsuleRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\CubeRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\SphereRenderer.cpp" />
@@ -235,9 +237,12 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
   <ItemGroup>
     <None Include="imgui.ini" />
     <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\LineShader.shader" />
     <None Include="res\shaders\StandardShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Render\CubeOutlineRenderer.h" />
+    <ClInclude Include="src\Engine\Render\LineRenderer.h" />
     <ClInclude Include="src\Engine\Render\CapsuleRenderer.h" />
     <ClInclude Include="src\Engine\Render\CubeRenderer.h" />
     <ClInclude Include="src\Engine\Render\SphereRenderer.h" />

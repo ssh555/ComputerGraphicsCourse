@@ -67,6 +67,10 @@ namespace Engine
 	void MeshRenderer::SetMaterial(Material* mat)
 	{
 		m_mat = mat;
+		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
+		m_mat->SetUniform3f(MeshRenderer::LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
+		auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
+		m_mat->SetUniform3f(MeshRenderer::LIGHTCOLOR, color.x, color.y, color.z);
 	}
 
 	Material* MeshRenderer::GetMaterial()

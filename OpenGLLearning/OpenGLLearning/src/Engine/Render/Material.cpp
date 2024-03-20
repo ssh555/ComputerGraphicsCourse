@@ -9,16 +9,14 @@
 
 namespace Engine
 {
-	Material::Material()
-		: m_shader("res/shaders/StandardShader.shader"),
+
+	Material::Material(const std::string& shaderpath /*= "res/shaders/StandardShader.shader"*/)
+		: m_shader(shaderpath),
 		m_texturePath("res/textures/default_texture.png"),
 		m_pShader(GlobalManager::GetInstance().rendererManager->GetShader(m_shader)),
 		m_Texture(GlobalManager::GetInstance().rendererManager->GetTexture(m_texturePath))
 	{
-		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
-		this->SetUniform3f(MeshRenderer::LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
-		auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
-		this->SetUniform3f(MeshRenderer::LIGHTCOLOR, color.x, color.y, color.z);
+
 	}
 
 	const std::string& Material::GetShaderResPath() const

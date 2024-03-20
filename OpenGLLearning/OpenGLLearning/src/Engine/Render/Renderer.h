@@ -37,6 +37,9 @@ namespace Engine
 		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, Texture& texture) const;
 		void Draw(VertexArray& va, IndexBuffer& ib, Material& material);
 
+
+		void DrawLines(VertexArray& va, IndexBuffer& ib, Material& material, float lineWidth);
+
 	};
 
 

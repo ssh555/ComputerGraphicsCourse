@@ -8,7 +8,7 @@ namespace Engine
 	{
 		SetCubeMesh();
 
-		m_mat = new Material();
+		SetMaterial(new Material());
 
 		m_mat->SetUniform1f("ambientStrength", 0.6f);
 		m_mat->SetUniform1f("specularStrength", 0.5);

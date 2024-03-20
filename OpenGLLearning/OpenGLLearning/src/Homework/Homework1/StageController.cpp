@@ -7,6 +7,8 @@
 #include "Engine/Render/Material.h"
 #include "Engine/Render/MeshRenderer.h"
 #include "Engine/Math/CMath.h"
+#include "Engine/Render/LineRenderer.h"
+#include "Engine/Render/CubeOutlineRenderer.h"
 
 StageController::StageController(GameObject* obj)
 	: Component(obj)
@@ -319,5 +321,6 @@ Engine::GameObject* StageController::CreateCube()
 	auto ret = new GameObject();
 	ret->SetParent(*this->gameobject);
 	ret->AddComponent<CubeRenderer>();
+	ret->AddComponent<CubeOutlineRenderer>();
 	return ret;
 }

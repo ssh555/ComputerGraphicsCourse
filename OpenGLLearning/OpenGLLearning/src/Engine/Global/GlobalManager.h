@@ -19,6 +19,7 @@ namespace Engine
 		friend class RendererManager;
 		friend class Material;
 		friend class MeshRenderer;
+		friend class LineRenderer;
 		friend class Texture;
 
 	public:

@@ -115,6 +115,10 @@ int main(void)
 		// 指定要剔除的面为背面
 		glCullFace(GL_BACK);
 
+		// 启用抗锯齿
+		glfwWindowHint(GLFW_SAMPLES, 4); // 在创建窗口时启用4倍多重采样
+		glEnable(GL_LINE_SMOOTH);
+
 		Renderer renderer;
 
 		// glDebugMessageCallback

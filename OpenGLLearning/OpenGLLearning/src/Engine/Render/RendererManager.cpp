@@ -5,6 +5,7 @@
 #include "../Component/Transform.h"
 #include "MeshRenderer.h"
 #include "Texture.h"
+#include "LineRenderer.h"
 
 namespace Engine
 {
@@ -52,7 +53,10 @@ namespace Engine
 			{
 				renderer->Render(PV, pos);
 			}
-
+			for (auto renderer : m_enabledLineRenderers)
+			{
+				renderer->Render(PV, pos);
+			}
 		}
 	}
 
@@ -70,6 +74,23 @@ namespace Engine
 		{
 			m_enabledRenderers.erase(std::remove(m_enabledRenderers.begin(), m_enabledRenderers.end(), renderer), m_enabledRenderers.end());
 			m_disabledRenderers.push_back(renderer);
+		}
+	}
+
+	void RendererManager::AlterLineRendererEnableList(LineRenderer* renderer)
+	{
+		auto mgr = GlobalManager::GetInstance().componentManager;
+		if (renderer->GetEnable())
+		{
+			m_disabledLineRenderers.erase(std::remove(m_disabledLineRenderers.begin(), m_disabledLineRenderers.end(), renderer), m_disabledLineRenderers.end());
+			m_enabledLineRenderers.push_back(renderer);
+			mgr->m_enabledComponents.erase(std::remove(mgr->m_enabledComponents.begin(), mgr->m_enabledComponents.end(), renderer), mgr->m_enabledComponents.end());
+			mgr->m_disabledComponents.push_back(renderer);
+		}
+		else
+		{
+			m_enabledLineRenderers.erase(std::remove(m_enabledLineRenderers.begin(), m_enabledLineRenderers.end(), renderer), m_enabledLineRenderers.end());
+			m_disabledLineRenderers.push_back(renderer);
 		}
 	}
 

@@ -61,5 +61,20 @@ namespace Engine
 
 	}
 
+	void Renderer::DrawLines(VertexArray& va, IndexBuffer& ib, Material& material, float lineWidth)
+	{
+		material.Bind();
+		va.Bind();
+		ib.Bind();
+
+		GLCall(glLineWidth(lineWidth));
+
+		// 绘制线条
+		GLCall(glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+
+		// 恢复默认线条宽度
+		GLCall(glLineWidth(1.0f));
+	}
+
 }
 
