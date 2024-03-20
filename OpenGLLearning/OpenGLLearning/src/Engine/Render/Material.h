@@ -13,8 +13,12 @@ namespace Engine
 
 	class Material
 	{
+		friend class MeshRenderer;
+	private:
+		bool IsDelete = false;
 	public:
 		Material();
+		~Material();
 
 		const std::string& GetShaderResPath() const;
 		void SetShader(const std::string& shader);

@@ -226,7 +226,6 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClCompile Include="src\Engine\Render\VertexBuffer.cpp" />
     <ClCompile Include="src\Engine\Render\VertexBufferLayout.cpp" />
     <ClCompile Include="src\Engine\Render\Texture.cpp" />
-    <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\Engine\Component\Transform.cpp" />
     <ClCompile Include="src\Homework\Homework1\TestCVector.cpp" />
     <ClCompile Include="src\Homework\Homework1\Stage.cpp" />
@@ -265,7 +264,6 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClInclude Include="src\Engine\Render\Renderer.h" />
     <ClInclude Include="src\Engine\Render\Shader.h" />
     <ClInclude Include="src\tests\Test.h" />
-    <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\Engine\Render\Texture.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />

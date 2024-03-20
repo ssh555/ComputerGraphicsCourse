@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "GL/glew.h"
 
 #include "Renderer.h"
 #include "stb_image/stb_image.h"

@@ -1,7 +1,7 @@
 #pragma once
+#include "GL/glew.h"
 
-#include <GL/glew.h>
-#include "Texture.h"
+#include <vector>
 
 namespace Engine
 {
@@ -10,6 +10,7 @@ namespace Engine
 	class Shader;
 	class Texture;
 	class Material;
+	class CMatrix;
 
 #if false
 #define ASSERT(x) if(!(x)) __debugbreak();// Only MSVC
@@ -29,6 +30,8 @@ namespace Engine
 	class Renderer
 	{
 	public:
+		Renderer();
+		~Renderer();
 		void Clear() const;
 
 		//void SetClearColor() const;
@@ -36,6 +39,12 @@ namespace Engine
 		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader) const;
 		void Draw(const VertexArray& va, IndexBuffer& ib, const Shader& shader, Texture& texture) const;
 		void Draw(VertexArray& va, IndexBuffer& ib, Material& material);
+
+		void DrawInstanced(VertexArray& va, IndexBuffer& ib, Material& material, const std::vector<CMatrix>& transforms);
+
+	private:
+		static GLuint transformBuffer;
+		static unsigned int CNT;
 
 	};
 

@@ -1,13 +1,22 @@
 #include "RendererManager.h"
+#include "Renderer.h"
+
 #include "../Global/GlobalManager.h"
 #include "../Math/CMatrix.h"
 #include "../Camera/Camera.h"
 #include "../Component/Transform.h"
 #include "MeshRenderer.h"
 #include "Texture.h"
+#include "Material.h"
+#include "Shader.h"
 
 namespace Engine
 {
+	const std::string RendererManager::PVSTR = "PV";
+	const std::string RendererManager::VIEWPOSSTR = "viewPos";
+	const std::string RendererManager::LIGHTDIRSTR = "lightDir";
+	const std::string RendererManager::LIGHTCOLOR = "lightColor";
+
 	RendererManager::~RendererManager()
 	{
 		// 释放m_shaderMap中所有Shader对象指针所占用的内存
@@ -46,11 +55,32 @@ namespace Engine
 				glDisable(GL_DEPTH_TEST);
 			}
 			CMatrix PV = camera->GetProjectionMatrix() * camera->GetViewMatrix();
-			CVector pos = camera->transform->GetWorldPosition();
-			
-			for (auto renderer : m_enabledRenderers)
+			CVector viewpoint = camera->transform->GetWorldPosition();
+			Renderer renderer;
+			for (auto rendererList : m_enablebatchRenderersMap)
 			{
-				renderer->Render(PV, pos);
+				if (rendererList.second.size() >= 1)
+				{
+					std::vector<CMatrix> transforms;
+					for (auto renderer : rendererList.second)
+					{
+						transforms.push_back(renderer->gameobject->GetTransform()->GetWorldTransform());
+					}
+					Material* m_mat = rendererList.first;
+					m_mat->SetUniformMat4f(PVSTR, PV);
+					m_mat->SetUniform3f(VIEWPOSSTR, viewpoint.x, viewpoint.y, viewpoint.z);
+					if (GlobalManager::GetInstance().globalLight->IsDirty)
+					{
+						auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
+						m_mat->SetUniform3f(LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
+						auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
+						m_mat->SetUniform3f(LIGHTCOLOR, color.x, color.y, color.z);
+					}
+
+					auto meshrenderer = rendererList.second[0];
+					renderer.DrawInstanced(*meshrenderer->m_VAO, *meshrenderer->m_IndexBuffer, *m_mat, transforms);
+				}
+
 			}
 
 		}
@@ -58,20 +88,33 @@ namespace Engine
 
 	void RendererManager::AlterRendererEnableList(MeshRenderer* renderer)
 	{
-		auto mgr = GlobalManager::GetInstance().componentManager;
 		if (renderer->GetEnable())
 		{
 			m_disabledRenderers.erase(std::remove(m_disabledRenderers.begin(), m_disabledRenderers.end(), renderer), m_disabledRenderers.end());
-			m_enabledRenderers.push_back(renderer);
-			mgr->m_enabledComponents.erase(std::remove(mgr->m_enabledComponents.begin(), mgr->m_enabledComponents.end(), renderer), mgr->m_enabledComponents.end());
-			mgr->m_disabledComponents.push_back(renderer);
+			m_enablebatchRenderersMap[renderer->GetMaterial()].push_back(renderer);
 		}
 		else
 		{
-			m_enabledRenderers.erase(std::remove(m_enabledRenderers.begin(), m_enabledRenderers.end(), renderer), m_enabledRenderers.end());
+			auto& tmp = m_enablebatchRenderersMap[renderer->GetMaterial()];
+			tmp.erase(std::remove(tmp.begin(), tmp.end(), renderer), tmp.end());
 			m_disabledRenderers.push_back(renderer);
 		}
 	}
+
+	void RendererManager::AlterRendererMaterial(MeshRenderer* renderer, Material* last)
+	{
+		if (renderer->GetEnable())
+		{
+			auto& tmp = m_enablebatchRenderersMap[last];
+			tmp.erase(std::remove(tmp.begin(), tmp.end(), renderer), tmp.end());
+			// 如果 tmp 为空，就从 m_enablebatchRenderersMap 中移除对应的项
+			if (tmp.empty()) {
+				m_enablebatchRenderersMap.erase(last);
+			}
+			m_enablebatchRenderersMap[renderer->GetMaterial()].push_back(renderer);
+		}
+	}
+
 
 	Engine::Shader* RendererManager::GetShader(const std::string& shaderPath)
 	{

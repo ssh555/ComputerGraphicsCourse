@@ -10,11 +10,7 @@
 
 namespace Engine
 {
-	const std::string MeshRenderer::PVSTR = "PV";
-	const std::string MeshRenderer::MODELSTR = "model";
-	const std::string MeshRenderer::VIEWPOSSTR = "viewPos";
-	const std::string MeshRenderer::LIGHTDIRSTR = "lightDir";
-	const std::string MeshRenderer::LIGHTCOLOR = "lightColor";
+
 
 	MeshRenderer::MeshRenderer(GameObject* obj) : Component(obj),
 		m_mesh(nullptr), m_mat(nullptr)
@@ -25,7 +21,8 @@ namespace Engine
 	MeshRenderer::~MeshRenderer()
 	{
 		IsDelete = true;
-		delete m_mat;
+		if(!m_mat->IsDelete)
+			delete m_mat;
 		delete m_mesh;
 	}
 
@@ -66,7 +63,9 @@ namespace Engine
 
 	void MeshRenderer::SetMaterial(Material* mat)
 	{
+		Material* last = m_mat;
 		m_mat = mat;
+		GlobalManager::GetInstance().rendererManager->AlterRendererMaterial(this, last);
 	}
 
 	Material* MeshRenderer::GetMaterial()
@@ -84,22 +83,22 @@ namespace Engine
 		GlobalManager::GetInstance().rendererManager->AlterRendererEnableList(this);
 	}
 
-	void MeshRenderer::Render(const CMatrix& PV, const CVector& viewpoint)
-	{
-		Renderer renderer;
-		m_mat->SetUniformMat4f(PVSTR, PV);
-		m_mat->SetUniformMat4f(MODELSTR, transform->GetWorldTransform());
-		m_mat->SetUniform3f(VIEWPOSSTR, viewpoint.x, viewpoint.y, viewpoint.z);
-		if (GlobalManager::GetInstance().globalLight->IsDirty)
-		{
-			auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
-			m_mat->SetUniform3f(LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
-			auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
-			m_mat->SetUniform3f(LIGHTCOLOR, color.x, color.y, color.z);
-		}
+	//void MeshRenderer::Render(const CMatrix& PV, const CVector& viewpoint)
+	//{
+	//	Renderer renderer;
+	//	m_mat->SetUniformMat4f(PVSTR, PV);
+	//	m_mat->SetUniformMat4f(MODELSTR, transform->GetWorldTransform());
+	//	m_mat->SetUniform3f(VIEWPOSSTR, viewpoint.x, viewpoint.y, viewpoint.z);
+	//	if (GlobalManager::GetInstance().globalLight->IsDirty)
+	//	{
+	//		auto lightdir = (GlobalManager::GetInstance().globalLight->GetTransform()->GetForward());
+	//		m_mat->SetUniform3f(LIGHTDIRSTR, lightdir.x, lightdir.y, lightdir.z);
+	//		auto color = GlobalManager::GetInstance().globalLight->GetLightColor() * GlobalManager::GetInstance().globalLight->GetIntensity();
+	//		m_mat->SetUniform3f(LIGHTCOLOR, color.x, color.y, color.z);
+	//	}
 
 
-		renderer.Draw(*m_VAO, *m_IndexBuffer, *m_mat);
-	}
+	//	renderer.Draw(*m_VAO, *m_IndexBuffer, *m_mat);
+	//}
 
 }

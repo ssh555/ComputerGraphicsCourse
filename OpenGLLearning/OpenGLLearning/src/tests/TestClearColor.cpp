@@ -1,12 +1,11 @@
 #include "TestClearColor.h"
 
-#include "Engine/Render/Renderer.h"
-using namespace Engine;
 
-#include <GL/glew.h>
+#include "Engine/Render/Renderer.h"
+
 #include <GLFW/glfw3.h>
 #include "imgui/imgui.h"
-
+using namespace Engine;
 namespace test
 {
 

@@ -7,7 +7,8 @@ Engine::SphereRenderer::SphereRenderer(GameObject* obj, float radius /*= 1.0f*/,
 {
 	SetSphereMesh(radius, rings, sectors);
 
-	m_mat = new Material();
+	this->SetMaterial(new Material());
+
 
 	m_mat->SetUniform1f("ambientStrength", 0.6f);
 	m_mat->SetUniform1f("specularStrength", 0.5f);
