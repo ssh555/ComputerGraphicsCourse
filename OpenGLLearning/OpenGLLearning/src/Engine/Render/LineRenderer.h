@@ -64,6 +64,8 @@ namespace Engine
 		std::unique_ptr<Engine::VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<Engine::IndexBuffer> m_IndexBuffer;
 
+		static Material* LINEMAT;
+
 	};
 
 

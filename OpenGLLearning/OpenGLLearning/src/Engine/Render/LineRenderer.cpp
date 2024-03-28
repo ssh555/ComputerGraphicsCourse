@@ -16,7 +16,7 @@ namespace Engine
 	const std::string LineRenderer::LINECOLOR = "lineColor";
 
 	LineRenderer::LineRenderer(GameObject* obj) : Component(obj, false),
-		m_mesh(nullptr), m_mat(new Material("res/shaders/LineShader.shader"))
+		m_mesh(nullptr), m_mat(LINEMAT)
 	{
 		GlobalManager::GetInstance().rendererManager->AlterLineRendererEnableList(this);
 		m_mat->SetUniform3f(LineRenderer::LINECOLOR, 1.0f, 1.0f, 1.0f);
@@ -90,5 +90,7 @@ namespace Engine
 
 		renderer.DrawLines(*m_VAO, *m_IndexBuffer, *m_mat, this->m_LineWidth);
 	}
+
+	Engine::Material* LineRenderer::LINEMAT = nullptr;
 
 }

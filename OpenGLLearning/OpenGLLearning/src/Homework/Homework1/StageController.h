@@ -8,6 +8,7 @@ namespace Engine
 {
 	class GameObject;
 	class CVector;
+	class Material;
 }
 
 using namespace Engine;
@@ -50,7 +51,8 @@ private:
 	// ≥ı ºªØ≈‰÷√Stage≈‰…´
 	void InitStageColor();
 
-	GameObject* CreateCube();
+	GameObject* CreateCube(Material *mat);
+	Material* CreateMat();
 
 private:
 	struct StageColor

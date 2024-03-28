@@ -10,13 +10,17 @@
 namespace Engine
 {
 
-	Material::Material(const std::string& shaderpath /*= "res/shaders/StandardShader.shader"*/)
+	Material::Material(const std::string& shaderpath /*= "res/shaders/StandardShader.shader"*/, bool IsSetTex)
 		: m_shader(shaderpath),
 		m_texturePath("res/textures/default_texture.png"),
-		m_pShader(GlobalManager::GetInstance().rendererManager->GetShader(m_shader)),
-		m_Texture(GlobalManager::GetInstance().rendererManager->GetTexture(m_texturePath))
+		m_pShader(nullptr),
+		m_Texture(nullptr)
 	{
-
+		this->SetShader(m_shader);
+		if (IsSetTex)
+		{
+			this->SetTexture(m_texturePath);
+		}
 	}
 
 	const std::string& Material::GetShaderResPath() const
@@ -26,24 +30,20 @@ namespace Engine
 
 	void Material::SetShader(const std::string& shader)
 	{
-		// 清空存储的值
-		m_Uniform1iDict.clear();
-		m_Uniform1fDict.clear();
-		m_Uniform2fDict.clear();
-		m_Uniform3fDict.clear();
-		m_Uniform4fDict.clear();
-		m_UniformMat4fDict.clear();
-
 		// 更换 Shader
 		m_shader = shader;
-		m_pShader = GlobalManager::GetInstance().rendererManager->GetShader(m_shader);
+		if (m_pShader)
+		{
+			delete m_pShader;
+		}
+		m_pShader = new Shader(m_shader);
 		m_pShader->SetUniform1i("textureDiffuse", 0); // 假设纹理单元为0
 	}
 
 	Shader* Material::GetShader()
 	{
 		if (!m_pShader)
-			m_pShader = GlobalManager::GetInstance().rendererManager->GetShader(m_shader);
+			m_pShader = new Shader(m_shader);
 		return m_pShader;
 	}
 
@@ -61,151 +61,50 @@ namespace Engine
 	{
 		m_Texture = GlobalManager::GetInstance().rendererManager->GetTexture(m_texturePath);
 		m_texturePath = texturePath;
+		this->SetUniform1i("textureDiffuse", 0);
 	}
 
 	void Material::SetUniform1i(const std::string& name, int value)
 	{
-		if(m_Uniform1iDict[name] != value)
-			m_Uniform1iDict[name] = value;
+		m_pShader->Bind();
+		m_pShader->SetUniform1i(name, value);
 	}
 
 	void Material::SetUniform1f(const std::string& name, float v0)
 	{
-		if (m_Uniform1fDict[name] != v0)
-		{
-			m_Uniform1fDict[name] = v0;
-		}
+		m_pShader->Bind();
+		m_pShader->SetUniform1f(name, v0);
 	}
 
 	void Material::SetUniform2f(const std::string& name, float v0, float v1)
 	{
-		std::array<float, 2> tmp = { v0, v1 };
-		if (m_Uniform2fDict[name] != tmp)
-		{
-			m_Uniform2fDict[name] = tmp;
-		}
+		m_pShader->Bind();
+		m_pShader->SetUniform2f(name, v0, v1);
 	}
 
 	void Material::SetUniform3f(const std::string& name, float v0, float v1, float v2)
 	{
-		std::array<float, 3> tmp = { v0, v1, v2 };
-		if (m_Uniform3fDict[name] != tmp)
-		{
-			m_Uniform3fDict[name] = tmp;
-		}
+		m_pShader->Bind();
+		m_pShader->SetUniform3f(name, v0, v1, v2);
 	}
 
 	void Material::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 	{
-		std::array<float, 4> tmp = { v0, v1, v2, v3 };
-		if (m_Uniform4fDict[name] != tmp)
-		{
-			m_Uniform4fDict[name] = tmp;
-		}
+		m_pShader->Bind();
+		m_pShader->SetUniform4f(name, v0, v1, v2, v3);
 	}
 
 	void Material::SetUniformMat4f(const std::string& name, const CMatrix& matrix)
 	{
-		if (m_UniformMat4fDict[name] != matrix)
-		{
-			m_UniformMat4fDict[name] = matrix;
-		}
+		m_pShader->Bind();
+		m_pShader->SetUniformMat4f(name, matrix);
 	}
-
-	int Material::GetUniform1i(const std::string& name) const
-	{
-		auto it = m_Uniform1iDict.find(name);
-		if (it != m_Uniform1iDict.end()) {
-			return it->second;
-		}
-		// 如果键不存在，可以选择返回一个默认值，或者抛出异常，这里选择返回 0
-		return 0;
-	}
-
-	float Material::GetUniform1f(const std::string& name) const
-	{
-		auto it = m_Uniform1fDict.find(name);
-		if (it != m_Uniform1fDict.end()) {
-			return it->second;
-		}
-		// 返回默认值 0.0f
-		return 0.0f;
-	}
-
-	std::array<float, 2> Material::GetUniform2f(const std::string& name) const
-	{
-		auto it = m_Uniform2fDict.find(name);
-		if (it != m_Uniform2fDict.end()) {
-			return it->second;
-		}
-		// 返回默认值 {0.0f, 0.0f}
-		return { 0.0f, 0.0f };
-	}
-
-	std::array<float, 3> Material::GetUniform3f(const std::string& name) const
-	{
-		auto it = m_Uniform3fDict.find(name);
-		if (it != m_Uniform3fDict.end()) {
-			return it->second;
-		}
-		// 返回默认值 {0.0f, 0.0f, 0.0f}
-		return { 0.0f, 0.0f, 0.0f };
-	}
-
-	std::array<float, 4> Material::GetUniform4f(const std::string& name) const
-	{
-		auto it = m_Uniform4fDict.find(name);
-		if (it != m_Uniform4fDict.end()) {
-			return it->second;
-		}
-		// 返回默认值 {0.0f, 0.0f, 0.0f, 0.0f}
-		return { 0.0f, 0.0f, 0.0f, 0.0f };
-	}
-
-	const Engine::CMatrix& Material::GetUniformMat4f(const std::string& name) const
-	{
-		static const CMatrix identityMatrix(1); // 如果键不存在，返回一个默认的单位矩阵
-		auto it = m_UniformMat4fDict.find(name);
-		if (it != m_UniformMat4fDict.end()) {
-			return it->second;
-		}
-		// 返回默认的单位矩阵
-		return identityMatrix;
-	}
-
+	
 	void Material::Bind()
 	{
 		m_Texture->Bind();
 		// 绑定 Shader
 		m_pShader->Bind();
-
-		// 设置 uniform 值
-		for (const auto& pair : m_Uniform1iDict) {
-			m_pShader->SetUniform1i(pair.first, pair.second);
-		}
-
-		for (const auto& pair : m_Uniform1fDict) {
-			m_pShader->SetUniform1f(pair.first, pair.second);
-		}
-
-		for (const auto& pair : m_Uniform2fDict) {
-			const auto& value = pair.second;
-			m_pShader->SetUniform2f(pair.first, value[0], value[1]);
-		}
-
-		for (const auto& pair : m_Uniform3fDict) {
-			const auto& value = pair.second;
-			m_pShader->SetUniform3f(pair.first, value[0], value[1], value[2]);
-		}
-
-		for (const auto& pair : m_Uniform4fDict) {
-			const auto& value = pair.second;
-			m_pShader->SetUniform4f(pair.first, value[0], value[1], value[2], value[3]);
-		}
-
-		for (const auto& pair : m_UniformMat4fDict) {
-			m_pShader->SetUniformMat4f(pair.first, pair.second);
-		}
 	}
 
 	void Material::Unbind()

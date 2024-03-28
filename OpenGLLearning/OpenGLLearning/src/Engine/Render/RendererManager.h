@@ -17,10 +17,7 @@ namespace Engine
 		friend class Material;
 
 	private:
-		RendererManager()
-		{
-
-		}
+		RendererManager();
 
 		~RendererManager();
 
@@ -31,15 +28,12 @@ namespace Engine
 
 		void AlterLineRendererEnableList(LineRenderer* renderer);
 
-		Shader* GetShader(const std::string& shaderPath);
-
 		Texture* GetTexture(const std::string& path);
 
 	public:
 		std::unordered_map<unsigned int, unsigned int> m_textureIDMap;
 
 	private:
-		std::unordered_map<std::string, Shader*> m_shaderMap;
 		std::unordered_map<std::string, Texture*> m_TexturesMap;
 		std::vector<MeshRenderer*> m_enabledRenderers;
 		std::vector<MeshRenderer*> m_disabledRenderers;

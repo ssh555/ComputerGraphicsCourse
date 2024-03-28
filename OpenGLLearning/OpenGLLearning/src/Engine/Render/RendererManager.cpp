@@ -6,30 +6,18 @@
 #include "MeshRenderer.h"
 #include "Texture.h"
 #include "LineRenderer.h"
+#include "Material.h"
 
 namespace Engine
 {
+
+	RendererManager::RendererManager()
+	{
+		LineRenderer::LINEMAT = new Material("res/shaders/LineShader.shader", false);
+	}
+
 	RendererManager::~RendererManager()
 	{
-		// 释放m_shaderMap中所有Shader对象指针所占用的内存
-		for (auto& pair : m_shaderMap)
-		{
-			delete pair.second; // 删除指针指向的对象
-		}
-		m_shaderMap.clear(); // 清空unordered_map
-
-		// 不需要，ComponentManager已经delete
-		//// 清理其他资源，如果有的话
-		//for (auto renderer : m_enabledRenderers)
-		//{
-		//	if(renderer && !renderer->IsDelete)
-		//		delete renderer;
-		//}
-		//for (auto renderer : m_disabledRenderers)
-		//{
-		//	if (!renderer->IsDelete)
-		//		delete renderer;
-		//}
 	}
 
 	void RendererManager::RenderAll()
@@ -91,23 +79,6 @@ namespace Engine
 		{
 			m_enabledLineRenderers.erase(std::remove(m_enabledLineRenderers.begin(), m_enabledLineRenderers.end(), renderer), m_enabledLineRenderers.end());
 			m_disabledLineRenderers.push_back(renderer);
-		}
-	}
-
-	Engine::Shader* RendererManager::GetShader(const std::string& shaderPath)
-	{
-		auto shaderIt = m_shaderMap.find(shaderPath);
-		if (shaderIt == m_shaderMap.end())
-		{
-			// 如果字典中不存在对应路径的着色器，则创建新的着色器并添加到字典中
-			Shader* newShader = new Shader(shaderPath);
-			m_shaderMap[shaderPath] = std::move(newShader);
-			return m_shaderMap[shaderPath]; // 返回对应路径的着色器的引用
-		}
-		else
-		{
-			// 如果字典中存在对应路径的着色器，则直接返回引用
-			return shaderIt->second;
 		}
 	}
 
