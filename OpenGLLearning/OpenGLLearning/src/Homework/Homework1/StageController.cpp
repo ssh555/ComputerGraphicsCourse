@@ -62,6 +62,7 @@ void StageController::CreateAStage()
 	auto mat = CreateMat();
 	// 中心舞台块 -> 位置在(0, 0, 0)
 	auto centerStage = CreateCube(mat, "A-15");
+	//centerStage->GetComponent<MeshRenderer>()->bRayCast = true;
 	m_AStage.push_back(centerStage);
 	auto centerTransform = centerStage->GetTransform();
 	centerTransform->SetWorldPosition(this->gameobject->GetTransform()->GetWorldPosition() + CVector(0, 6, 0));
@@ -331,7 +332,7 @@ Engine::GameObject* StageController::CreateCube(Material* mat, const string& nam
 	auto ret = new GameObject(name);
 	ret->SetParent(*this->gameobject);
 	ret->AddComponent<CubeRenderer>()->SetMaterial(mat);
-	ret->AddComponent<CubeOutlineRenderer>();
+	ret->AddComponent<CubeOutlineRenderer>()->m_LineWidth = 2;
 	return ret;
 }
 

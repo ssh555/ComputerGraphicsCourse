@@ -48,6 +48,8 @@ namespace Engine
 		CVector vecMul(CVector& p) const;
 		//矩阵与点相乘
 		CVector posMul(CVector& p) const;
+		CVector posMul(const CVector& p) const;
+		CVector posMul(CVector& p);
 		//设置为旋转矩阵
 		void SetRotate(float seta, CVector axis);
 		//设置为平移矩阵

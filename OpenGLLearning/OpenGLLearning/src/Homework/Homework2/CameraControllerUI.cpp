@@ -5,6 +5,7 @@
 #include "imgui/imgui.h"
 #include "Engine/Component/Transform.h"
 #include "Engine/Math/CVector.h"
+#include "Engine/Math/CEuler.h"
 
 
 using namespace Engine;
@@ -17,5 +18,24 @@ CameraControllerUI::CameraControllerUI()
 void CameraControllerUI::OnImGuiRender()
 {
 	auto pos = controller->transform->GetWorldPosition();
-	ImGui::Text("%s: (%.2f, %.2f, %.2f)", "position", pos.x, pos.y,pos.z);
+	if (ImGui::DragFloat3("position", pos))
+	{
+		controller->transform->SetWorldPosition(pos);
+
+	}
+
+	ImGui::DragFloat("move speed", &controller->moveSpeed);
+
+	auto rot = controller->transform->GetWorldRotation().ToCEuler();
+	CVector rotation(rot.h, rot.p, rot.b);
+	if (ImGui::DragFloat3("rotation", rotation))
+	{
+		rot.p = rotation.y;
+		rot.h = rotation.x;
+		rot.b = rotation.z;
+		controller->transform->SetWorldRotation(rot.ToQuaternion());
+	}
+
+	ImGui::DragFloat("rotate speed", &controller->rotSpeed);
+
 }

@@ -19,18 +19,23 @@ protected:
 
 	virtual void LateTick(float deltatime) override;
 
-	void Move();
-	void Rotate();
+	void Move(float deltatime);
+	void Rotate(float deltatime);
 
 protected:
 	Engine::Camera* m_camera;
 
 	Engine::LineRenderer* m_lineRenderer;
 
-	float moveSpeed = 1.0f;
-	float rotSpeed = 1.0f;
+	void SelectGameObject(Engine::GameObject* obj);
 
-	void PrintCurrentState();
+
+public:
+	float moveSpeed = 60.0f;
+	float rotSpeed = 30.0f;
+
+	Engine::GameObject* CurSelected = nullptr;
+
 
 };
 

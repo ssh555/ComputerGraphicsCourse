@@ -119,4 +119,62 @@ namespace Engine
 		return m_ProjectionType;
 	}
 
+	Engine::CVector Camera::ScreenToWorldOnPoint(CVector& point)
+	{
+		// 获取窗口尺寸
+		int screenWidth, screenHeight;
+		GlobalManager::GetInstance().GetViewPortSize(screenWidth, screenHeight);
+		// 标准化位置
+		point.x = (2.0f * point.x) / screenWidth - 1.0f;
+		point.y = 1.0f - (2.0f * point.y) / screenHeight;
+		// 生成射线方向
+		auto m = this->GetProjectionMatrix();
+		auto p = m.GetInverse().posMul(point);
+		return this->GetViewMatrix().GetInverse().posMul(p);
+	}
+
+	Engine::CVector Camera::ScreenToWorldOnDirection(CVector& dir)
+	{
+		// 获取摄像机的视图矩阵和投影矩阵
+		Engine::CMatrix viewMatrix = GetViewMatrix();
+		Engine::CMatrix projectionMatrix = GetProjectionMatrix();
+
+		// 将屏幕上的方向向量转换为投影空间中的方向向量
+		Engine::CVector projectedDir = projectionMatrix.GetInverse().vecMul(dir);
+
+		// 将投影空间中的方向向量转换为世界空间中的方向向量
+		return viewMatrix.GetInverse().vecMul(projectedDir);
+	}
+
+	Engine::CVector Camera::WorldToScreenOnPoint(CVector& point)
+	{
+		// 获取摄像机的视图矩阵和投影矩阵
+		Engine::CMatrix viewMatrix = GetViewMatrix();
+		Engine::CMatrix projectionMatrix = GetProjectionMatrix();
+
+		// 将世界空间中的点转换为投影空间中的点
+		Engine::CVector projectedPoint = (projectionMatrix * viewMatrix).posMul(point);
+
+		// 将投影空间中的点转换为屏幕空间中的点
+		int screenWidth, screenHeight;
+		GlobalManager::GetInstance().GetViewPortSize(screenWidth, screenHeight);
+		projectedPoint.x = (projectedPoint.x + 1.0f) * 0.5f * screenWidth;
+		projectedPoint.y = (1.0f - projectedPoint.y) * 0.5f * screenHeight;
+
+		return projectedPoint;
+	}
+
+	Engine::CVector Camera::WorldToScreenOnDirection(CVector& dir)
+	{
+		// 获取摄像机的视图矩阵和投影矩阵
+		Engine::CMatrix viewMatrix = GetViewMatrix();
+		Engine::CMatrix projectionMatrix = GetProjectionMatrix();
+
+		// 将世界空间中的方向向量转换为投影空间中的方向向量
+		Engine::CVector projectedDir = (projectionMatrix * viewMatrix).vecMul(dir);
+
+		// 返回投影空间中的方向向量
+		return projectedDir;
+	}
+
 }

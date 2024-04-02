@@ -240,8 +240,15 @@ namespace Engine
 		bool GetKey(Key key);
 		bool GetKeyUp(Key key);
 		bool GetKeyDown(Key key);
+
+		void GetMouseOffset(float& xoff, float& yoff);
+
 	private:
 		std::unordered_map<Key, KeyState> keyStates;
+		float lastMouseX = 0;
+		float lastMouseY = 0;
+		float MouseXOff = 0;
+		float MouseYOff = 0;
 
 		GLFWwindow* window;
 

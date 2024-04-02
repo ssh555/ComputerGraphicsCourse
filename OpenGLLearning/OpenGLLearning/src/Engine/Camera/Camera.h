@@ -73,6 +73,13 @@ namespace Engine
 		// 获取摄像机的视图矩阵
 		CMatrix GetViewMatrix() const;
 
+		// 屏幕的像素点坐标[0, width] [0, height]这种
+		CVector ScreenToWorldOnPoint(CVector& point);
+		CVector ScreenToWorldOnDirection(CVector& dir);
+		// 转换为屏幕标准坐标 [-1, 1]
+		CVector WorldToScreenOnPoint(CVector& point);
+		CVector WorldToScreenOnDirection(CVector& dir);
+
 	private:
 		float m_FOV = 60.0f;
 		float m_AspectRatio = 16.0f / 9.0f;

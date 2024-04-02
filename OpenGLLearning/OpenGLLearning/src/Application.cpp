@@ -59,7 +59,7 @@ int main(void)
 
 	/* Create a windowed mode window and its OpenGL context */
 	//window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-	window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -116,13 +116,25 @@ int main(void)
 		glCullFace(GL_BACK);
 
 		// 启用抗锯齿
-		glfwWindowHint(GLFW_SAMPLES, 4); // 在创建窗口时启用4倍多重采样
+		glfwWindowHint(GLFW_SAMPLES, 8); // 在创建窗口时启用4倍多重采样
 		glEnable(GL_LINE_SMOOTH);
+		// 启用多重采样
+		GLCall(glEnable(GL_MULTISAMPLE));
 
 		Renderer renderer;
 
 		// glDebugMessageCallback
 		// glGetError
+
+
+		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
+
+		GlobalManager::GetInstance().Init();
+		GlobalManager::GetInstance().inputManager->BindInputAction(window);
+		EntryPoint entrypoint;
+		entrypoint.Awake();
+		entrypoint.Start();
+
 #ifdef USE_IMGUI
 
 		// Setup ImGui binding
@@ -142,14 +154,6 @@ int main(void)
 		//testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 #pragma endregion
 #endif
-
-		glfwSetFramebufferSizeCallback(window, windowResizeCallback);
-
-		GlobalManager::GetInstance().Init();
-		GlobalManager::GetInstance().inputManager->BindInputAction(window);
-		EntryPoint entrypoint;
-		entrypoint.Awake();
-		entrypoint.Start();
 
 #pragma region 主循环
 		// TODO : Add InputManager.InputAction

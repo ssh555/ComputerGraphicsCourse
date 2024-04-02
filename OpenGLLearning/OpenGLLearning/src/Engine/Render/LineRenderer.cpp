@@ -16,7 +16,7 @@ namespace Engine
 	const std::string LineRenderer::LINECOLOR = "lineColor";
 
 	LineRenderer::LineRenderer(GameObject* obj) : Component(obj, false),
-		m_mesh(nullptr), m_mat(LINEMAT)
+		m_mesh(nullptr), m_mat(LINEMAT), Color(1,1,1)
 	{
 		GlobalManager::GetInstance().rendererManager->AlterLineRendererEnableList(this);
 	}

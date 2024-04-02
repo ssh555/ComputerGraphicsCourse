@@ -1,6 +1,7 @@
 #include "InputManager.h"
 #include "../Global/GlobalManager.h"
 #include "../Time/Time.h"
+#include <iostream>
 
 namespace Engine
 {
@@ -18,11 +19,11 @@ namespace Engine
 			GlobalManager::GetInstance().inputManager->TriggerKeyEvent(static_cast<Key>(key), static_cast<KeyAction>(action));
 			if (static_cast<KeyAction>(action) == KeyAction::Press)
 			{
-				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].pressFrame = Time::frameCount;
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].pressFrame = Time::frameCount + 1;
 			}
 			else if (static_cast<KeyAction>(action) == KeyAction::Release)
 			{
-				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].releaseFrame = Time::frameCount;
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].releaseFrame = Time::frameCount + 1;
 			}
 			});
 
@@ -33,17 +34,22 @@ namespace Engine
 			GlobalManager::GetInstance().inputManager->TriggerMouseButtonEvent(static_cast<MouseButton>(button), static_cast<MouseButtonAction>(action), xpos, ypos);
 			if (static_cast<KeyAction>(action) == KeyAction::Press)
 			{
-				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].pressFrame = Time::frameCount;
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].pressFrame = Time::frameCount + 1;
 			}
 			else if (static_cast<KeyAction>(action) == KeyAction::Release)
 			{
-				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].releaseFrame = Time::frameCount;
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].releaseFrame = Time::frameCount + 1;
 			}
 			});
 
 		// 设置鼠标移动事件回调函数
 		glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 			GlobalManager::GetInstance().inputManager->TriggerMouseMoveEvent(xpos, ypos);
+			auto mgr = GlobalManager::GetInstance().inputManager;
+			mgr->MouseXOff = (float)xpos - mgr->lastMouseX;
+			mgr->MouseYOff = (float)ypos - mgr->lastMouseY;
+			mgr->lastMouseX = xpos;
+			mgr->lastMouseY = ypos;
 			});
 
 		// 设置鼠标滚动事件回调函数
@@ -98,6 +104,12 @@ namespace Engine
 	{
 		auto& state = this->keyStates[key];
 		return (state.pressFrame == Time::frameCount);
+	}
+
+	void InputManager::GetMouseOffset(float& xoff, float& yoff)
+	{
+		xoff = MouseXOff;
+		yoff = MouseYOff;
 	}
 
 	void InputManager::TriggerMouseButtonEvent(MouseButton button, MouseButtonAction action, double xpos, double ypos)

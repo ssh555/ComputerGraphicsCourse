@@ -154,7 +154,8 @@ namespace Engine
 	void Transform::Translate(const CVector& translation)
 	{
 		SetDirty(true);
-		m_localposition += m_localrotation * translation;
+		m_localposition += translation;
+		//m_localposition += m_localrotation * translation;
 	}
 
 	Engine::CVector Transform::GetForward() const
@@ -184,48 +185,20 @@ namespace Engine
 
 	void Transform::RotateAround(const CVector& point, const CVector& axis, float angle)
 	{
-		SetDirty(true);
+		// 将世界坐标系下的点转换到局部坐标系下
+		auto p = GetWorldTransform();
+		auto ip = p.GetInverse();
+		CVector localPoint = ip.posMul(point);
 
-		angle = CMath::radians(angle);
-		// 将局部坐标系中的位置转换为世界坐标系中的位置
-		CVector worldPoint = point;
+		// 移动到目标点进行旋转
+		this->SetWorldPosition(point);
+		this->Rotate(axis, angle);
 
-		if (gameobject->m_parent)
-		{
-			worldPoint = gameobject->m_parent->transform->GetWorldTransform().posMul(worldPoint);
-		}
-
-		// 将世界坐标系中的位置转换为局部坐标系中的位置
-		CVector localPoint = worldPoint;
-
-		if (gameobject->m_parent)
-		{
-			localPoint = gameobject->m_parent->transform->GetWorldTransform().GetInverse().posMul(worldPoint);
-		}
-
-		// 将局部坐标系中的位置作为旋转中心
-		CMatrix rotationCenter = CMatrix::translate(CMatrix(1.0f), localPoint);
-
-		// 绕指定轴进行旋转
-		CMatrix rotation = CMatrix::rotate(axis, angle);
-
-		// 将旋转中心与旋转组合起来
-		CMatrix transformMatrix = rotationCenter * rotation;
-
-		// 更新局部变换
-		CMatrix currentTransform = GetWorldTransform();
-		CMatrix newTransform = transformMatrix * currentTransform;
-
-		// 从新的变换矩阵中提取位置、旋转和缩放信息
-		CVector newPosition = CMatrix::getTranslation(newTransform);
-		CQuaternion newRotation = CQuaternion::quatFromMatrix(newTransform);
-		CVector newScale = CMatrix::getScale(newTransform);
-
-		// 设置新的位置、旋转和缩放
-		SetLocalPosition(newPosition);
-		SetLocalRotation(newRotation);
-		SetLocalScale(newScale);
+		// 回到正确的位置
+		CVector worldPoint = GetWorldTransform().posMul(localPoint);
+		this->Translate(this->GetWorldPosition() - worldPoint);
 	}
+
 
 	void Transform::SetDirty(bool dirty)
 	{

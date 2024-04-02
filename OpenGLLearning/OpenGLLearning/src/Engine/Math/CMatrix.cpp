@@ -315,6 +315,38 @@ namespace Engine
 		return CVector(temp[0], temp[1], temp[2]);
 	}
 
+	Engine::CVector CMatrix::posMul(CVector& p)
+	{
+		register float tmp0 = p[0], tmp1 = p[1], tmp2 = p[2], tmp3 = 1;
+		float temp[4]{ 0 };
+		register float t = 0;
+		for (int j = 0; j < 4; ++j) {
+			t = 0;
+			t += data[0][j] * tmp0;
+			t += data[1][j] * tmp1;
+			t += data[2][j] * tmp2;
+			t += data[3][j] * tmp3;
+			temp[j] = t;
+		}
+		return CVector(temp[0], temp[1], temp[2]);
+	}
+
+	Engine::CVector CMatrix::posMul(const CVector& p) const
+	{
+		register float tmp0 = p.x, tmp1 = p.y, tmp2 = p.z, tmp3 = 1;
+		float temp[4]{ 0 };
+		register float t = 0;
+		for (int j = 0; j < 4; ++j) {
+			t = 0;
+			t += data[0][j] * tmp0;
+			t += data[1][j] * tmp1;
+			t += data[2][j] * tmp2;
+			t += data[3][j] * tmp3;
+			temp[j] = t;
+		}
+		return CVector(temp[0], temp[1], temp[2]);
+	}
+
 	//设置为旋转矩阵
 	void CMatrix::SetRotate(float seta, CVector axis) {
 		axis.Normalize();//转为单位向量

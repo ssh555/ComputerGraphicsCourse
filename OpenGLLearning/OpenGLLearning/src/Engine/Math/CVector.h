@@ -49,7 +49,22 @@ namespace Engine
 		static CVector One() {
 			return CVector(1.0f, 1.0f, 1.0f);
 		}
+		static float Angle(const CVector& vec1, const CVector& vec2)
+		{
+			// 先将向量单位化
+			CVector normalizedVec1 = vec1.Normalized();
+			CVector normalizedVec2 = vec2.Normalized();
 
+			// 计算点乘
+			float dotProduct = normalizedVec1.dotMul(normalizedVec2);
+
+			// 由于浮点数精度问题，点乘结果可能略大于 1 或略小于 -1
+			// 因此需要将其限制在 [-1, 1] 范围内
+			dotProduct = fmaxf(fminf(dotProduct, 1.0f), -1.0f);
+
+			// 使用反余弦函数计算夹角
+			return acosf(dotProduct);
+		}
 
 	public:
 		//构造与析构
