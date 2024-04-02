@@ -147,6 +147,15 @@
     <ClCompile Include="src\Engine\Render\CubeOutlineRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Homework\Homework2\TestCMatrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework2\CameraController.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework2\CameraControllerUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -300,6 +309,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Render\CubeOutlineRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework2\TestCMatrix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework2\CameraController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework2\CameraControllerUI.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "InputManager.h"
 #include "../Global/GlobalManager.h"
+#include "../Time/Time.h"
 
 namespace Engine
 {
@@ -15,6 +16,14 @@ namespace Engine
 		// 设置键盘按下事件回调函数
 		glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			GlobalManager::GetInstance().inputManager->TriggerKeyEvent(static_cast<Key>(key), static_cast<KeyAction>(action));
+			if (static_cast<KeyAction>(action) == KeyAction::Press)
+			{
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].pressFrame = Time::frameCount;
+			}
+			else if (static_cast<KeyAction>(action) == KeyAction::Release)
+			{
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(key)].releaseFrame = Time::frameCount;
+			}
 			});
 
 		// 设置鼠标按钮事件回调函数
@@ -22,6 +31,14 @@ namespace Engine
 			double xpos, ypos;
 			glfwGetCursorPos(window, &xpos, &ypos);
 			GlobalManager::GetInstance().inputManager->TriggerMouseButtonEvent(static_cast<MouseButton>(button), static_cast<MouseButtonAction>(action), xpos, ypos);
+			if (static_cast<KeyAction>(action) == KeyAction::Press)
+			{
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].pressFrame = Time::frameCount;
+			}
+			else if (static_cast<KeyAction>(action) == KeyAction::Release)
+			{
+				GlobalManager::GetInstance().inputManager->keyStates[static_cast<Key>(button)].releaseFrame = Time::frameCount;
+			}
 			});
 
 		// 设置鼠标移动事件回调函数
@@ -63,6 +80,24 @@ namespace Engine
 	void InputManager::RegisterWindowResizeCallback(std::function<void(int, int)> callback)
 	{
 		windowResizeCallbacks.push_back(callback);
+	}
+
+	bool InputManager::GetKey(Key key)
+	{
+		auto& state = this->keyStates[key];
+		return (state.releaseFrame < state.pressFrame);
+	}
+
+	bool InputManager::GetKeyUp(Key key)
+	{
+		auto& state = this->keyStates[key];
+		return (state.releaseFrame == Time::frameCount);
+	}
+
+	bool InputManager::GetKeyDown(Key key)
+	{
+		auto& state = this->keyStates[key];
+		return (state.pressFrame == Time::frameCount);
 	}
 
 	void InputManager::TriggerMouseButtonEvent(MouseButton button, MouseButtonAction action, double xpos, double ypos)

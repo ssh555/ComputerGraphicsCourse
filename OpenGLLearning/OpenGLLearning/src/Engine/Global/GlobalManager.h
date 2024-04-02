@@ -7,6 +7,7 @@
 #include "../Input/InputManager.h"
 #include "../Camera/CameraManager.h"
 #include "../Render/RendererManager.h"
+#include "tests/Test.h"
 
 
 
@@ -73,6 +74,17 @@ namespace Engine
 			cameraManager->ViewportHeight = height;
 		}
 
+		void GetViewPortSize(int& width, int& height)
+		{
+			width = cameraManager->ViewportWidth;
+			height = cameraManager->ViewportHeight;
+		}
+
+		Camera* GetCamera(int index = 0)
+		{
+			return cameraManager->m_Cameras[index];
+		}
+
 	private:
 		// 私有构造函数，防止外部实例化
 		GlobalManager()
@@ -82,7 +94,9 @@ namespace Engine
 			cameraManager(nullptr),
 			rendererManager(nullptr)
 		{
-
+			currentTest = nullptr;
+			testMenu = new test::TestMenu(currentTest);
+			currentTest = testMenu;
 		}
 
 		~GlobalManager()
@@ -92,6 +106,7 @@ namespace Engine
 			delete inputManager;
 			delete cameraManager;
 			delete rendererManager;
+			//delete testMenu;
 		}
 
 
@@ -99,6 +114,12 @@ namespace Engine
 		// 禁止拷贝构造和赋值操作符，确保只有一个实例
 		GlobalManager(const GlobalManager&) = delete;
 		GlobalManager& operator=(const GlobalManager&) = delete;
+
+		// TEST
+
+	public:
+		test::Test* currentTest;
+		test::TestMenu* testMenu;
 	};
 
 

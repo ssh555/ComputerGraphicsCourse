@@ -79,6 +79,7 @@ namespace Engine
 
 		//向量点乘
 		float dotMul(const CVector& vec);
+		float dotMul(const CVector& vec) const;
 		//向量叉乘
 		CVector crossMul(const CVector& vec) const;
 		CVector crossMul(const CVector& vec);

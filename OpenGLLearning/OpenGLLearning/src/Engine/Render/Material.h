@@ -10,12 +10,17 @@ namespace Engine
 	class Shader;
 	class Texture;
 	class CMatrix;
+	class MeshRenderer;
+	class LineRenderer;
 
 	class Material
 	{
+		friend class MeshRenderer;
+		friend class LineRenderer;
 	public:
 		//Material();
 		Material(const std::string& shaderpath = "res/shaders/StandardShader.shader", bool IsSetTex = true);
+		~Material();
 
 		const std::string& GetShaderResPath() const;
 		void SetShader(const std::string& shader);
@@ -36,6 +41,9 @@ namespace Engine
 
 		void Bind();
 		void Unbind();
+
+	protected:
+		bool IsDeleted = false;
 
 	private:
 		std::string m_shader;

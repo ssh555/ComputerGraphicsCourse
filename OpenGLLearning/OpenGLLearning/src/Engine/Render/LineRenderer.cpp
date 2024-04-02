@@ -19,13 +19,13 @@ namespace Engine
 		m_mesh(nullptr), m_mat(LINEMAT)
 	{
 		GlobalManager::GetInstance().rendererManager->AlterLineRendererEnableList(this);
-		m_mat->SetUniform3f(LineRenderer::LINECOLOR, 1.0f, 1.0f, 1.0f);
 	}
 
 	LineRenderer::~LineRenderer()
 	{
 		IsDelete = true;
-		delete m_mat;
+		if(!m_mat->IsDeleted)
+			delete m_mat;
 		delete m_mesh;
 	}
 
@@ -87,6 +87,7 @@ namespace Engine
 		Renderer renderer;
 		m_mat->SetUniformMat4f(PVSTR, PV);
 		m_mat->SetUniformMat4f(MODELSTR, transform->GetWorldTransform());
+		m_mat->SetUniform4f(LineRenderer::LINECOLOR, Color.x, Color.y, Color.z, Alpha);
 
 		renderer.DrawLines(*m_VAO, *m_IndexBuffer, *m_mat, this->m_LineWidth);
 	}

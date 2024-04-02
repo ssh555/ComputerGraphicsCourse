@@ -7,7 +7,7 @@
 
 namespace Engine
 {
-	GameObject::GameObject() : transform(new Transform(this)), m_parent(nullptr) { }
+	GameObject::GameObject(std::string name) : transform(new Transform(this)), m_parent(nullptr), Name(name) { }
 
 	GameObject::~GameObject()
 	{

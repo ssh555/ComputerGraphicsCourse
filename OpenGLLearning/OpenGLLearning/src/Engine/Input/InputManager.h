@@ -131,7 +131,18 @@ namespace Engine
 			RightControl = GLFW_KEY_RIGHT_CONTROL,
 			RightAlt = GLFW_KEY_RIGHT_ALT,
 			RightSuper = GLFW_KEY_RIGHT_SUPER,
-			Menu = GLFW_KEY_MENU
+			Menu = GLFW_KEY_MENU,
+				MouseButton1 = GLFW_MOUSE_BUTTON_1,
+				MouseButton2 = GLFW_MOUSE_BUTTON_2,
+				MouseButton3 = GLFW_MOUSE_BUTTON_3,
+				MouseButton4 = GLFW_MOUSE_BUTTON_4,
+				MouseButton5 = GLFW_MOUSE_BUTTON_5,
+				MouseButton6 = GLFW_MOUSE_BUTTON_6,
+				MouseButton7 = GLFW_MOUSE_BUTTON_7,
+				MouseButton8 = GLFW_MOUSE_BUTTON_8,
+				MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
+				MouseRight = GLFW_MOUSE_BUTTON_RIGHT,
+				MouseMiddle = GLFW_MOUSE_BUTTON_MIDDLE
 		};
 
 		enum class KeyAction {
@@ -156,7 +167,7 @@ namespace Engine
 
 		enum class MouseButtonAction {
 			Press = GLFW_PRESS,
-			Release = GLFW_RELEASE
+			Release = GLFW_RELEASE,
 		};
 
 		// 事件
@@ -197,6 +208,11 @@ namespace Engine
 				};
 			};
 		};
+		
+		struct KeyState {
+			int pressFrame;
+			int releaseFrame;
+		};
 
 	private:
 		InputManager();
@@ -221,8 +237,12 @@ namespace Engine
 		// 注册窗口大小调整事件回调函数
 		void RegisterWindowResizeCallback(std::function<void(int, int)> callback);
 
-
+		bool GetKey(Key key);
+		bool GetKeyUp(Key key);
+		bool GetKeyDown(Key key);
 	private:
+		std::unordered_map<Key, KeyState> keyStates;
+
 		GLFWwindow* window;
 
 		// 键盘按键事件回调函数集合

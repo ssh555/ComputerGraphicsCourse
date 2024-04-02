@@ -2,6 +2,7 @@
 #include "../Component/Component.h"
 #include <memory>
 #include <string>
+#include "../Math/CVector.h"
 
 namespace Engine
 {
@@ -45,6 +46,9 @@ namespace Engine
 		Material* GetMaterial();
 
 		float m_LineWidth = 1.0f;
+
+		CVector Color;
+		float Alpha = 1.0f;
 
 	protected:
 		void OnEnable() override;

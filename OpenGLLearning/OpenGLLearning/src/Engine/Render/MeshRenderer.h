@@ -21,6 +21,11 @@ namespace Engine
 		static const  std::string VIEWPOSSTR;
 		static const  std::string LIGHTDIRSTR;
 		static const  std::string LIGHTCOLOR;
+		static MeshRenderer* RayCast(const CVector& rayOrigin, const CVector& rayDirection, const float hitDistance);
+	private:
+		static bool RayTriangleIntersect(const CVector& rayOrigin, const CVector& rayDirection,
+			const CVector& v0, const CVector& v1, const CVector& v2,
+			float& hitDistance);
 
 		friend class GameObject;
 		friend class RendererManager;
@@ -54,6 +59,9 @@ namespace Engine
 		void Render(const CMatrix& PV, const CVector& viewpoint);
 
 		bool IsDelete = false;
+
+	public:
+		bool bRayCast = false;
 
 	protected:
 		Mesh* m_mesh;

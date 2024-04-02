@@ -51,7 +51,7 @@ private:
 	// ³õÊ¼»¯ÅäÖÃStageÅäÉ«
 	void InitStageColor();
 
-	GameObject* CreateCube(Material *mat);
+	GameObject* CreateCube(Material *mat, const string& name);
 	Material* CreateMat();
 
 private:

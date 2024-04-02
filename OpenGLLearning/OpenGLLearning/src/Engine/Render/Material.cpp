@@ -23,6 +23,11 @@ namespace Engine
 		}
 	}
 
+	Material::~Material()
+	{
+		IsDeleted = true;
+	}
+
 	const std::string& Material::GetShaderResPath() const
 	{
 		return m_shader;
@@ -102,7 +107,8 @@ namespace Engine
 	
 	void Material::Bind()
 	{
-		m_Texture->Bind();
+		if(m_Texture)
+			m_Texture->Bind();
 		// °ó¶¨ Shader
 		m_pShader->Bind();
 	}

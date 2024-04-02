@@ -115,6 +115,11 @@ namespace Engine
 		return (this->x * vec.x) + (this->y * vec.y) + (this->z * vec.z);
 	}
 
+	float CVector::dotMul(const CVector& vec) const
+	{
+		return (this->x * vec.x) + (this->y * vec.y) + (this->z * vec.z);
+	}
+
 	//ÏòÁ¿²æ³Ë
 	CVector CVector::crossMul(const CVector& vec) const {
 		return CVector(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x);

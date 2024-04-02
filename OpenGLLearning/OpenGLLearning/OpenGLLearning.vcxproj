@@ -189,6 +189,8 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Homework\Homework2\CameraControllerUI.cpp" />
+    <ClCompile Include="src\Homework\Homework2\CameraController.cpp" />
     <ClCompile Include="src\Engine\Render\CubeOutlineRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\LineRenderer.cpp" />
     <ClCompile Include="src\Engine\Render\CapsuleRenderer.cpp" />
@@ -233,6 +235,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClCompile Include="src\Homework\Homework1\TestCVector.cpp" />
     <ClCompile Include="src\Homework\Homework1\Stage.cpp" />
     <ClCompile Include="src\Homework\Homework1\StageController.cpp" />
+    <ClCompile Include="src\Homework\Homework2\TestCMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
@@ -241,6 +244,8 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <None Include="res\shaders\StandardShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Homework\Homework2\CameraControllerUI.h" />
+    <ClInclude Include="src\Homework\Homework2\CameraController.h" />
     <ClInclude Include="src\Engine\Render\CubeOutlineRenderer.h" />
     <ClInclude Include="src\Engine\Render\LineRenderer.h" />
     <ClInclude Include="src\Engine\Render\CapsuleRenderer.h" />
@@ -290,6 +295,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClInclude Include="src\Homework\Homework1\TestCVector.h" />
     <ClInclude Include="src\Homework\Homework1\Stage.h" />
     <ClInclude Include="src\Homework\Homework1\StageController.h" />
+    <ClInclude Include="src\Homework\Homework2\TestCMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Circle1.png" />

@@ -135,9 +135,9 @@ int main(void)
 #pragma endregion
 
 #pragma region TEST设置
-		test::Test* currentTest = nullptr;
-		test::TestMenu* testMenu = new test::TestMenu(currentTest);
-		currentTest = testMenu;
+		//test::Test* currentTest = nullptr;
+		//test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		//currentTest = testMenu;
 		//testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		//testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 #pragma endregion
@@ -177,23 +177,23 @@ int main(void)
 #ifdef USE_IMGUI
 
 #pragma region IMGUI
-						// 开始一个ImGui新帧
+			// 开始一个ImGui新帧
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
 #pragma region 测试更新
-			if (currentTest)
+			if (GlobalManager::GetInstance().currentTest)
 			{
-				currentTest->OnUpdate(0);
-				currentTest->OnRender();
+				GlobalManager::GetInstance().currentTest->OnUpdate(0);
+				GlobalManager::GetInstance().currentTest->OnRender();
 				ImGui::Begin("test");
-				if (currentTest != testMenu && ImGui::Button("<-"))
+				if (GlobalManager::GetInstance().currentTest != GlobalManager::GetInstance().testMenu && ImGui::Button("<-"))
 				{
-					delete currentTest;
-					currentTest = testMenu;
+					delete GlobalManager::GetInstance().currentTest;
+					GlobalManager::GetInstance().currentTest = GlobalManager::GetInstance().testMenu;
 				}
-				currentTest->OnImGuiRender();
+				GlobalManager::GetInstance().currentTest->OnImGuiRender();
 				ImGui::End();
 			}
 #pragma endregion
@@ -218,9 +218,9 @@ int main(void)
 #pragma endregion
 #ifdef USE_IMGUI
 
-		delete currentTest;
-		if (currentTest != testMenu)
-			delete testMenu;
+		delete GlobalManager::GetInstance().currentTest;
+		if (GlobalManager::GetInstance().currentTest != GlobalManager::GetInstance().testMenu)
+			delete GlobalManager::GetInstance().testMenu;
 #endif
 	}
 

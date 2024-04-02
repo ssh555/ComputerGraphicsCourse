@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 namespace Engine
 {
@@ -15,6 +16,8 @@ namespace Engine
 		Transform* transform;
 	public:
 		Transform* GetTransform();
+
+		std::string Name;
 
 	protected:
 		// ¹ÒÔØµÄ×é¼þ -> Õ»
@@ -69,7 +72,7 @@ namespace Engine
 		const std::vector<GameObject*>& GetChildren();
 
 	public:
-		GameObject();
+		GameObject(std::string name = "OBJ");
 		virtual ~GameObject();
 
 	protected:
