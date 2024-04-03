@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include <sstream>
+#include "CMath.h"
 
 namespace Engine
 {
@@ -24,6 +27,14 @@ namespace Engine
 		CQuaternion(const float X, const float Y, const float Z, const float W);
 		CQuaternion(const float W, const CVector& vec);
 		CQuaternion(const CQuaternion& vec);
+		CQuaternion(const std::string& str)
+		{
+			auto strs = CMath::split(str, ',');
+			x = CMath::stringToNum<float>(strs[0]);
+			y = CMath::stringToNum<float>(strs[1]);
+			z = CMath::stringToNum<float>(strs[2]);
+			w = CMath::stringToNum<float>(strs[2]);
+		}
 		~CQuaternion();
 
 		float x, y, z, w;
@@ -42,6 +53,23 @@ namespace Engine
 		//重载数乘
 		CQuaternion operator*(float data);
 		friend CQuaternion operator*(float data, CQuaternion& n);
+		// 重载输出操作符 <<
+		friend std::ostream& operator<<(std::ostream& os, const CQuaternion& q)
+		{
+			os << q.x << "," << q.y << "," << q.z << "," << q.w;
+			return os;
+		}
+		friend std::istream& operator>>(std::istream& is, CQuaternion& q)
+		{
+			std::string str;
+			is >> str;
+			auto strs = CMath::split(str, ',');
+			q.x = CMath::stringToNum<float>(strs[0]);
+			q.y = CMath::stringToNum<float>(strs[1]);
+			q.z = CMath::stringToNum<float>(strs[2]);
+			q.w = CMath::stringToNum<float>(strs[3]);
+			return is;
+		}
 		//幂
 		CQuaternion operator^(float t);
 		//四元数乘法 叉乘

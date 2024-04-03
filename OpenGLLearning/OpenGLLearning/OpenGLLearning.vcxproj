@@ -189,6 +189,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Math\CMath.cpp" />
     <ClCompile Include="src\Homework\Homework2\CameraControllerUI.cpp" />
     <ClCompile Include="src\Homework\Homework2\CameraController.cpp" />
     <ClCompile Include="src\Engine\Render\CubeOutlineRenderer.cpp" />

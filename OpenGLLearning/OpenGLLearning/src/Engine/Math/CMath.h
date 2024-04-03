@@ -1,13 +1,16 @@
 #pragma once
 
 #include <cmath>
+#include <vector>
+#include <string>
 
 namespace Engine
 {
+	#define  PI 3.14159265358979323846f
+
 	class CMath
 	{
 	public:
-		static constexpr float PI = 3.14159265358979323846f;
 
 		// 返回x的绝对值
 		static float Abs(float x) {
@@ -88,5 +91,24 @@ namespace Engine
 		{
 			return degrees * 0.0174532925f; // 度到弧度的转换因子，约等于 Pi / 180
 		}
+
+		static const std::vector<std::string> split(const std::string& s, const char& c);
+
+		//字符串转数字
+		template <class Type>
+		static Type stringToNum(const std::string& str);
+
+
 	};
+
+	template <class Type>
+	Type Engine::CMath::stringToNum(const std::string& str)
+	{
+		std::istringstream iss(str);
+		Type num;
+		iss >> num;
+		return num;
+	}
+
+
 }

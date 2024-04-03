@@ -25,9 +25,9 @@ void Engine::SphereRenderer::SetSphereMesh(float radius, unsigned int rings, uns
 
 	for (unsigned int r = 0; r < rings; ++r) {
 		for (unsigned int s = 0; s < sectors; ++s) {
-			float const y = sin(-CMath::PI * 0.5f + CMath::PI * r * R);
-			float const x = cos(2 * CMath::PI * s * S) * sin(CMath::PI * r * R);
-			float const z = sin(2 * CMath::PI * s * S) * sin(CMath::PI * r * R);
+			float const y = sin(-PI * 0.5f + PI * r * R);
+			float const x = cos(2 * PI * s * S) * sin(PI * r * R);
+			float const z = sin(2 * PI * s * S) * sin(PI * r * R);
 
 			positions.push_back(x * radius);
 			positions.push_back(y * radius);

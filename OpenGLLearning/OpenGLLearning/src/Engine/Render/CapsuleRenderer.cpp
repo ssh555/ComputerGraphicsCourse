@@ -24,12 +24,12 @@ namespace Engine
 
 		// Generate the top hemisphere
 		for (unsigned int r = 0; r <= rings / 2; ++r) {
-			float const theta = CMath::PI * r / rings;
+			float const theta = PI * r / rings;
 			float const y = cos(theta);
 			float const y_offset = sin(theta);
 
 			for (unsigned int s = 0; s < sectors; ++s) {
-				float const phi = 2 * CMath::PI * s / sectors;
+				float const phi = 2 * PI * s / sectors;
 				float const x = cos(phi) * sin(theta);
 				float const z = sin(phi) * sin(theta);
 
@@ -51,12 +51,12 @@ namespace Engine
 
 		// Generate the bottom hemisphere
 		for (unsigned int r = 0; r <= rings / 2; ++r) {
-			float const theta = CMath::PI * r / rings + CMath::PI;
+			float const theta = PI * r / rings + PI;
 			float const y = cos(theta);
 			float const y_offset = sin(theta);
 
 			for (unsigned int s = 0; s < sectors; ++s) {
-				float const phi = 2 * CMath::PI * s / sectors;
+				float const phi = 2 * PI * s / sectors;
 				float const x = cos(phi) * sin(theta);
 				float const z = sin(phi) * sin(theta);
 
@@ -78,7 +78,7 @@ namespace Engine
 
 		// Generate the cylinder part
 		for (unsigned int i = 0; i <= sectors; ++i) {
-			float const phi = 2 * CMath::PI * i / sectors;
+			float const phi = 2 * PI * i / sectors;
 			float const x = cos(phi);
 			float const z = sin(phi);
 

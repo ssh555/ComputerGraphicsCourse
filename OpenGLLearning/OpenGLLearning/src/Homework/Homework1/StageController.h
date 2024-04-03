@@ -2,6 +2,7 @@
 #include "Engine/Component/Component.h"
 #include <vector>
 #include "Engine/Math/CVector.h"
+#include <string>
 
 
 namespace Engine
@@ -54,6 +55,11 @@ private:
 	GameObject* CreateCube(Material *mat, const string& name);
 	Material* CreateMat();
 
+	// 读取文件中数据恢复舞台
+	void LoadData();
+	// 将当前舞台数据保存为文件
+	void SaveData();
+
 private:
 	struct StageColor
 	{
@@ -85,6 +91,8 @@ private:
 	// false -> 1
 	// true -> 2
 	bool m_colorState = false;
+
+	std::string SLPATH = "Stage.data";
 
 
 };

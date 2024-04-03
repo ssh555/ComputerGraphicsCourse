@@ -2,6 +2,8 @@
 #include <math.h>
 #include <iostream>
 #include <array>
+#include <sstream>
+#include "CMath.h"
 
 namespace Engine
 {
@@ -71,6 +73,13 @@ namespace Engine
 		CVector();
 		CVector(const float X, const float Y, const float Z);
 		CVector(const CVector& vec);
+		CVector(const std::string& str)
+		{
+			auto strs = CMath::split(str, ',');
+			x = CMath::stringToNum<float>(strs[0]);
+			y = CMath::stringToNum<float>(strs[1]);
+			z = CMath::stringToNum<float>(strs[2]);
+		}
 		~CVector();
 
 		//重载操作符
@@ -92,7 +101,22 @@ namespace Engine
 		CVector& operator+=(const CVector& vec);
 		bool operator!=(const std::array<float, 3>& otherArray) const;
 		friend bool operator!=(const std::array<float, 3>& array, const CVector& vector);
-
+		// 重载输出操作符 <<
+		friend std::ostream& operator<<(std::ostream& os, const CVector& vec)
+		{
+			os << vec.x << "," << vec.y << "," << vec.z;
+			return os;
+		}
+		friend std::istream& operator>>(std::istream& is, CVector& vec)
+		{
+			std::string str;
+			is >> str;
+			auto strs = CMath::split(str, ',');
+			vec.x = CMath::stringToNum<float>(strs[0]);
+			vec.y = CMath::stringToNum<float>(strs[1]);
+			vec.z = CMath::stringToNum<float>(strs[2]);
+			return is;
+		}
 		//向量点乘
 		float dotMul(const CVector& vec);
 		float dotMul(const CVector& vec) const;

@@ -1,5 +1,7 @@
 #include "StageController.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "Engine/Component/Transform.h"
 #include "Engine/Input/InputManager.h"
 #include "Engine/Global/GlobalManager.h"
@@ -9,6 +11,7 @@
 #include "Engine/Math/CMath.h"
 #include "Engine/Render/LineRenderer.h"
 #include "Engine/Render/CubeOutlineRenderer.h"
+#include <iosfwd>
 
 StageController::StageController(GameObject* obj)
 	: Component(obj)
@@ -33,6 +36,17 @@ void StageController::Tick(float deltatime)
 	{
 		auto transform = this->gameobject->GetTransform();
 		transform->Rotate(transform->GetUp(), m_rotRate * deltatime);
+	}
+	auto mgr = GlobalManager::GetInstance().inputManager;
+	// 保存
+	if (mgr->GetKeyDown(InputManager::Key::F2))
+	{
+		this->SaveData();
+	}
+	// 读取
+	if (mgr->GetKeyDown(InputManager::Key::F3))
+	{
+		this->LoadData();
 	}
 }
 
@@ -82,8 +96,8 @@ void StageController::CreateAStage()
 		auto stage = CreateCube(mat, "A-" + std::to_string(i));
 		m_AStage.push_back(stage);
 		auto transform = stage->GetTransform();
-		float posz = (16 - 16 * cos(CMath::PI / angleratio * i / 14));
-		float angle = atan(posz / i) * 180 / CMath::PI;
+		float posz = (16 - 16 * cos(PI / angleratio * i / 14));
+		float angle = atan(posz / i) * 180 / PI;
 		transform->SetLocalPosition(CVector((float)-i, 6, posz)); // 设置舞台块的位置
 		transform->SetLocalScale(CVector(1, 12, 1));
 		//transform->RotateAround(centerTransform->GetLocalPosition(), centerTransform->GetUp(), -angle); // 围绕中心舞台块旋转
@@ -100,8 +114,8 @@ void StageController::CreateAStage()
 		auto stage = CreateCube(mat, "A-" + std::to_string(15 + i));
 		m_AStage.push_back(stage);
 		auto transform = stage->GetTransform();
-		float posz = (16 - 16 * cos(CMath::PI / angleratio * i / 14));
-		float angle = atan(posz / i) * 180 / CMath::PI;
+		float posz = (16 - 16 * cos(PI / angleratio * i / 14));
+		float angle = atan(posz / i) * 180 / PI;
 		transform->SetLocalPosition(CVector((float)i, 6, posz)); // 设置舞台块的位置
 		transform->SetLocalScale(CVector(1, 12, 1));
 		//transform->RotateAround(centerTransform->GetLocalPosition(), centerTransform->GetUp(), angle); // 围绕中心舞台块旋转
@@ -347,4 +361,134 @@ Engine::Material* StageController::CreateMat()
 	mat->SetUniform1f("specularStrength", 0.5);
 	mat->SetUniform1f("shininess", 1);
 	return mat;
+}
+
+void StageController::SaveData()
+{
+	//std::ofstream file(SLPATH, std::ios::out | std::ios::binary);
+	std::ofstream file(SLPATH);
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open file for saving data!" << std::endl;
+		return;
+	}
+	// 保存父物体
+	file << this->gameobject->Name << " " << this->gameobject->GetTransform()->GetLocalPosition() << " " << this->gameobject->GetTransform()->GetLocalRotation() << " " << this->gameobject->GetTransform()->GetLocalScale() << std::endl;
+
+	// 保存A舞台块数据
+	for (const auto& stage : m_AStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+
+
+	// 保存B1舞台块数据
+	for (const auto& stage : m_B1Stage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存B2舞台块数据
+	for (const auto& stage : m_B2Stage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存BT舞台块数据
+	for (const auto& stage : m_BTStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存C舞台块数据
+	for (const auto& stage : m_CStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	file.close();
+}
+
+void StageController::LoadData()
+{
+	//std::ifstream file(SLPATH, std::ios::in | std::ios::binary);
+	std::ifstream file(SLPATH);
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open file for loading data!" << std::endl;
+		return;
+	}
+
+	std::string line;
+	// 读入父物体
+	{
+		std::getline(file, line);
+		std::stringstream ss(line);
+		std::string name;
+		CVector position, scale;
+		CQuaternion rotation;
+		ss >> name;
+		ss >> position;
+		ss >> rotation;
+		ss >> scale;
+
+		this->gameobject->GetTransform()->SetLocalPosition(position);
+		this->gameobject->GetTransform()->SetLocalRotation(rotation);
+		this->gameobject->GetTransform()->SetLocalScale(scale);
+	}
+
+	while (std::getline(file, line))
+	{
+		std::stringstream ss(line);
+		std::string name;
+		CVector position, scale;
+		CQuaternion rotation;
+		ss >> name;
+		ss >> position;
+		ss >> rotation;
+		ss >> scale;
+
+		std::vector<GameObject*>& stages = m_AStage;
+		if (name[0] == 'A')
+		{
+			stages = m_AStage;
+		}
+		else if (name[0] == 'B')
+		{
+			if (name[1] == '1')
+			{
+				stages = m_B1Stage;
+			}
+			else if (name[1] == '2')
+			{
+				stages = m_B2Stage;
+			}
+			else if (name[1] == 'T')
+			{
+				stages = m_BTStage;
+			}
+		}
+		else if (name[0] == 'C')
+		{
+			stages = m_CStage;
+		}
+		for (auto stage : stages)
+		{
+			if (stage->Name == name)
+			{
+				stage->GetTransform()->SetLocalPosition(position);
+				stage->GetTransform()->SetLocalRotation(rotation);
+				stage->GetTransform()->SetLocalScale(scale);
+				break;
+			}
+		}
+	}
+
+	file.close();
 }

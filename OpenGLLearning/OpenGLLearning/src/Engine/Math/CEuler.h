@@ -5,7 +5,6 @@ namespace Engine
 	class CVector;
 	class CMatrix;
 	class CQuaternion;
-#define PI 3.1415926f
 
 	class CEuler
 	{
