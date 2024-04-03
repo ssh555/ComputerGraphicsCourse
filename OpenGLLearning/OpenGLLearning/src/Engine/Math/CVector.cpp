@@ -35,6 +35,11 @@ namespace Engine
 		return CVector(this->x + vec.x, this->y + vec.y, this->z + vec.z);
 	}
 
+	Engine::CVector CVector::operator+(const CVector& vec) const
+	{
+		return CVector(this->x + vec.x, this->y + vec.y, this->z + vec.z);
+	}
+
 	CVector CVector::operator-(const CVector& vec) {
 		return CVector(this->x - vec.x, this->y - vec.y, this->z - vec.z);
 	}

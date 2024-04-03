@@ -75,6 +75,7 @@ namespace Engine
 
 		//重载操作符
 		CVector operator+(const CVector& vec);//重载 + 操作符
+		CVector operator+(const CVector& vec) const;//重载 + 操作符
 		CVector operator-(const CVector& vec);
 		CVector operator-(const CVector& vec) const;
 		CVector operator-();

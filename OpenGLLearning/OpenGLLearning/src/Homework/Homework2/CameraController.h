@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Component/Component.h"
+#include "Engine/Math/CVector.h"
 
 namespace Engine
 {
@@ -33,8 +34,12 @@ protected:
 public:
 	float moveSpeed = 60.0f;
 	float rotSpeed = 30.0f;
+	float selectRotSpeed = 15.0f;
 
 	Engine::GameObject* CurSelected = nullptr;
+	Engine::CVector hitPoint;
+	Engine::CVector SelectedPoint;
+	float hitT;
 
 
 };

@@ -54,7 +54,7 @@ void StageController::CreatePlain()
 	auto mat = CreateMat();
 	mat->SetUniform3f("objectColor", 0.3f, 0.3f, 0.3f);
 	this->m_plain->AddComponent<CubeRenderer>()->SetMaterial(mat);
-	this->m_plain->GetTransform()->SetLocalScale(CVector(100, 0.1, 100));
+	this->m_plain->GetTransform()->SetLocalScale(CVector(100, 0.1f, 100));
 }
 
 void StageController::CreateAStage()
@@ -84,7 +84,7 @@ void StageController::CreateAStage()
 		auto transform = stage->GetTransform();
 		float posz = (16 - 16 * cos(CMath::PI / angleratio * i / 14));
 		float angle = atan(posz / i) * 180 / CMath::PI;
-		transform->SetLocalPosition(CVector(-i, 6, posz)); // 设置舞台块的位置
+		transform->SetLocalPosition(CVector((float)-i, 6, posz)); // 设置舞台块的位置
 		transform->SetLocalScale(CVector(1, 12, 1));
 		//transform->RotateAround(centerTransform->GetLocalPosition(), centerTransform->GetUp(), -angle); // 围绕中心舞台块旋转
 		//transform->SetWorldRotation(CQuaternion::Identity());
@@ -102,7 +102,7 @@ void StageController::CreateAStage()
 		auto transform = stage->GetTransform();
 		float posz = (16 - 16 * cos(CMath::PI / angleratio * i / 14));
 		float angle = atan(posz / i) * 180 / CMath::PI;
-		transform->SetLocalPosition(CVector(i, 6, posz)); // 设置舞台块的位置
+		transform->SetLocalPosition(CVector((float)i, 6, posz)); // 设置舞台块的位置
 		transform->SetLocalScale(CVector(1, 12, 1));
 		//transform->RotateAround(centerTransform->GetLocalPosition(), centerTransform->GetUp(), angle); // 围绕中心舞台块旋转
 		//transform->SetWorldRotation(CQuaternion::Identity());
@@ -124,7 +124,6 @@ void StageController::CreateBStage()
 		for (int z = 0; z < 10; ++z)
 		{
 			auto stage = CreateCube(mat, "B1-" + std::to_string(z+1) + "_" + std::to_string(x + 1));
-			stage->GetComponent<MeshRenderer>()->bRayCast = true;
 			m_B1Stage.push_back(stage);
 			auto transform = stage->GetTransform();
 			transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x - 4 + x, -2.4f, centerTransform->GetWorldPosition().z + 16.5f - z)); // 设置舞台块的位置
@@ -132,25 +131,25 @@ void StageController::CreateBStage()
 		}
 	}
 	// 第4行时,x左右各突出2个StageCube
+	// B1-L2
 	auto stage = CreateCube(mat, "B1-L2");
-	stage->GetComponent<MeshRenderer>()->bRayCast = true;
 	m_B1Stage.push_back(stage);
 	auto transform = stage->GetTransform();
 	transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x - 5, -2.4f, centerTransform->GetWorldPosition().z + 16.5f - 3)); // 设置舞台块的位置
 	transform->SetLocalScale(CVector(1, 5, 1));
+	// B1-L1
 	stage = CreateCube(mat, "B1-L1");
-	stage->GetComponent<MeshRenderer>()->bRayCast = true;
 	m_B1Stage.push_back(stage);
 	transform = stage->GetTransform();
 	transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x - 6, -2.4f, centerTransform->GetWorldPosition().z + 16.5f - 3)); // 设置舞台块的位置
 	transform->SetLocalScale(CVector(1, 5, 1));
-	stage->GetComponent<MeshRenderer>()->bRayCast = true;
+	// B1-R2
 	stage = CreateCube(mat, "B1-R2");
 	m_B1Stage.push_back(stage);
 	transform = stage->GetTransform();
 	transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x + 5, -2.4f, centerTransform->GetWorldPosition().z + 16.5f - 3)); // 设置舞台块的位置
 	transform->SetLocalScale(CVector(1, 5, 1));
-	stage->GetComponent<MeshRenderer>()->bRayCast = true;
+	// B1-R1
 	stage = CreateCube(mat, "B1-R1");
 	m_B1Stage.push_back(stage);
 	transform = stage->GetTransform();
@@ -165,7 +164,6 @@ void StageController::CreateBStage()
 		for (int z = 0; z < 4; ++z)
 		{
 			auto stage = CreateCube(mat, "B2-" + std::to_string(z + 1) + "_" + std::to_string(x + 1));
-			stage->GetComponent<MeshRenderer>()->bRayCast = true;
 			m_B2Stage.push_back(stage);
 			auto transform = stage->GetTransform();
 			transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x - 7 + x, -1.4f, centerTransform->GetWorldPosition().z + 6.5f - z)); // 设置舞台块的位置
@@ -184,12 +182,13 @@ void StageController::CreateBStage()
 	{
 		for (int x = 0; x < counts[z]; ++x)
 		{
-			float posx = centerTransform->GetWorldPosition().x - counts[z] * 0.25f + 0.25 + x * 0.5;
+			float posx = centerTransform->GetWorldPosition().x - counts[z] * 0.25f + 0.25f + x * 0.5f;
 			if (bounds[(int)((float)z * 0.5f)] >= abs(posx))
 			{
 				continue;
 			}
 			auto stage = CreateCube(mat, "BT");
+
 			m_BTStage.push_back(stage);
 			auto transform = stage->GetTransform();
 			transform->SetLocalPosition(CVector(posx, -2.4f, centerTransform->GetWorldPosition().z + 19 - 0.25f - z * 0.5f)); // 设置舞台块的位置
@@ -317,14 +316,14 @@ void StageController::InitStageColor()
 	this->m_B1Color.color[0].SetVec(0, 0, 1);
 	this->m_B1Color.color[1].SetVec(1, 0, 0);
 
-	this->m_B2Color.color[0].SetVec(0, 0.4, 1);
+	this->m_B2Color.color[0].SetVec(0, 0.4f, 1);
 	this->m_B2Color.color[1].SetVec(1, 1, 0);
 
 	this->m_BTColor.color[0].SetVec(0, 1, 1);
 	this->m_BTColor.color[1].SetVec(1, 0, 1);
 
-	this->m_CColor.color[0].SetVec(0, 1, 0.4);
-	this->m_CColor.color[1].SetVec(1, 0.5, 0.5);
+	this->m_CColor.color[0].SetVec(0, 1, 0.4f);
+	this->m_CColor.color[1].SetVec(1, 0.5f, 0.5f);
 }
 
 Engine::GameObject* StageController::CreateCube(Material* mat, const string& name)
@@ -333,6 +332,7 @@ Engine::GameObject* StageController::CreateCube(Material* mat, const string& nam
 	ret->SetParent(*this->gameobject);
 	ret->AddComponent<CubeRenderer>()->SetMaterial(mat);
 	ret->AddComponent<CubeOutlineRenderer>()->m_LineWidth = 2;
+	ret->GetComponent<MeshRenderer>()->bRayCast = true;
 	return ret;
 }
 

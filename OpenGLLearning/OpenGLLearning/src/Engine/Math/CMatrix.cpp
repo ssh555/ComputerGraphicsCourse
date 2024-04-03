@@ -301,9 +301,9 @@ namespace Engine
 	//æÿ’Û”Îµ„œ‡≥À
 	CVector CMatrix::posMul(CVector& p) const
 	{//≤π1
-		register float tmp0 = p[0], tmp1 = p[1], tmp2 = p[2], tmp3 = 1;
+		float tmp0 = p[0], tmp1 = p[1], tmp2 = p[2], tmp3 = 1;
 		float temp[4]{ 0 };
-		register float t = 0;
+		float t = 0;
 		for (int j = 0; j < 4; ++j) {
 			t = 0;
 			t += data[0][j] * tmp0;
@@ -317,9 +317,9 @@ namespace Engine
 
 	Engine::CVector CMatrix::posMul(CVector& p)
 	{
-		register float tmp0 = p[0], tmp1 = p[1], tmp2 = p[2], tmp3 = 1;
+		float tmp0 = p[0], tmp1 = p[1], tmp2 = p[2], tmp3 = 1;
 		float temp[4]{ 0 };
-		register float t = 0;
+		float t = 0;
 		for (int j = 0; j < 4; ++j) {
 			t = 0;
 			t += data[0][j] * tmp0;
@@ -333,9 +333,9 @@ namespace Engine
 
 	Engine::CVector CMatrix::posMul(const CVector& p) const
 	{
-		register float tmp0 = p.x, tmp1 = p.y, tmp2 = p.z, tmp3 = 1;
+		float tmp0 = p.x, tmp1 = p.y, tmp2 = p.z, tmp3 = 1;
 		float temp[4]{ 0 };
-		register float t = 0;
+		float t = 0;
 		for (int j = 0; j < 4; ++j) {
 			t = 0;
 			t += data[0][j] * tmp0;

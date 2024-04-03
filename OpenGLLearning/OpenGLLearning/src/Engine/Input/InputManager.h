@@ -245,10 +245,13 @@ namespace Engine
 
 	private:
 		std::unordered_map<Key, KeyState> keyStates;
+	private:
 		float lastMouseX = 0;
 		float lastMouseY = 0;
 		float MouseXOff = 0;
 		float MouseYOff = 0;
+	public:
+		void GetMousePos(double& xpos, double& ypos);
 
 		GLFWwindow* window;
 

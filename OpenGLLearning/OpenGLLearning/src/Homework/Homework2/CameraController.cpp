@@ -22,66 +22,102 @@ using namespace Engine;
 
 CameraController::CameraController(Engine::GameObject* obj) : Component(obj),
 m_camera(this->gameobject->GetComponent<Camera>()),
-m_lineRenderer(nullptr)
+m_lineRenderer(nullptr),
+hitPoint(CVector::Zero()),
+SelectedPoint(CVector::Zero()),
+hitT(0)
 {
 	GlobalManager::GetInstance().testMenu->RegisterTest<CameraControllerUI>("CameraController");
 
-
-	//// 点选
-	//m_lineRenderer = (new GameObject())->AddComponent<LineRenderer>();
-	//m_lineRenderer->m_LineWidth = 5.0f;
-	//m_lineRenderer->Color = CVector(1.0f, 0.0f, 0.0f);
-	//float lineVertices[] = {
-	//	0,0,0,
-	//	0,0,1
-	//};
-	//unsigned int lineIndices[] = { 0, 1 };
-	//Mesh* lineMesh = new Mesh(lineVertices, 6, lineIndices, 2);
-	//m_lineRenderer->SetMesh(lineMesh);
-	//m_lineRenderer->SetEnable(true);
-
-
-
-	GlobalManager::GetInstance().inputManager->RegisterMouseButtonCallback(InputManager::MouseButton::Left, [this](InputManager::MouseButton mtype, InputManager::MouseButtonAction action, double xpos, double ypos)
-		{
-			if (action == InputManager::MouseButtonAction::Press)
-			{
-				// 生成射线起点
-				CVector cameraPosition = m_camera->transform->GetWorldPosition();
-
-				// 生成射线方向
-				CVector rayClipCoords(xpos, ypos, 1.0f); // 射线在裁剪空间的坐标
-				CVector rayDirection = m_camera->ScreenToWorldOnPoint(rayClipCoords);
-
-				rayDirection = rayDirection - cameraPosition;
-
-				// 进行射线检测
-				float hitDistance = 500.0f;
-				MeshRenderer* hitObject = MeshRenderer::RayCast(cameraPosition, rayDirection, hitDistance);
-
-				if (hitObject)
-				{
-					SelectGameObject(hitObject->gameobject);
-				}
-
-				//m_lineRenderer->transform->SetWorldPosition(cameraPosition);
-				//auto t = cameraPosition + rayDirection * hitDistance;
-				//m_lineRenderer->transform->LookAt(cameraPosition + rayDirection * hitDistance);
-				//m_lineRenderer->transform->SetLocalScale(CVector(1, 1, 1 * hitDistance));
-
-			}
-		});
-	GlobalManager::GetInstance().inputManager->RegisterMouseButtonCallback(InputManager::MouseButton::Right, [this](InputManager::MouseButton mtype, InputManager::MouseButtonAction action, double xpos, double ypos)
-		{
-			if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::LeftControl))
-			{
-				SelectGameObject(nullptr);
-			}
-		});
+	m_lineRenderer = (new GameObject())->AddComponent<LineRenderer>();
+	m_lineRenderer->m_LineWidth = 5.0f;
+	m_lineRenderer->Color = CVector(1.0f, 0.0f, 0.0f);
+	float lineVertices[] = {
+		0,0,0,
+		0,0,1
+	};
+	unsigned int lineIndices[] = { 0, 1 };
+	Mesh* lineMesh = new Mesh(lineVertices, 6, lineIndices, 2);
+	m_lineRenderer->SetMesh(lineMesh);
+	m_lineRenderer->SetEnable(true);
 }
 
 void CameraController::Tick(float deltatime)
 {
+	auto mgr = GlobalManager::GetInstance().inputManager;
+	// 左键射线检测
+	if (mgr->GetKeyDown(InputManager::Key::MouseLeft))
+	{
+		// 生成射线起点
+		CVector cameraPosition = m_camera->transform->GetWorldPosition();
+		double xpos, ypos;
+		mgr->GetMousePos(xpos, ypos);
+		// 生成射线方向
+		CVector rayClipCoords((float)xpos, (float)ypos, 1.0f); // 射线在裁剪空间的坐标
+		CVector rayDirection = m_camera->ScreenToWorldOnPoint(rayClipCoords);
+
+		rayDirection = rayDirection - cameraPosition;
+
+		// 进行射线检测
+		float hitDistance = 500.0f;
+		MeshRenderer* hitObject = MeshRenderer::RayCast(cameraPosition, rayDirection, hitDistance, hitPoint);
+		hitT = (hitPoint - cameraPosition).len();
+
+		if (hitObject)
+		{
+			SelectGameObject(hitObject->gameobject);
+		}
+		else
+		{
+			SelectGameObject(nullptr);
+		}
+		m_lineRenderer->transform->SetWorldPosition(cameraPosition);
+		m_lineRenderer->transform->LookAt(cameraPosition + rayDirection * hitDistance);
+		m_lineRenderer->transform->SetLocalScale(CVector(1, 1, 1 * hitDistance));
+	}
+	// 左键按住移动
+	if (mgr->GetKey(InputManager::Key::MouseLeft) && CurSelected)
+	{
+		// 垂直移动
+		if (CurSelected->Name[0] == 'B')
+		{
+			double xpos, ypos;
+			mgr->GetMousePos(xpos, ypos);
+			// 生成射线方向
+			CVector rayClipCoords((float)xpos, (float)ypos, 1.0f); // 射线在裁剪空间的坐标
+			CVector rayDirection = m_camera->ScreenToWorldOnPoint(rayClipCoords);
+			CVector cameraPosition = m_camera->transform->GetWorldPosition();
+			rayDirection = (rayDirection - cameraPosition).Normalized();
+			// 这一次命中点
+			float yoff = ((cameraPosition + rayDirection * hitT) - hitPoint).y;
+			CurSelected->GetTransform()->SetWorldPosition(SelectedPoint + CVector(0, yoff, 0));
+		}
+		// 水平移动
+		else if (CurSelected->Name[0] == 'C')
+		{
+			double xpos, ypos;
+			mgr->GetMousePos(xpos, ypos);
+			// 生成射线方向
+			CVector rayClipCoords((float)xpos, (float)ypos, 1.0f); // 射线在裁剪空间的坐标
+			CVector rayDirection = m_camera->ScreenToWorldOnPoint(rayClipCoords);
+			CVector cameraPosition = m_camera->transform->GetWorldPosition();
+			rayDirection = (rayDirection - cameraPosition).Normalized();
+			// 这一次命中点
+			float xoff = ((cameraPosition + rayDirection * hitT) - hitPoint).x;
+			CurSelected->GetTransform()->SetWorldPosition(SelectedPoint + CVector(xoff, 0, 0));
+		}
+	}
+	// 右键按住旋转
+	if (mgr->GetKey(InputManager::Key::MouseRight) && CurSelected)
+	{
+		if (CurSelected->Name[0] == 'C')
+		{
+			float xoff, yoff;
+			mgr->GetMouseOffset(xoff, yoff);
+			// 只会旋转Y -> 水平旋转
+			CurSelected->GetTransform()->Rotate(CVector::Up(), xoff * deltatime * selectRotSpeed);
+		}
+	}
 }
 
 void CameraController::LateTick(float deltatime)
@@ -201,6 +237,12 @@ void CameraController::Rotate(float deltatime)
 
 void CameraController::SelectGameObject(GameObject* obj)
 {
+	if (CurSelected == obj)
+	{
+		if(CurSelected)
+			SelectedPoint = CurSelected->GetTransform()->GetWorldPosition();
+		return;
+	}
 	if (CurSelected)
 	{
 
@@ -209,15 +251,17 @@ void CameraController::SelectGameObject(GameObject* obj)
 		{
 			comp->SetEnable(false);
 		}
-		if (CurSelected == obj)
-		{
-			CurSelected = nullptr;
-			return;
-		}
 	}
 	CurSelected = obj;
 	if (CurSelected)
 	{
+		//// BT不可选中
+		//if (CurSelected->Name[1] == 'T')
+		//{
+		//	CurSelected = nullptr;
+		//	return;
+		//}
+		SelectedPoint = CurSelected->GetTransform()->GetWorldPosition();
 		auto comp = CurSelected->GetComponent<LineRenderer>();
 		if (comp)
 		{

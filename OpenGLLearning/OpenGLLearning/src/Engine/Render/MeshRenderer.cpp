@@ -16,7 +16,7 @@ namespace Engine
 	const std::string MeshRenderer::LIGHTDIRSTR = "lightDir";
 	const std::string MeshRenderer::LIGHTCOLOR = "lightColor";
 
-	MeshRenderer* MeshRenderer::RayCast(const CVector& rayOrigin, const CVector& rayDirection, const float hitDistance)
+	MeshRenderer* MeshRenderer::RayCast(const CVector& rayOrigin, const CVector& rayDirection, const float hitDistance, CVector& outHitPoint)
 	{
 		float nearestHitDistance = std::numeric_limits<float>::max();
 		MeshRenderer* nearestHitRenderer = nullptr;
@@ -71,7 +71,7 @@ namespace Engine
 				}
 			}
 		}
-
+		outHitPoint = rayOrigin + rayDirection * nearestHitDistance;
 		return nearestHitRenderer;
 	}
 
@@ -131,7 +131,7 @@ namespace Engine
 
 		m_VAO = std::make_unique<VertexArray>();
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount() * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount() * (unsigned int)sizeof(float));
 		VertexBufferLayout layout;
 
 		// ∂•µ„Œª÷√

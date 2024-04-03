@@ -27,7 +27,7 @@ void CameraControllerUI::OnImGuiRender()
 	ImGui::DragFloat("move speed", &controller->moveSpeed);
 
 	auto rot = controller->transform->GetWorldRotation().ToCEuler();
-	CVector rotation(rot.h, rot.p, rot.b);
+	CVector rotation(rot.p, rot.h, rot.b);
 	if (ImGui::DragFloat3("rotation", rotation))
 	{
 		rot.p = rotation.y;
@@ -37,5 +37,7 @@ void CameraControllerUI::OnImGuiRender()
 	}
 
 	ImGui::DragFloat("rotate speed", &controller->rotSpeed);
+
+	ImGui::DragFloat("select rotate speed", &controller->selectRotSpeed);
 
 }

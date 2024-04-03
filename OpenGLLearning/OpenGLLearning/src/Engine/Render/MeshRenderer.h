@@ -21,7 +21,7 @@ namespace Engine
 		static const  std::string VIEWPOSSTR;
 		static const  std::string LIGHTDIRSTR;
 		static const  std::string LIGHTCOLOR;
-		static MeshRenderer* RayCast(const CVector& rayOrigin, const CVector& rayDirection, const float hitDistance);
+		static MeshRenderer* RayCast(const CVector& rayOrigin, const CVector& rayDirection, const float hitDistance, CVector& outHitPoint);
 	private:
 		static bool RayTriangleIntersect(const CVector& rayOrigin, const CVector& rayDirection,
 			const CVector& v0, const CVector& v1, const CVector& v2,

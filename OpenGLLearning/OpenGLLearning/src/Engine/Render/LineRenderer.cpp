@@ -48,7 +48,7 @@ namespace Engine
 
 		m_VAO = std::make_unique<VertexArray>();
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount() * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(m_mesh->GetPositions(), m_mesh->GetPositionCount() * (unsigned int)sizeof(float));
 		VertexBufferLayout layout;
 
 		// ∂•µ„Œª÷√

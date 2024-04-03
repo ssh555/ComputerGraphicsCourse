@@ -48,8 +48,8 @@ namespace Engine
 			auto mgr = GlobalManager::GetInstance().inputManager;
 			mgr->MouseXOff = (float)xpos - mgr->lastMouseX;
 			mgr->MouseYOff = (float)ypos - mgr->lastMouseY;
-			mgr->lastMouseX = xpos;
-			mgr->lastMouseY = ypos;
+			mgr->lastMouseX = (float)xpos;
+			mgr->lastMouseY = (float)ypos;
 			});
 
 		// 设置鼠标滚动事件回调函数
@@ -142,6 +142,11 @@ namespace Engine
 		{
 			callback(width, height);
 		}
+	}
+
+	void InputManager::GetMousePos(double& xpos, double& ypos)
+	{
+		glfwGetCursorPos(window, &xpos, &ypos);
 	}
 
 	void InputManager::TriggerKeyEvent(Key key, KeyAction action)
