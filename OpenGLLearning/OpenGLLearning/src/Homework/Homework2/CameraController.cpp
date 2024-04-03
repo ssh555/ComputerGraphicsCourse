@@ -71,9 +71,9 @@ void CameraController::Tick(float deltatime)
 		{
 			SelectGameObject(nullptr);
 		}
-		m_lineRenderer->transform->SetWorldPosition(cameraPosition);
-		m_lineRenderer->transform->LookAt(cameraPosition + rayDirection * hitDistance);
-		m_lineRenderer->transform->SetLocalScale(CVector(1, 1, 1 * hitDistance));
+		//m_lineRenderer->transform->SetWorldPosition(cameraPosition);
+		//m_lineRenderer->transform->LookAt(cameraPosition + rayDirection * hitDistance);
+		//m_lineRenderer->transform->SetLocalScale(CVector(1, 1, 1 * hitDistance));
 	}
 	// ×ó¼ü°´×¡ÒÆ¶¯
 	if (mgr->GetKey(InputManager::Key::MouseLeft) && CurSelected)

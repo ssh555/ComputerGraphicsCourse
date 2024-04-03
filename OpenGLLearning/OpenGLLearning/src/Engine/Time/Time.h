@@ -14,6 +14,8 @@ namespace Engine
 
 		static int frameCount;
 
+		static float CurTime;
+
 	private:
 		static std::chrono::steady_clock::time_point s_LastFrameTime;
 	};

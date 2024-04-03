@@ -56,9 +56,13 @@ private:
 	Material* CreateMat();
 
 	// 读取文件中数据恢复舞台
-	void LoadData();
+	void LoadData(const string& path, bool ignoreA = false, bool ignoreB = false, bool ignoreC = false);
 	// 将当前舞台数据保存为文件
-	void SaveData();
+	void SaveData(const string& path);
+
+	void BStageMotion(float deltatime);
+	void CStageMotion(float deltatime);
+	float ComputeWaveDisplacement(float t, float x, float T, float A, float speed, bool isABS = false);
 
 private:
 	struct StageColor
@@ -93,6 +97,15 @@ private:
 	bool m_colorState = false;
 
 	std::string SLPATH = "Stage.data";
+	std::string INITPATH = "InitStage.data";
+
+	// B 区运动 -> 先复原，再运动
+	bool m_enableBMotion = false;
+	float m_BTime = 0;
+
+	// C 区运动 -> 先复原，再运动
+	bool m_enableCMotion = false;
+	float m_CTime = 0;
 
 
 };

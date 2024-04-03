@@ -37,16 +37,27 @@ void StageController::Tick(float deltatime)
 		auto transform = this->gameobject->GetTransform();
 		transform->Rotate(transform->GetUp(), m_rotRate * deltatime);
 	}
+
+	if (this->m_enableBMotion)
+	{
+		this->BStageMotion(deltatime);
+	}
+
+	if (this->m_enableCMotion)
+	{
+		this->CStageMotion(deltatime);
+	}
+
 	auto mgr = GlobalManager::GetInstance().inputManager;
 	// 保存
 	if (mgr->GetKeyDown(InputManager::Key::F2))
 	{
-		this->SaveData();
+		this->SaveData(SLPATH);
 	}
 	// 读取
 	if (mgr->GetKeyDown(InputManager::Key::F3))
 	{
-		this->LoadData();
+		this->LoadData(SLPATH);
 	}
 }
 
@@ -56,6 +67,7 @@ void StageController::CreateStage()
 	this->CreateAStage();
 	this->CreateBStage();
 	this->CreateCStage();
+	SaveData(INITPATH);
 }
 
 void StageController::CreatePlain()
@@ -137,7 +149,7 @@ void StageController::CreateBStage()
 	{
 		for (int z = 0; z < 10; ++z)
 		{
-			auto stage = CreateCube(mat, "B1-" + std::to_string(z+1) + "_" + std::to_string(x + 1));
+			auto stage = CreateCube(mat, "B1-" + std::to_string(z + 1) + "_" + std::to_string(x + 1));
 			m_B1Stage.push_back(stage);
 			auto transform = stage->GetTransform();
 			transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x - 4 + x, -2.4f, centerTransform->GetWorldPosition().z + 16.5f - z)); // 设置舞台块的位置
@@ -188,7 +200,7 @@ void StageController::CreateBStage()
 	// BT-Other
 	// 0.5*0.5尺寸 -> 一个正常B区Cube = 4个BTCube
 	// z : center pos z + 19 - 0.25 - z * 0.5
-	// x : center pos x - count * 0.25 + 0.25 + x * 0.5 
+	// x : center pos x - count * 0.25 + 0.25 + x * 0.5
 	mat = CreateMat();
 	float bounds[19] = { -1,-1, 4.5f,4.5f,4.5f,6.5f,4.5f,4.5f,4.5f ,4.5f,4.5f,4.5f ,7.5f ,7.5f ,7.5f ,7.5f,-1,-1,-1 };
 	int counts[37] = { 6,8,10,12,62,62,58 ,58 ,58 ,58 ,58 ,58 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56 ,56,54,54,52,50,48,46,43,40 };
@@ -279,8 +291,6 @@ void StageController::CreateCStage()
 	transform = stage->GetTransform();
 	transform->SetLocalPosition(CVector(centerTransform->GetWorldPosition().x + 14.0f, 5.5f, centerTransform->GetWorldPosition().z + 16.5f - 9.0f)); // 设置舞台块的位置
 	transform->SetLocalScale(CVector(3, 11, 0.5));
-
-
 }
 
 void StageController::BindInput()
@@ -297,6 +307,30 @@ void StageController::BindInput()
 			if (action == InputManager::KeyAction::Press)
 			{
 				this->m_isRotating = !this->m_isRotating;
+			}
+		});
+	GlobalManager::GetInstance().inputManager->RegisterKeyCallback(InputManager::Key::Num3, [this](InputManager::Key key, InputManager::KeyAction action)
+		{
+			if (action == InputManager::KeyAction::Press)
+			{
+				this->m_enableBMotion = !this->m_enableBMotion;
+				if (this->m_enableBMotion)
+				{
+					LoadData(INITPATH, true, false, true);
+					m_BTime = 0;
+				}
+			}
+		});
+	GlobalManager::GetInstance().inputManager->RegisterKeyCallback(InputManager::Key::Num4, [this](InputManager::Key key, InputManager::KeyAction action)
+		{
+			if (action == InputManager::KeyAction::Press)
+			{
+				this->m_enableCMotion = !this->m_enableCMotion;
+				if (this->m_enableCMotion)
+				{
+					LoadData(INITPATH, true, true, false);
+					m_CTime = 0;
+				}
 			}
 		});
 }
@@ -363,10 +397,10 @@ Engine::Material* StageController::CreateMat()
 	return mat;
 }
 
-void StageController::SaveData()
+void StageController::SaveData(const string& path)
 {
-	//std::ofstream file(SLPATH, std::ios::out | std::ios::binary);
-	std::ofstream file(SLPATH);
+	std::ofstream file(path, std::ios::out | std::ios::binary);
+	//std::ofstream file(path);
 	if (!file.is_open())
 	{
 		std::cerr << "Failed to open file for saving data!" << std::endl;
@@ -381,8 +415,6 @@ void StageController::SaveData()
 		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
 			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
 	}
-
-
 
 	// 保存B1舞台块数据
 	for (const auto& stage : m_B1Stage)
@@ -415,10 +447,63 @@ void StageController::SaveData()
 	file.close();
 }
 
-void StageController::LoadData()
+void StageController::BStageMotion(float deltatime)
 {
-	//std::ifstream file(SLPATH, std::ios::in | std::ios::binary);
-	std::ifstream file(SLPATH);
+	// 模拟波浪运动
+	m_BTime += deltatime;
+	// 记录B1区的初始Y位置
+	static float B1Y = m_B1Stage[0]->GetTransform()->GetWorldPosition().y;
+	// B1
+	for (auto stage : m_B1Stage)
+	{
+		auto pos = stage->GetTransform()->GetWorldPosition();
+		stage->GetTransform()->SetWorldPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetWorldPosition().x, 20, 3, 4, true) + B1Y, pos.z));
+	}
+	// B2
+	static float B2Y = m_B2Stage[0]->GetTransform()->GetWorldPosition().y;
+	for (auto stage : m_B2Stage)
+	{
+		auto pos = stage->GetTransform()->GetWorldPosition();
+		stage->GetTransform()->SetWorldPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetWorldPosition().x, 20, 3, 4, true) + B2Y, pos.z));
+	}
+}
+
+void StageController::CStageMotion(float deltatime)
+{
+	// 自旋转 & 水平来回运动 [-5, 5]
+	m_CTime += deltatime;
+	// 记录C区的初始Y位置
+	static float CX[8] = {
+	m_CStage[0]->GetTransform()->GetWorldPosition().x,
+	m_CStage[1]->GetTransform()->GetWorldPosition().x,
+	m_CStage[2]->GetTransform()->GetWorldPosition().x,
+	m_CStage[3]->GetTransform()->GetWorldPosition().x,
+	m_CStage[4]->GetTransform()->GetWorldPosition().x,
+	m_CStage[5]->GetTransform()->GetWorldPosition().x,
+	m_CStage[6]->GetTransform()->GetWorldPosition().x,
+	m_CStage[7]->GetTransform()->GetWorldPosition().x,
+	};
+	for (int i = 0; i < 8; ++i)
+	{
+		// 水平移动
+		auto pos = m_CStage[i]->GetTransform()->GetWorldPosition();
+		m_CStage[i]->GetTransform()->SetWorldPosition(CVector(ComputeWaveDisplacement(m_CTime, 0, 20 + i, 5, 2) + CX[i], pos.y, pos.z));
+
+		// 自旋转
+		m_CStage[i]->GetTransform()->Rotate(CVector::Up(), m_rotRate * deltatime);
+	}
+}
+
+float StageController::ComputeWaveDisplacement(float t, float x, float T, float A, float speed, bool isABS)
+{
+	// 计算垂直位移，根据正弦函数生成波浪形状
+	return isABS ? abs(A * sinf((2 * PI / T) * (x + speed * t))) : (A * sinf((2 * PI / T) * (x + speed * t)));
+}
+
+void StageController::LoadData(const string& path, bool ignoreA, bool ignoreB, bool ignoreC)
+{
+	std::ifstream file(path, std::ios::in | std::ios::binary);
+	//std::ifstream file(path);
 	if (!file.is_open())
 	{
 		std::cerr << "Failed to open file for loading data!" << std::endl;
@@ -457,10 +542,18 @@ void StageController::LoadData()
 		std::vector<GameObject*>& stages = m_AStage;
 		if (name[0] == 'A')
 		{
+			if (ignoreA)
+			{
+				continue;;
+			}
 			stages = m_AStage;
 		}
 		else if (name[0] == 'B')
 		{
+			if (ignoreB)
+			{
+				continue;;
+			}
 			if (name[1] == '1')
 			{
 				stages = m_B1Stage;
@@ -476,6 +569,10 @@ void StageController::LoadData()
 		}
 		else if (name[0] == 'C')
 		{
+			if (ignoreC)
+			{
+				continue;;
+			}
 			stages = m_CStage;
 		}
 		for (auto stage : stages)
