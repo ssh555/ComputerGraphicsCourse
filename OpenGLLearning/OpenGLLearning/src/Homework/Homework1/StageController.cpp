@@ -397,74 +397,26 @@ Engine::Material* StageController::CreateMat()
 	return mat;
 }
 
-void StageController::SaveData(const string& path)
-{
-	std::ofstream file(path, std::ios::out | std::ios::binary);
-	//std::ofstream file(path);
-	if (!file.is_open())
-	{
-		std::cerr << "Failed to open file for saving data!" << std::endl;
-		return;
-	}
-	// 保存父物体
-	file << this->gameobject->Name << " " << this->gameobject->GetTransform()->GetLocalPosition() << " " << this->gameobject->GetTransform()->GetLocalRotation() << " " << this->gameobject->GetTransform()->GetLocalScale() << std::endl;
 
-	// 保存A舞台块数据
-	for (const auto& stage : m_AStage)
-	{
-		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
-			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
-	}
-
-	// 保存B1舞台块数据
-	for (const auto& stage : m_B1Stage)
-	{
-		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
-			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
-	}
-
-	// 保存B2舞台块数据
-	for (const auto& stage : m_B2Stage)
-	{
-		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
-			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
-	}
-
-	// 保存BT舞台块数据
-	for (const auto& stage : m_BTStage)
-	{
-		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
-			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
-	}
-
-	// 保存C舞台块数据
-	for (const auto& stage : m_CStage)
-	{
-		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
-			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
-	}
-
-	file.close();
-}
 
 void StageController::BStageMotion(float deltatime)
 {
 	// 模拟波浪运动
 	m_BTime += deltatime;
 	// 记录B1区的初始Y位置
-	static float B1Y = m_B1Stage[0]->GetTransform()->GetWorldPosition().y;
+	static float B1Y = m_B1Stage[0]->GetTransform()->GetLocalPosition().y;
 	// B1
 	for (auto stage : m_B1Stage)
 	{
-		auto pos = stage->GetTransform()->GetWorldPosition();
-		stage->GetTransform()->SetWorldPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetWorldPosition().x, 20, 3, 4, true) + B1Y, pos.z));
+		auto pos = stage->GetTransform()->GetLocalPosition();
+		stage->GetTransform()->SetLocalPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetLocalPosition().x, 20, 3, 4, true) + B1Y, pos.z));
 	}
 	// B2
-	static float B2Y = m_B2Stage[0]->GetTransform()->GetWorldPosition().y;
+	static float B2Y = m_B2Stage[0]->GetTransform()->GetLocalPosition().y;
 	for (auto stage : m_B2Stage)
 	{
-		auto pos = stage->GetTransform()->GetWorldPosition();
-		stage->GetTransform()->SetWorldPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetWorldPosition().x, 20, 3, 4, true) + B2Y, pos.z));
+		auto pos = stage->GetTransform()->GetLocalPosition();
+		stage->GetTransform()->SetLocalPosition(CVector(pos.x, ComputeWaveDisplacement(m_BTime, stage->GetTransform()->GetLocalPosition().x, 20, 3, 4, true) + B2Y, pos.z));
 	}
 }
 
@@ -474,20 +426,20 @@ void StageController::CStageMotion(float deltatime)
 	m_CTime += deltatime;
 	// 记录C区的初始Y位置
 	static float CX[8] = {
-	m_CStage[0]->GetTransform()->GetWorldPosition().x,
-	m_CStage[1]->GetTransform()->GetWorldPosition().x,
-	m_CStage[2]->GetTransform()->GetWorldPosition().x,
-	m_CStage[3]->GetTransform()->GetWorldPosition().x,
-	m_CStage[4]->GetTransform()->GetWorldPosition().x,
-	m_CStage[5]->GetTransform()->GetWorldPosition().x,
-	m_CStage[6]->GetTransform()->GetWorldPosition().x,
-	m_CStage[7]->GetTransform()->GetWorldPosition().x,
+	m_CStage[0]->GetTransform()->GetLocalPosition().x,
+	m_CStage[1]->GetTransform()->GetLocalPosition().x,
+	m_CStage[2]->GetTransform()->GetLocalPosition().x,
+	m_CStage[3]->GetTransform()->GetLocalPosition().x,
+	m_CStage[4]->GetTransform()->GetLocalPosition().x,
+	m_CStage[5]->GetTransform()->GetLocalPosition().x,
+	m_CStage[6]->GetTransform()->GetLocalPosition().x,
+	m_CStage[7]->GetTransform()->GetLocalPosition().x,
 	};
 	for (int i = 0; i < 8; ++i)
 	{
 		// 水平移动
-		auto pos = m_CStage[i]->GetTransform()->GetWorldPosition();
-		m_CStage[i]->GetTransform()->SetWorldPosition(CVector(ComputeWaveDisplacement(m_CTime, 0, 20 + i, 5, 2) + CX[i], pos.y, pos.z));
+		auto pos = m_CStage[i]->GetTransform()->GetLocalPosition();
+		m_CStage[i]->GetTransform()->SetLocalPosition(CVector(ComputeWaveDisplacement(m_CTime, 0, 20 + i, 5, 2) + CX[i], pos.y, pos.z));
 
 		// 自旋转
 		m_CStage[i]->GetTransform()->Rotate(CVector::Up(), m_rotRate * deltatime);
@@ -539,43 +491,47 @@ void StageController::LoadData(const string& path, bool ignoreA, bool ignoreB, b
 		ss >> rotation;
 		ss >> scale;
 
-		std::vector<GameObject*>& stages = m_AStage;
+		std::vector<GameObject*>* stages = nullptr;
 		if (name[0] == 'A')
 		{
 			if (ignoreA)
 			{
-				continue;;
+				continue;
 			}
-			stages = m_AStage;
+			stages = &m_AStage;
 		}
 		else if (name[0] == 'B')
 		{
 			if (ignoreB)
 			{
-				continue;;
+				continue;
 			}
 			if (name[1] == '1')
 			{
-				stages = m_B1Stage;
+				stages = &m_B1Stage;
 			}
 			else if (name[1] == '2')
 			{
-				stages = m_B2Stage;
+				stages = &m_B2Stage;
 			}
 			else if (name[1] == 'T')
 			{
-				stages = m_BTStage;
+				stages = &m_BTStage;
 			}
 		}
 		else if (name[0] == 'C')
 		{
 			if (ignoreC)
 			{
-				continue;;
+				continue;
 			}
-			stages = m_CStage;
+			stages = &m_CStage;
 		}
-		for (auto stage : stages)
+		else
+		{
+			continue;
+		}
+		for (auto stage : *stages)
 		{
 			if (stage->Name == name)
 			{
@@ -585,6 +541,56 @@ void StageController::LoadData(const string& path, bool ignoreA, bool ignoreB, b
 				break;
 			}
 		}
+	}
+
+	file.close();
+}
+
+void StageController::SaveData(const string& path)
+{
+	std::ofstream file(path, std::ios::out | std::ios::binary);
+	//std::ofstream file(path);
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open file for saving data!" << std::endl;
+		return;
+	}
+	// 保存父物体
+	file << this->gameobject->Name << " " << this->gameobject->GetTransform()->GetLocalPosition() << " " << this->gameobject->GetTransform()->GetLocalRotation() << " " << this->gameobject->GetTransform()->GetLocalScale() << std::endl;
+
+	// 保存A舞台块数据
+	for (const auto& stage : m_AStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存B1舞台块数据
+	for (const auto& stage : m_B1Stage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存B2舞台块数据
+	for (const auto& stage : m_B2Stage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存BT舞台块数据
+	for (const auto& stage : m_BTStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
+	}
+
+	// 保存C舞台块数据
+	for (const auto& stage : m_CStage)
+	{
+		file << stage->Name << " " << stage->GetTransform()->GetLocalPosition() << " "
+			<< stage->GetTransform()->GetLocalRotation() << " " << stage->GetTransform()->GetLocalScale() << std::endl;
 	}
 
 	file.close();
