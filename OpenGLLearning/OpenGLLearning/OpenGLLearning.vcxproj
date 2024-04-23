@@ -237,6 +237,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClCompile Include="src\Homework\Homework1\Stage.cpp" />
     <ClCompile Include="src\Homework\Homework1\StageController.cpp" />
     <ClCompile Include="src\Homework\Homework2\TestCMatrix.cpp" />
+    <ClCompile Include="src\Homework\Homework3\TestMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
@@ -297,6 +298,7 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <ClInclude Include="src\Homework\Homework1\Stage.h" />
     <ClInclude Include="src\Homework\Homework1\StageController.h" />
     <ClInclude Include="src\Homework\Homework2\TestCMatrix.h" />
+    <ClInclude Include="src\Homework\Homework3\TestMath.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Circle1.png" />

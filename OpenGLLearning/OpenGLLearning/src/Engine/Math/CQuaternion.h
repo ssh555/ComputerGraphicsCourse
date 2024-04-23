@@ -87,7 +87,7 @@ namespace Engine
 		//求逆 不改变自身
 		CQuaternion GetInverse();
 		//求差
-		CQuaternion Div(const CQuaternion& b);
+		CQuaternion Div(CQuaternion& b);
 		//求旋转角和角度
 		void GetAngle(float& angle, CVector& axis);
 		//插值。从当前四元数插值到Vend四元数,t是参数[0,1]

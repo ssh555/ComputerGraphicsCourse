@@ -21,6 +21,7 @@ namespace Engine
 		static CMatrix rotate(const CVector& axis, float angle);
 		static CVector getTranslation(const CMatrix& matrix);
 		static CVector getScale(const CMatrix& newTransform);
+		static CMatrix Orthogonalize(const CMatrix& matrix);
 
 	public:
 		CMatrix();
@@ -97,6 +98,7 @@ namespace Engine
 			}
 		}
 
+
 	private:
 		//float m00, m10, m20, m30;
 		//float m01, m11, m21, m31;
@@ -104,6 +106,10 @@ namespace Engine
 		//float m03, m13, m23, m33;
 
 		float data[4][4];
+
+
+	private:
+		static float Vec4Dot(float* vec1, float* vec2);
 	};
 
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "tests/Test.h"
+#include "Engine/Math/CEuler.h"
 using namespace test;
 
 class CameraController;
@@ -13,5 +14,7 @@ public:
 	virtual void OnImGuiRender() override;
 
 	CameraController* controller;
+
+	Engine::CEuler rot;
 };
 

@@ -173,11 +173,11 @@ void CameraController::Rotate(float deltatime)
 		if (CurSelected)
 		{
 			auto t = CurSelected->GetTransform();
-			this->transform->RotateAround(t->GetWorldPosition(), CVector::Up(), this->rotSpeed * deltatime);
+			this->transform->RotateAround(t->GetWorldPosition(), CVector::Up(), -this->rotSpeed * deltatime);
 		}
 		else
 		{
-			this->transform->Rotate(CVector::Up(), this->rotSpeed * deltatime);
+			this->transform->Rotate(this->transform->GetUp(), this->rotSpeed * deltatime);
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::L))
@@ -185,11 +185,12 @@ void CameraController::Rotate(float deltatime)
 		if (CurSelected)
 		{
 			auto t = CurSelected->GetTransform();
-			this->transform->RotateAround(t->GetWorldPosition(), CVector::Up(), -this->rotSpeed * deltatime);
+			this->transform->RotateAround(t->GetWorldPosition(), CVector::Up(), this->rotSpeed * deltatime);
 		}
 		else
 		{
-			this->transform->Rotate(CVector::Up(), -this->rotSpeed * deltatime);
+			// вс©у╪Д
+			this->transform->Rotate(this->transform->GetUp(), -this->rotSpeed * deltatime);
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::K))

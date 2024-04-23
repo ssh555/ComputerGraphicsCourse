@@ -1,4 +1,7 @@
 #pragma once
+#include "CMath.h"
+#include <iostream>
+#include <sstream>
 
 namespace Engine
 {
@@ -12,8 +15,24 @@ namespace Engine
 		CEuler();
 		CEuler(const float X, const float Y, const float Z);
 		CEuler(const CEuler& vec);
+
+		CEuler(const std::string& str)
+		{
+			auto strs = CMath::split(str, ',');
+			h = CMath::stringToNum<float>(strs[0]);
+			p = CMath::stringToNum<float>(strs[1]);
+			b = CMath::stringToNum<float>(strs[2]);
+		}
+		// 重载输出操作符 <<
+		friend std::ostream& operator<<(std::ostream& os, const CEuler& vec)
+		{
+			os << vec.h << "," << vec.p << "," << vec.b;
+			return os;
+		}
+
 		~CEuler();
 		//偏航、俯仰、翻转
+		// y, x, z
 		float h, p, b;
 		//设置角的值
 		void Set(float h, float p, float b);

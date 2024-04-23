@@ -590,4 +590,79 @@ namespace Engine
 		}
 	}
 
+	float CMatrix::Vec4Dot(float* vec1, float* vec2)
+	{
+		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2] + vec1[3] * vec2[3];
+	}
+
+	// 列
+	//Engine::CMatrix CMatrix::Orthogonalize(const CMatrix& matrix) {
+	//	// 创建一个新的矩阵来存储正交化后的结果
+	//	Engine::CMatrix result(matrix);
+
+	//	// 对每个列向量应用 Gram-Schmidt 过程
+	//	for (int i = 0; i < 3; ++i) {
+	//		// 获取当前列向量
+	//		CVector col(result.data[0][i], result.data[1][i], result.data[2][i]);
+
+	//		float length = col.len();
+	//		if (length > 0.0f) {
+	//			// 归一化当前列向量
+	//			col = col * (1 / length);
+	//			result[0][i] = col.x;
+	//			result[1][i] = col.y;
+	//			result[2][i] = col.z;
+
+	//			// 对于第 i 个列向量，将它与前面的列向量进行正交化
+	//			for (int j = 0; j < i; ++j) {
+	//				// 计算投影并从当前列向量中减去投影
+	//				CVector pre(result.data[0][j], result.data[1][j], result.data[2][j]);
+	//				float d = (pre * col);
+	//				result[0][i] -= pre[0] * d;
+	//				result[1][i] -= pre[1] * d;
+	//				result[2][i] -= pre[2] * d;
+	//			}
+	//			col.SetVec(result.data[0][i], result.data[1][i], result.data[2][i]);
+	//			length = col.len();
+	//			result[0][i] /= length;
+	//			result[1][i] /= length;
+	//			result[2][i] /= length;
+	//		}
+	//	}
+
+	//	result.PrintMatrix();
+	//	return result;
+	//}
+
+
+	// 行
+	Engine::CMatrix CMatrix::Orthogonalize(const CMatrix& matrix) {
+		// 创建一个新的矩阵来存储正交化后的结果
+		Engine::CMatrix result(matrix);
+
+		CVector row[3];
+		for (int i = 0; i < 3; ++i)
+		{
+			row[i].SetVec(result[i][0], result[i][1], result[i][2]);
+			row[i].Normalize();
+		}
+		row[1] = row[1] - row[0].dotMul(row[1]) * row[0];
+		row[1].Normalize();
+		row[2] = row[2] - row[0].dotMul(row[2]) * row[0] - row[1].dotMul(row[2]) * row[1];
+		row[2].Normalize();
+		for (int i = 0; i < 3; ++i)
+		{
+			result[i][0] = row[i].x;
+			result[i][1] = row[i].y;
+			result[i][2] = row[i].z;
+		}
+
+		return result;
+	}
+
+
+
+
+
+
 }

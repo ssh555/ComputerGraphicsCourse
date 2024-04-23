@@ -24,6 +24,10 @@ namespace Engine
 	{
 		for (auto camera : GlobalManager::GetInstance().cameraManager->GetSortedCameras())
 		{
+			if (!camera->GetEnable())
+			{
+				continue;
+			}
 			if (camera->GetProjectionType() == Camera::ProjectionType::Perspective)
 			{
 				glEnable(GL_DEPTH_TEST);

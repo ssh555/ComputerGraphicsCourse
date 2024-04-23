@@ -42,17 +42,7 @@ namespace Engine
 			*updir = t;
 		}
 		CVector init(0, 0, -1);
-		//cout << h << " " << p << " " << b << endl;
-		CMatrix matrix;
-		matrix.SetRotate(this->h, CVector(0, 1, 0));
-		init = matrix.vecMul(init);
-		//cout << init.x << " " << init.y << " " << init.z << endl;
-		matrix.SetRotate(this->p, CVector(1, 0, 0));
-		init = matrix.vecMul(init);
-		//cout << init.x << " " << init.y << " " << init.z << endl;
-		matrix.SetRotate(this->b, CVector(0, 0, 1));
-		init = matrix.vecMul(init);
-		//cout << init.x << " " << init.y << " " << init.z << endl;
+		init = this->ToQuaternion() * init;
 		return init;
 	}
 
@@ -101,6 +91,8 @@ namespace Engine
 
 	//欧拉角转四元数
 	CQuaternion CEuler::ToQuaternion() {
+		//float tp = p, th = h, tb = b;
+		//this->Normal();
 		float cosY = cosf(this->h / 180 * PI / 2);
 		float sinY = sinf(this->h / 180 * PI / 2);
 		float cosX = cosf(this->p / 180 * PI / 2);
@@ -113,6 +105,16 @@ namespace Engine
 		float y = cosX * sinY * cosZ - sinX * cosY * sinZ;
 		float z = cosX * cosY * sinZ - sinX * sinY * cosZ;
 		//printf("%f %f %f %f\n", x, y, z, w);
+		// 检查 x、y、z、w 的符号并进行调整
+		//if (w < -0.000001f) {
+		//	w = -w;
+		//	x = -x;
+		//	y = -y;
+		//	z = -z;
+		//}
+		//p = tp;
+		//h = th;
+		//b = tb;
 		return CQuaternion(x, y, z, w);
 	}
 

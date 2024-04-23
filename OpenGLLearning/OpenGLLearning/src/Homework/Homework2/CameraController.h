@@ -21,7 +21,7 @@ protected:
 	virtual void LateTick(float deltatime) override;
 
 	void Move(float deltatime);
-	void Rotate(float deltatime);
+	virtual void Rotate(float deltatime);
 
 protected:
 	Engine::Camera* m_camera;

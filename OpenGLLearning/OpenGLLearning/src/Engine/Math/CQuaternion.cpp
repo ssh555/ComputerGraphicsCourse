@@ -54,6 +54,14 @@ namespace Engine
 	}
 	CQuaternion CQuaternion::quatFromAxisAngle(const CVector& axis, float angle)
 	{
+		if (angle > PI)
+		{
+			angle -= PI * 2;
+		}
+		if (angle < -PI)
+		{
+			angle += PI * 2;
+		}
 		// 计算旋转角的一半
 		//float halfAngle = CMath::radians(angle) * 0.5f;
 		float halfAngle = angle * 0.5f;
@@ -177,8 +185,17 @@ namespace Engine
 
 	//重载 ==
 	bool CQuaternion::operator==(const CQuaternion& p) {
-		if (fabsf(this->x - p.x) < 0.001f && fabsf(this->y - p.y) < 0.001f && fabsf(this->z - p.z) < 0.001f && fabsf(this->w - p.w) < 0.001f) {
-			return true;
+		if (this->w * p.x >= 0)
+		{
+			if (fabsf(this->x - p.x) < 0.001f && fabsf(this->y - p.y) < 0.001f && fabsf(this->z - p.z) < 0.001f && fabsf(this->w - p.w) < 0.001f) {
+				return true;
+			}
+		}
+		else
+		{
+			if (fabsf(this->x + p.x) < 0.001f && fabsf(this->y + p.y) < 0.001f && fabsf(this->z + p.z) < 0.001f && fabsf(this->w + p.w) < 0.001f) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -287,8 +304,8 @@ namespace Engine
 	}
 
 	//求差
-	CQuaternion CQuaternion::Div(const CQuaternion& b) {
-		return this->GetInverse() * b;
+	CQuaternion CQuaternion::Div(CQuaternion& b) {
+		return b * this->GetInverse();
 	}
 
 	//求旋转角和角度
@@ -301,34 +318,74 @@ namespace Engine
 		axis[0] = t.x / SIN;
 		axis[1] = t.y / SIN;
 		axis[2] = t.z / SIN;
+		if (angle > 180)
+		{
+			angle -= 180 * 2;
+		}
+		if (angle < -180)
+		{
+			angle += 180 * 2;
+		}
 	}
 
 	//幂
 	CQuaternion CQuaternion::operator^(float t) {
-		float a = acosf(this->w);
-		float SIN = sinf(a);
-		if (fabsf(SIN) < 0.00001f) {
-			CVector n(0, 0, 0);
-			return CQuaternion(cosf(t * a), n);
-		}
-		else {
-			CVector n(this->x / SIN, this->y / SIN, this->z / SIN);
-			n = n * sinf(t * a);
-			return CQuaternion(cosf(t * a), n);
-		}
+		// 计算四元数的模长
+		float length = sqrt(x * x + y * y + z * z + w * w);
+		// 计算幅角
+		float angle = acos(w / length);
+		// 计算幅角的三角函数
+		float sinAngle = sin(angle);
+
+		// 计算新的幅角和新的向量部分
+		float newAngle = angle * t;
+		float newSinAngle = sin(newAngle);
+		float scaleFactor = newSinAngle / sinAngle;
+
+		// 新的向量部分
+		CVector newVector(x * scaleFactor, y * scaleFactor, z * scaleFactor);
+
+		// 新的标量部分
+		float newW = cos(newAngle) * length;
+
+		return CQuaternion(newW, newVector);
 	}
 
-	//插值。从当前四元数插值到Vend四元数,t是参数[0,1]
+
+	//插值。从当前四元数插值到Vend四元数, t 是参数[0,1]
 	CQuaternion CQuaternion::Slerp(const CQuaternion& vend, float t) {
+		// 获取起始四元数和目标四元数
 		CQuaternion q0 = *this;
-		q0.Normalize();
 		CQuaternion q1 = vend;
+
+		// 归一化四元数
+		q0.Normalize();
 		q1.Normalize();
-		q0 = ((q1 * q0.GetInverse()) ^ t) * q0;
-		//cout << q0.x << " " << q0.y << " " << q0.z << " " << q0.w << endl;
-		return q0;
-		//return q0 * ((q0.Div(q1))^t);
+
+		//// 计算两个四元数之间的夹角
+		//float dotProduct = q0.dotMul(q1);
+		//float theta = acos(dotProduct);
+
+		//// 计算插值参数
+		//float sinTheta = sin(theta);
+		//float coef1 = sin((1 - t) * theta) / sinTheta;
+		//float coef2 = sin(t * theta) / sinTheta;
+
+		//// 执行插值
+		//CQuaternion result = q0 * coef1 + q1 * coef2;
+
+		//CQuaternion result = ((q1 * q0.GetInverse()) ^ t) * q0;
+		CQuaternion result = q1 * q0.GetInverse();
+		CVector axis;
+		float angle;
+		result.GetAngle(angle, axis);
+		result.SetAngle(angle * t, axis);
+		//result = CQuaternion::quatFromAxisAngle(axis, angle * t / 180 * PI);
+		result = result * q0;
+		result.Normalize();
+		return result;
 	}
+
 	//插值。一次插值出n个数据。插值参数保存在数组t中，结果返回到数组Result中。
 	void CQuaternion::Slerp(const CQuaternion& vend, int n, float* t, CQuaternion* Result) {
 		for (int i = 0; i < n; ++i) {
@@ -346,22 +403,26 @@ namespace Engine
 		float t = (2 * (w * x - y * z));
 
 		float p = asinf(t);
+
 		if (fabsf(cosf(p)) > 0.001f) {
 			float h = atan2f(2 * (w * y + x * z), (1 - 2 * (x * x + y * y))) / PI * 180;
+			//h = std::_Is_nan(h) ? 180 : h;
 			float b = atan2f(2 * (w * z + y * x), (1 - 2 * (z * z + x * x))) / PI * 180;
+			z = std::_Is_nan(z) ? 90 : z;
 			//printf("%f %f %f\n", h, p, b);
 			//cout << p / PI * 180 << endl;
+			p = std::_Is_nan(p) ? 90 / 180 * PI : p;
 			return CEuler(h, p / PI * 180, b);
 		}
 		else {
 			float h = atan2f(2 * (w * y - x * z), (1 - 2 * (z * z + y * y))) / PI * 180;
+			//h = std::_Is_nan(h) ? 180 : h;
 			float b = 0;
 			//printf("%f %f %f\n", h, p, b);
 			//cout << p / PI * 180 << endl;
+			p = std::_Is_nan(p) ? 90 / 180 * PI : p;
 			return CEuler(h, p / PI * 180, b);
 		}
-
-
 	}
 
 	//四元数转矩阵

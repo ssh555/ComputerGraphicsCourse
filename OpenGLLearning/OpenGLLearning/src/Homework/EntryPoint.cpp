@@ -18,6 +18,7 @@
 #include "Homework1/Stage.h"
 #include "Homework2/TestCMatrix.h"
 #include "Homework2/CameraController.h"
+#include "Homework3/TestMath.h"
 
 
 using namespace Engine;
@@ -38,6 +39,7 @@ EntryPoint::EntryPoint()
 
 	// 摄像机
 	auto camera = cameraObj->AddComponent<Camera>();
+	camera->SetEnable(true);
 	//cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 5 + CVector::Left() * 1 + CVector::Up() * 1);
 	cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 50 + CVector::Up() * 15);
 	cameraObj->GetTransform()->LookAt(CVector::Backward() + CVector::Down() * 2 + cameraObj->GetTransform()->GetWorldPosition());
@@ -49,7 +51,9 @@ void EntryPoint::Awake()
 	// 作业1 -> TestCVector
 	//TestCVector();
 	// 作业2 -> TestCMatrix
-	TestCMatrix();
+	//TestCMatrix();
+	// 作业3
+	TestMath();
 }
 
 void EntryPoint::Start()
