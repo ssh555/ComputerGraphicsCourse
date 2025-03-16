@@ -7,3 +7,9 @@ To-Do List
 - 封装Shader、Material -> 同一个Material只绑定一次 -> 在渲染之前进行Material绑定，渲染时就不进行绑定
 
 
+# ComputerGraphicsCourse
+Framework built based on OpenGL, using a custom math library to replace the glm library. For detailed program framework design, refer to the folder "Program Design."
+
+To-Do List
+- Integrate a physics system -> Collision detection & physics detection
+- Encapsulate Shader and Material -> Bind the same Material only once -> Perform Material binding before rendering, avoiding binding during rendering.
