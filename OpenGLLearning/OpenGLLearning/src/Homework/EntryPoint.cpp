@@ -19,6 +19,8 @@
 #include "Homework2/TestCMatrix.h"
 #include "Homework2/CameraController.h"
 #include "Homework3/TestMath.h"
+#include "Homework3/ActorController.h"
+#include "Homework2/CameraControllerUI.h"
 
 
 using namespace Engine;
@@ -44,6 +46,10 @@ EntryPoint::EntryPoint()
 	cameraObj->GetTransform()->SetWorldPosition(CVector::Forward() * 50 + CVector::Up() * 15);
 	cameraObj->GetTransform()->LookAt(CVector::Backward() + CVector::Down() * 2 + cameraObj->GetTransform()->GetWorldPosition());
 	cameraObj->AddComponent<CameraController>();
+	GlobalManager::GetInstance().testMenu->RegisterTest<CameraControllerUI>("CameraController");
+
+	actorController = new GameObject("ActorController");
+	actorController->AddComponent<ActorController>();
 }
 
 void EntryPoint::Awake()
@@ -66,4 +72,5 @@ EntryPoint::~EntryPoint()
 {
 	delete m_stage;
 	delete cameraObj;
+	delete actorController;
 }

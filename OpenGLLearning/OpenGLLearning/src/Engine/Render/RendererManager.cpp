@@ -43,11 +43,13 @@ namespace Engine
 			
 			for (auto renderer : m_enabledRenderers)
 			{
-				renderer->Render(PV, pos);
+				if(renderer->GetEnable())
+					renderer->Render(PV, pos);
 			}
 			for (auto renderer : m_enabledLineRenderers)
 			{
-				renderer->Render(PV, pos);
+				if (renderer->GetEnable())
+					renderer->Render(PV, pos);
 			}
 		}
 	}
@@ -76,7 +78,10 @@ namespace Engine
 		{
 			m_disabledLineRenderers.erase(std::remove(m_disabledLineRenderers.begin(), m_disabledLineRenderers.end(), renderer), m_disabledLineRenderers.end());
 			m_enabledLineRenderers.push_back(renderer);
-			mgr->m_enabledComponents.erase(std::remove(mgr->m_enabledComponents.begin(), mgr->m_enabledComponents.end(), renderer), mgr->m_enabledComponents.end());
+			if (renderer->IsEnableTick == false)
+			{
+				mgr->m_enabledComponents.erase(std::remove(mgr->m_enabledComponents.begin(), mgr->m_enabledComponents.end(), renderer), mgr->m_enabledComponents.end());
+			}
 			mgr->m_disabledComponents.push_back(renderer);
 		}
 		else

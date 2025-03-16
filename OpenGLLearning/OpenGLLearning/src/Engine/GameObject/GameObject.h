@@ -6,11 +6,12 @@ namespace Engine
 {
 	class Component;
 	class Transform;
-
+	class GameObjectManager;
 	class GameObject
 	{
 		friend class Transform;
 		friend class Component;
+		friend class GameObjectManager;
 	protected:
 		// 变换组件 -> 不可移除，每个GameObject都有，所有Component都会引用所在GameObject.transform，不进ComponentList，但是可以GetComponent -> 栈
 		Transform* transform;
@@ -18,6 +19,7 @@ namespace Engine
 		Transform* GetTransform();
 
 		std::string Name;
+		bool IsDelete = false;
 
 	protected:
 		// 挂载的组件 -> 栈
@@ -29,7 +31,6 @@ namespace Engine
 		// 直接子物体
 		std::vector<GameObject*> m_children;
 
-		bool IsDelete = false;
 
 	public:
 		// 获取组件
@@ -68,6 +69,7 @@ namespace Engine
 
 		// 获得父物体
 		const GameObject* GetParent() const;
+		GameObject* GetRoot();
 
 		const std::vector<GameObject*>& GetChildren();
 
@@ -78,6 +80,14 @@ namespace Engine
 	protected:
 
 		void RemoveChild(GameObject* obj);
+
+	public:
+		void SetActive(bool active);
+		bool GetActive();
+
+	private:
+		bool m_active = true;
+		bool m_tmpactive = true;
 	};
 
 	template <typename T, typename/* = std::enable_if_t<std::is_base_of<Component, T>::value>*/ >
@@ -146,7 +156,7 @@ namespace Engine
 		}
 
 		// 从子物体中搜索
-		for (GameObject* child : this->m_components) {
+		for (GameObject* child : this->m_children) {
 			comp = child->GetComponentInChildren<T>();
 			if (comp != nullptr) {
 				return comp;

@@ -1,6 +1,7 @@
 #pragma once
 
 class Stage;
+class ActorController;
 
 namespace Engine
 {
@@ -22,5 +23,6 @@ public:
 private:
 	Stage* m_stage;
 	GameObject* cameraObj;
+	GameObject* actorController;
 };
 

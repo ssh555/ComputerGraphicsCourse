@@ -162,6 +162,24 @@
     <ClCompile Include="src\Homework\Homework3\TestMath.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Homework\Homework3\Actor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework3\ActorController.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework3\ActorCameraController.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework3\ActorCameraControllerUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Homework\Homework4\ActorCubeOutlineRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -327,6 +345,24 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Homework\Homework3\TestMath.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework3\Actor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework3\ActorController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework3\ActorCameraController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework3\ActorCameraControllerUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Homework\Homework4\ActorCubeOutlineRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

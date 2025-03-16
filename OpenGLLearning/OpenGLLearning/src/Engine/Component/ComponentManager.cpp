@@ -1,5 +1,6 @@
 #include "ComponentManager.h"
 #include "Component.h"
+#include "Homework/Homework4/ActorCubeOutlineRenderer.h"
 
 namespace Engine
 {
@@ -27,10 +28,19 @@ namespace Engine
 	{
 		for (Component* component : m_enabledComponents)
 		{
+			if (!component->GetEnable())
+			{
+				continue;
+			}
 			component->Tick(deltatime);
+
 		}
 		for (Component* component : m_enabledComponents)
 		{
+			if (!component->GetEnable())
+			{
+				continue;
+			}
 			component->LateTick(deltatime);
 		}
 	}

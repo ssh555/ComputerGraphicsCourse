@@ -154,23 +154,25 @@ namespace Engine
 	void Transform::Translate(const CVector& translation)
 	{
 		SetDirty(true);
-		m_localposition += translation;
+		auto pos = GetWorldPosition();
+		pos += translation;
+		SetWorldPosition(pos);
 		//m_localposition += m_localrotation * translation;
 	}
 
 	Engine::CVector Transform::GetForward() const
 	{
-		return m_localrotation * CVector::Forward();
+		return GetWorldRotation() * CVector::Forward();
 	}
 
 	Engine::CVector Transform::GetUp() const
 	{
-		return m_localrotation * CVector::Up();
+		return GetWorldRotation() * CVector::Up();
 	}
 
 	Engine::CVector Transform::GetLeft() const
 	{
-		return m_localrotation * CVector::Left();
+		return GetWorldRotation() * CVector::Left();
 	}
 
 	void Transform::Rotate(const CVector& axis, float angle)

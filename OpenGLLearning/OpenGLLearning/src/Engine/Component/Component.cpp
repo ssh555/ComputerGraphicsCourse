@@ -50,7 +50,7 @@ namespace Engine
 
 	bool Component::GetEnable()
 	{
-		return m_enabled;
+		return this->gameobject->GetActive() && m_enabled;
 	}
 
 

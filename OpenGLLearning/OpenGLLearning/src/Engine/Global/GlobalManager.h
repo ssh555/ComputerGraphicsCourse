@@ -8,6 +8,7 @@
 #include "../Camera/CameraManager.h"
 #include "../Render/RendererManager.h"
 #include "tests/Test.h"
+#include "../GameObjectManager.h"
 
 
 
@@ -22,6 +23,7 @@ namespace Engine
 		friend class MeshRenderer;
 		friend class LineRenderer;
 		friend class Texture;
+		friend class GameObject;
 
 	public:
 		static GlobalManager& GetInstance()
@@ -38,6 +40,8 @@ namespace Engine
 
 		RendererManager* rendererManager;
 
+		GameObjectManager* gameObjectManager;
+
 	public:
 		DirectionalLight* globalLight;
 		InputManager* inputManager;
@@ -49,6 +53,7 @@ namespace Engine
 			inputManager = new InputManager();
 			cameraManager = new CameraManager();
 			rendererManager = new RendererManager();
+			gameObjectManager = new GameObjectManager();
 		}
 
 		void Run()
@@ -62,6 +67,8 @@ namespace Engine
 
 			// 更新Render <- 更新MVP
 			rendererManager->RenderAll();
+
+			gameObjectManager->UpdateActive();
 
 			globalLight->IsDirty = false;
 		}
@@ -92,7 +99,8 @@ namespace Engine
 			globalLight(nullptr),
 			inputManager(nullptr),
 			cameraManager(nullptr),
-			rendererManager(nullptr)
+			rendererManager(nullptr),
+			gameObjectManager(nullptr)
 		{
 			currentTest = nullptr;
 			testMenu = new test::TestMenu(currentTest);
@@ -106,6 +114,7 @@ namespace Engine
 			delete inputManager;
 			delete cameraManager;
 			delete rendererManager;
+			delete gameObjectManager;
 			//delete testMenu;
 		}
 

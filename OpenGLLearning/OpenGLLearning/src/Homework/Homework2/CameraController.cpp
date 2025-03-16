@@ -17,6 +17,7 @@
 #include "Engine/Math/CEuler.h"
 #include "CameraControllerUI.h"
 #include "Engine/Render/LineRenderer.h"
+#include "../Homework3/Actor.h"
 
 using namespace Engine;
 
@@ -27,7 +28,7 @@ hitPoint(CVector::Zero()),
 SelectedPoint(CVector::Zero()),
 hitT(0)
 {
-	GlobalManager::GetInstance().testMenu->RegisterTest<CameraControllerUI>("CameraController");
+	euler = this->transform->GetWorldRotation().ToCEuler();
 
 	m_lineRenderer = (new GameObject())->AddComponent<LineRenderer>();
 	m_lineRenderer->m_LineWidth = 5.0f;
@@ -45,6 +46,22 @@ hitT(0)
 void CameraController::Tick(float deltatime)
 {
 	auto mgr = GlobalManager::GetInstance().inputManager;
+
+	// 欧拉角
+	if (mgr->GetKeyDown(InputManager::Key::Num5))
+	{
+		if (this->EulerOrSelf == false)
+		{
+			euler = this->transform->GetWorldRotation().ToCEuler();
+		}
+		this->EulerOrSelf = true;
+	}
+	// 子坐标
+	if (mgr->GetKeyDown(InputManager::Key::Num6))
+	{
+		this->EulerOrSelf = false;
+	}
+
 	// 左键射线检测
 	if (mgr->GetKeyDown(InputManager::Key::MouseLeft))
 	{
@@ -118,6 +135,18 @@ void CameraController::Tick(float deltatime)
 			CurSelected->GetTransform()->Rotate(CVector::Up(), xoff * deltatime * selectRotSpeed);
 		}
 	}
+
+	// 为演员
+	if (mgr->GetKeyDown(InputManager::Key::Num8) && CurSelected && CurSelected->Name[0] == 'R')
+	{
+		auto b = this->gameobject->GetActive();
+		this->gameobject->SetActive(false);
+		b = this->gameobject->GetActive();
+		auto actor = static_cast<Actor*>(this->CurSelected);
+		actor->camera->SetActive(true);
+		actor->camera->SetParent(*actor, false);
+		actor->mainCamera = this->gameobject;
+	}
 }
 
 void CameraController::LateTick(float deltatime)
@@ -177,7 +206,18 @@ void CameraController::Rotate(float deltatime)
 		}
 		else
 		{
-			this->transform->Rotate(this->transform->GetUp(), this->rotSpeed * deltatime);
+			if (EulerOrSelf)
+			{
+				euler.h += this->rotSpeed * deltatime;
+				this->transform->SetWorldRotation(CQuaternion::Identity());
+				this->transform->Rotate(CVector::Up(), euler.h);
+				this->transform->Rotate(this->transform->GetLeft(), euler.p);
+				this->transform->Rotate(this->transform->GetForward(), euler.b);
+			}
+			else
+			{
+				this->transform->Rotate(this->transform->GetUp(), this->rotSpeed * deltatime);
+			}
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::L))
@@ -189,8 +229,19 @@ void CameraController::Rotate(float deltatime)
 		}
 		else
 		{
-			// 子空间
-			this->transform->Rotate(this->transform->GetUp(), -this->rotSpeed * deltatime);
+			if (EulerOrSelf)
+			{
+				euler.h -= this->rotSpeed * deltatime;
+				this->transform->SetWorldRotation(CQuaternion::Identity());
+				this->transform->Rotate(CVector::Up(), euler.h);
+				this->transform->Rotate(this->transform->GetLeft(), euler.p);
+				this->transform->Rotate(this->transform->GetForward(), euler.b);
+			}
+			else
+			{
+				// 子空间
+				this->transform->Rotate(this->transform->GetUp(), -this->rotSpeed * deltatime);
+			}
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::K))
@@ -202,7 +253,18 @@ void CameraController::Rotate(float deltatime)
 		}
 		else
 		{
-			this->transform->Rotate(this->transform->GetLeft(), this->rotSpeed * deltatime);
+			if (EulerOrSelf)
+			{
+				euler.p += this->rotSpeed * deltatime;
+				this->transform->SetWorldRotation(CQuaternion::Identity());
+				this->transform->Rotate(CVector::Up(), euler.h);
+				this->transform->Rotate(this->transform->GetLeft(), euler.p);
+				this->transform->Rotate(this->transform->GetForward(), euler.b);
+			}
+			else
+			{
+				this->transform->Rotate(this->transform->GetLeft(), this->rotSpeed * deltatime);
+			}
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::I))
@@ -214,16 +276,49 @@ void CameraController::Rotate(float deltatime)
 		}
 		else
 		{
-			this->transform->Rotate(this->transform->GetLeft(), -this->rotSpeed * deltatime);
+			if (EulerOrSelf)
+			{
+				euler.p -= this->rotSpeed * deltatime;
+				this->transform->SetWorldRotation(CQuaternion::Identity());
+				this->transform->Rotate(CVector::Up(), euler.h);
+				this->transform->Rotate(this->transform->GetLeft(), euler.p);
+				this->transform->Rotate(this->transform->GetForward(), euler.b);
+			}
+			else
+			{
+				this->transform->Rotate(this->transform->GetLeft(), -this->rotSpeed * deltatime);
+			}
 		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::U))
 	{
-		this->transform->Rotate(this->transform->GetForward(), -this->rotSpeed * deltatime);
+		if (EulerOrSelf)
+		{
+			euler.b -= this->rotSpeed * deltatime;
+			this->transform->SetWorldRotation(CQuaternion::Identity());
+			this->transform->Rotate(CVector::Up(), euler.h);
+			this->transform->Rotate(this->transform->GetLeft(), euler.p);
+			this->transform->Rotate(this->transform->GetForward(), euler.b);
+		}
+		else
+		{
+			this->transform->Rotate(this->transform->GetForward(), -this->rotSpeed * deltatime);
+		}
 	}
 	if (GlobalManager::GetInstance().inputManager->GetKey(InputManager::Key::O))
 	{
-		this->transform->Rotate(this->transform->GetForward(), this->rotSpeed * deltatime);
+		if (EulerOrSelf)
+		{
+			euler.b += this->rotSpeed * deltatime;
+			this->transform->SetWorldRotation(CQuaternion::Identity());
+			this->transform->Rotate(CVector::Up(), euler.h);
+			this->transform->Rotate(this->transform->GetLeft(), euler.p);
+			this->transform->Rotate(this->transform->GetForward(), euler.b);
+		}
+		else
+		{
+			this->transform->Rotate(this->transform->GetForward(), this->rotSpeed* deltatime);
+		}
 	}
 
 	if (GlobalManager::GetInstance().inputManager->GetKeyDown(InputManager::Key::RightBracket))
@@ -246,8 +341,7 @@ void CameraController::SelectGameObject(GameObject* obj)
 	}
 	if (CurSelected)
 	{
-
-		auto comp = CurSelected->GetComponent<LineRenderer>();
+		auto comp = CurSelected->GetComponentInChildren<LineRenderer>();
 		if (comp)
 		{
 			comp->SetEnable(false);
@@ -256,14 +350,13 @@ void CameraController::SelectGameObject(GameObject* obj)
 	CurSelected = obj;
 	if (CurSelected)
 	{
-		//// BT不可选中
-		//if (CurSelected->Name[1] == 'T')
-		//{
-		//	CurSelected = nullptr;
-		//	return;
-		//}
 		SelectedPoint = CurSelected->GetTransform()->GetWorldPosition();
-		auto comp = CurSelected->GetComponent<LineRenderer>();
+		// 选中了Actor
+		if (CurSelected->GetRoot()->Name[0] == 'R')
+		{
+			CurSelected = CurSelected->GetRoot();
+		}
+		auto comp = CurSelected->GetComponentInChildren<LineRenderer>();
 		if (comp)
 		{
 			comp->SetEnable(true);

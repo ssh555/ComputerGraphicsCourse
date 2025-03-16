@@ -189,6 +189,12 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Homework\Homework4\ActorCubeOutlineRenderer.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="src\Homework\Homework3\ActorCameraControllerUI.cpp" />
+    <ClCompile Include="src\Homework\Homework3\ActorCameraController.cpp" />
+    <ClCompile Include="src\Homework\Homework3\ActorController.cpp" />
+    <ClCompile Include="src\Homework\Homework3\Actor.cpp" />
     <ClCompile Include="src\Engine\Math\CMath.cpp" />
     <ClCompile Include="src\Homework\Homework2\CameraControllerUI.cpp" />
     <ClCompile Include="src\Homework\Homework2\CameraController.cpp" />
@@ -246,6 +252,12 @@ xcopy /s /y "$(TargetDir)*.*" "$(SolutionDir)run"
     <None Include="res\shaders\StandardShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Homework\Homework4\ActorCubeOutlineRenderer.h" />
+    <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="src\Homework\Homework3\ActorCameraControllerUI.h" />
+    <ClInclude Include="src\Homework\Homework3\ActorCameraController.h" />
+    <ClInclude Include="src\Homework\Homework3\ActorController.h" />
+    <ClInclude Include="src\Homework\Homework3\Actor.h" />
     <ClInclude Include="src\Homework\Homework2\CameraControllerUI.h" />
     <ClInclude Include="src\Homework\Homework2\CameraController.h" />
     <ClInclude Include="src\Engine\Render\CubeOutlineRenderer.h" />

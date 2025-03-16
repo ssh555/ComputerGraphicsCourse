@@ -70,6 +70,8 @@ namespace Engine
 
 		static Material* LINEMAT;
 
+		bool IsEnableTick = false;
+
 	};
 
 

@@ -4,6 +4,7 @@
 #include "../Component/Transform.h"
 #include <xtr1common>
 #include <type_traits>
+#include "../Global/GlobalManager.h"
 
 namespace Engine
 {
@@ -46,6 +47,17 @@ namespace Engine
 		obj->m_parent = nullptr;
 	}
 
+	void GameObject::SetActive(bool active)
+	{
+		this->m_tmpactive = active;
+		GlobalManager::GetInstance().gameObjectManager->m_activegameobjects.push_back(this);
+	}
+
+	bool GameObject::GetActive()
+	{
+		return m_active;
+	}
+
 	void GameObject::SetParent(GameObject& obj, bool stayWorldTransform /*= true*/)
 	{
 		// 如果要设置的父物体与当前父物体相同，则无需进行操作
@@ -78,6 +90,16 @@ namespace Engine
 	const GameObject* GameObject::GetParent() const
 	{
 		return m_parent;
+	}
+
+	GameObject* GameObject::GetRoot()
+	{
+		auto p = this;
+		while (p->m_parent != nullptr)
+		{
+			p = p->m_parent;
+		}
+		return p;
 	}
 
 	const std::vector<GameObject*>& GameObject::GetChildren()

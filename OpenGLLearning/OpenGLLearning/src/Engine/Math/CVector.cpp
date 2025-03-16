@@ -185,7 +185,7 @@ namespace Engine
 		}
 		else {
 			if (fabs(z) > 0.001f) {
-				cout << acos(init.dotMul(CVector(0, nor.y, nor.z).Normalized())) << endl;
+				// cout << acos(init.dotMul(CVector(0, nor.y, nor.z).Normalized())) << endl;
 				float p = acos(init.dotMul(CVector(0, nor.y, nor.z).Normalized())) / PI * (this->y > 0.001f ? 180 : -180);
 				return CEuler(0, p, 0);
 			}

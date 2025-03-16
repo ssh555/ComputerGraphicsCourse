@@ -531,16 +531,20 @@ void StageController::LoadData(const string& path, bool ignoreA, bool ignoreB, b
 		{
 			continue;
 		}
-		for (auto stage : *stages)
+		if (stages)
 		{
-			if (stage->Name == name)
+			for (auto stage : *stages)
 			{
-				stage->GetTransform()->SetLocalPosition(position);
-				stage->GetTransform()->SetLocalRotation(rotation);
-				stage->GetTransform()->SetLocalScale(scale);
-				break;
+				if (stage->Name == name)
+				{
+					stage->GetTransform()->SetLocalPosition(position);
+					stage->GetTransform()->SetLocalRotation(rotation);
+					stage->GetTransform()->SetLocalScale(scale);
+					break;
+				}
 			}
 		}
+
 	}
 
 	file.close();

@@ -90,18 +90,21 @@ namespace Engine
 
 	bool InputManager::GetKey(Key key)
 	{
+		// 最近一次抬起时间 < 最近一次按住时间 => 按住
 		auto& state = this->keyStates[key];
 		return (state.releaseFrame < state.pressFrame);
 	}
 
 	bool InputManager::GetKeyUp(Key key)
 	{
+		// 最近一次抬起时间 == 最近一次按住时间 => 抬起
 		auto& state = this->keyStates[key];
 		return (state.releaseFrame == Time::frameCount);
 	}
 
 	bool InputManager::GetKeyDown(Key key)
 	{
+		// 当前帧 == 最近一次按住时间 => 按下
 		auto& state = this->keyStates[key];
 		return (state.pressFrame == Time::frameCount);
 	}

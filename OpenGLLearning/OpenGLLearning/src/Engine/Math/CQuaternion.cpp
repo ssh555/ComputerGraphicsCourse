@@ -412,7 +412,9 @@ namespace Engine
 			//printf("%f %f %f\n", h, p, b);
 			//cout << p / PI * 180 << endl;
 			p = std::_Is_nan(p) ? 90 / 180 * PI : p;
-			return CEuler(h, p / PI * 180, b);
+			auto ans = CEuler(h, p / PI * 180, b);
+			ans.Normal();
+			return ans;
 		}
 		else {
 			float h = atan2f(2 * (w * y - x * z), (1 - 2 * (z * z + y * y))) / PI * 180;
@@ -421,7 +423,9 @@ namespace Engine
 			//printf("%f %f %f\n", h, p, b);
 			//cout << p / PI * 180 << endl;
 			p = std::_Is_nan(p) ? 90 / 180 * PI : p;
-			return CEuler(h, p / PI * 180, b);
+			auto ans = CEuler(h, p / PI * 180, b);
+			ans.Normal();
+			return ans;
 		}
 	}
 

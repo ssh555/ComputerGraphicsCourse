@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Component/Component.h"
 #include "Engine/Math/CVector.h"
+#include "Engine/Math/CEuler.h"
 
 namespace Engine
 {
@@ -12,7 +13,7 @@ namespace Engine
 class CameraController : public Engine::Component
 {
 	friend class Engine::GameObject;
-private:
+protected:
 	CameraController(Engine::GameObject* obj);
 protected:
 	virtual void Tick(float deltatime) override;
@@ -30,11 +31,18 @@ protected:
 
 	void SelectGameObject(Engine::GameObject* obj);
 
+	// true : 使用欧拉角旋转
+	// false : 使用子坐标系旋转
+	bool EulerOrSelf = true;
+	Engine::CEuler euler;
+
 
 public:
 	float moveSpeed = 60.0f;
 	float rotSpeed = 30.0f;
 	float selectRotSpeed = 15.0f;
+
+	//CEuler euler;
 
 	Engine::GameObject* CurSelected = nullptr;
 	Engine::CVector hitPoint;
